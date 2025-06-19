@@ -4,8 +4,13 @@ resource "aws_s3_bucket" "backup" {
 
 resource "aws_s3_bucket" "web" {
   bucket = var.web_bucket_name
-  website {
-    index_document = "index.html"
+}
+
+resource "aws_s3_bucket_website_configuration" "web" {
+  bucket = aws_s3_bucket.web.id
+
+  index_document {
+    suffix = "index.html"
   }
 }
 
@@ -316,13 +321,23 @@ resource "aws_api_gateway_integration" "status" {
 resource "aws_api_gateway_deployment" "start" {
   depends_on  = [aws_api_gateway_integration.start]
   rest_api_id = aws_api_gateway_rest_api.start.id
-  stage_name  = "prod"
+}
+
+resource "aws_api_gateway_stage" "start" {
+  deployment_id = aws_api_gateway_deployment.start.id
+  rest_api_id   = aws_api_gateway_rest_api.start.id
+  stage_name    = "prod"
 }
 
 resource "aws_api_gateway_deployment" "status" {
   depends_on  = [aws_api_gateway_integration.status]
   rest_api_id = aws_api_gateway_rest_api.status.id
-  stage_name  = "prod"
+}
+
+resource "aws_api_gateway_stage" "status" {
+  deployment_id = aws_api_gateway_deployment.status.id
+  rest_api_id   = aws_api_gateway_rest_api.status.id
+  stage_name    = "prod"
 }
 
 output "minecraft_server_ip" {
@@ -334,11 +349,11 @@ output "backup_bucket" {
 }
 
 output "start_minecraft_api_url" {
-  value = aws_api_gateway_deployment.start.invoke_url
+  value = aws_api_gateway_stage.start.invoke_url
 }
 
 output "status_minecraft_api_url" {
-  value = aws_api_gateway_deployment.status.invoke_url
+  value = aws_api_gateway_stage.status.invoke_url
 }
 
 output "web_url" {
