@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+      - name: Terraform fmt
+        run: terraform fmt -check -recursive
+      - name: Terraform init
+        run: terraform -chdir=terraform init
+      - name: Terraform validate
+        run: terraform -chdir=terraform validate
+      - name: Install shellcheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+      - name: Shellcheck user_data
+        run: shellcheck terraform/user_data.sh
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Compile lambda code
+        run: python -m py_compile terraform/lambda/start_minecraft.py
