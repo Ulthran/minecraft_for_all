@@ -111,7 +111,7 @@ rm -rf "$BACKUP_DIR" "world-$TIMESTAMP.zip"
 EOB
 
 sudo chmod +x /home/ec2-user/minecraft/backup.sh
-sudo echo "0 3 * * * /home/ec2-user/minecraft/backup.sh" >> /var/spool/cron/root
+echo "0 3 * * * /home/ec2-user/minecraft/backup.sh" | sudo tee -a /var/spool/cron/root
 
 # Create idle check script
 cat << 'EOF' > /home/ec2-user/minecraft/idle-check.sh
