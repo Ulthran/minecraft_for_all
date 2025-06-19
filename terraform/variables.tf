@@ -22,3 +22,8 @@ variable "subnet_id" {
   description = "Subnet for the EC2 instance"
   type        = string
 }
+
+variable "web_bucket_name" {
+  description = "Unique S3 bucket name for the web interface"
+  type        = string
+}

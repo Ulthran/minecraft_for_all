@@ -41,3 +41,15 @@ python3 -m py_compile terraform/lambda/start_minecraft.py
 
 `terraform validate` may fail if provider plugins cannot be downloaded due to
 network restrictions.
+
+## Web Interface
+
+The `web` directory contains a very small single-page application that lets you
+check the server status and start it when offline. The app is intended to be
+deployed to an S3 bucket behind CloudFront. Terraform creates the bucket and
+distribution when `web_bucket_name` is set.
+
+After applying the Terraform configuration, upload the contents of the `web`
+folder to the created bucket and replace the `STATUS_API_URL` and
+`START_API_URL` placeholders in `app.js` with the values from the Terraform
+outputs `status_minecraft_api_url` and `start_minecraft_api_url`.
