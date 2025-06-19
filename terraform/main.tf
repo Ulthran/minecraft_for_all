@@ -1,8 +1,17 @@
 resource "aws_s3_bucket" "backup" {
   bucket = var.backup_bucket_name
+}
 
-  lifecycle_rule {
-    enabled = true
+resource "aws_s3_bucket_lifecycle_configuration" "backup" {
+  bucket = aws_s3_bucket.backup.id
+
+  rule {
+    id     = "backup"
+    status = "Enabled"
+
+    filter {
+      prefix = ""
+    }
 
     transition {
       days          = 1
@@ -165,38 +174,38 @@ resource "aws_lambda_permission" "apigw" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.start_minecraft.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = aws_apigateway_rest_api.start.execution_arn
+  source_arn    = aws_api_gateway_rest_api.start.execution_arn
 }
 
-resource "aws_apigateway_rest_api" "start" {
+resource "aws_api_gateway_rest_api" "start" {
   name = "start-minecraft-api"
 }
 
-resource "aws_apigateway_resource" "start" {
-  rest_api_id = aws_apigateway_rest_api.start.id
-  parent_id   = aws_apigateway_rest_api.start.root_resource_id
+resource "aws_api_gateway_resource" "start" {
+  rest_api_id = aws_api_gateway_rest_api.start.id
+  parent_id   = aws_api_gateway_rest_api.start.root_resource_id
   path_part   = "start"
 }
 
-resource "aws_apigateway_method" "start" {
-  rest_api_id   = aws_apigateway_rest_api.start.id
-  resource_id   = aws_apigateway_resource.start.id
+resource "aws_api_gateway_method" "start" {
+  rest_api_id   = aws_api_gateway_rest_api.start.id
+  resource_id   = aws_api_gateway_resource.start.id
   http_method   = "POST"
   authorization = "NONE"
 }
 
-resource "aws_apigateway_integration" "start" {
-  rest_api_id             = aws_apigateway_rest_api.start.id
-  resource_id             = aws_apigateway_resource.start.id
-  http_method             = aws_apigateway_method.start.http_method
+resource "aws_api_gateway_integration" "start" {
+  rest_api_id             = aws_api_gateway_rest_api.start.id
+  resource_id             = aws_api_gateway_resource.start.id
+  http_method             = aws_api_gateway_method.start.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.start_minecraft.invoke_arn
 }
 
-resource "aws_apigateway_deployment" "start" {
-  depends_on  = [aws_apigateway_integration.start]
-  rest_api_id = aws_apigateway_rest_api.start.id
+resource "aws_api_gateway_deployment" "start" {
+  depends_on  = [aws_api_gateway_integration.start]
+  rest_api_id = aws_api_gateway_rest_api.start.id
   stage_name  = "prod"
 }
 
@@ -209,5 +218,5 @@ output "backup_bucket" {
 }
 
 output "start_minecraft_api_url" {
-  value = aws_apigateway_deployment.start.invoke_url
+  value = aws_api_gateway_deployment.start.invoke_url
 }

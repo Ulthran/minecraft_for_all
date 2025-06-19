@@ -1,4 +1,6 @@
 #!/bin/bash
+# This variable is replaced by Terraform at deploy time
+# shellcheck disable=SC2269
 BACKUP_BUCKET="${BACKUP_BUCKET}"
 yum update -y
 
@@ -11,7 +13,7 @@ echo '/swapfile swap swap defaults 0 0' >> /etc/fstab
 
 
 # Install Java 21 (directly from Amazon Corretto) (ARM64 to use t4g instance)
-cd /tmp
+cd /tmp || exit
 #wget https://corretto.aws/downloads/latest/amazon-corretto-21-x64-linux-jdk.rpm
 #sudo yum localinstall -y amazon-corretto-21-x64-linux-jdk.rpm
 wget https://corretto.aws/downloads/latest/amazon-corretto-21-aarch64-linux-jdk.rpm
@@ -22,7 +24,7 @@ yum install -y wget unzip aws-cli cronie python3 nc git make gcc
 
 mkdir -p /home/ec2-user/minecraft
 sudo chmod -R 777 /home/ec2-user/minecraft
-cd /home/ec2-user/minecraft
+cd /home/ec2-user/minecraft || exit
 
 # Download Minecraft server
 #wget https://piston-data.mojang.com/v1/objects/e6ec2f64e6080b9b5d9b471b291c33cc7f509733/server.jar -O server.jar
@@ -33,10 +35,12 @@ wget https://api.papermc.io/v2/projects/paper/versions/1.21.4/builds/225/downloa
 echo "eula=true" > eula.txt
 
 # Configure server.properties for RCON
-echo "enable-rcon=true" >> server.properties
-echo "rcon.password=minecraft" >> server.properties
-echo "rcon.port=25575" >> server.properties
-echo "allow-flight=true" >> server.properties
+{
+  echo "enable-rcon=true"
+  echo "rcon.password=minecraft"
+  echo "rcon.port=25575"
+  echo "allow-flight=true"
+} >> server.properties
 
 # Create systemd service
 cat << EOF > /etc/systemd/system/minecraft.service
@@ -62,14 +66,14 @@ sudo systemctl enable minecraft
 sudo systemctl start minecraft
 
 # Install MC RCON
-cd /tmp
+cd /tmp || exit
 git clone https://github.com/Tiiffi/mcrcon.git
-cd mcrcon
+cd mcrcon || exit
 make
 sudo install mcrcon /usr/local/bin
 
 # Install plugins
-cd /home/ec2-user/minecraft/plugins
+cd /home/ec2-user/minecraft/plugins || exit
 wget https://cdn.modrinth.com/data/fALzjamp/versions/SmZRkQyR/Chunky-Bukkit-1.4.36.jar
 wget https://cdn.modrinth.com/data/s86X568j/versions/asaBBItO/ChunkyBorder-Bukkit-1.2.23.jar
 wget https://github.com/ViaVersion/ViaVersion/releases/download/5.3.2/ViaVersion-5.3.2.jar
@@ -77,7 +81,7 @@ wget https://cdn.modrinth.com/data/p1ewR5kV/versions/Ypqt7eH1/unifiedmetrics-pla
 wget https://github.com/EssentialsX/Essentials/releases/download/2.21.0/EssentialsX-2.21.0.jar
 
 # Wait up to 60s for port 25575 to be ready
-for i in {1..30}; do
+for _ in {1..30}; do
 nc -z 127.0.0.1 25575 && break
 echo "Waiting for Minecraft server to start..."
 sleep 2
@@ -104,7 +108,7 @@ TIMESTAMP=$(date +%F-%H-%M)
 BACKUP_DIR="/home/ec2-user/minecraft_backup/$TIMESTAMP"
 mkdir -p "$BACKUP_DIR"
 cp -r /home/ec2-user/minecraft/world "$BACKUP_DIR"
-cd /home/ec2-user/minecraft_backup
+cd /home/ec2-user/minecraft_backup || exit
 zip -r "world-$TIMESTAMP.zip" "$TIMESTAMP"
 aws s3 cp "world-$TIMESTAMP.zip" s3://${BACKUP_BUCKET}/
 rm -rf "$BACKUP_DIR" "world-$TIMESTAMP.zip"
@@ -163,4 +167,4 @@ main
 EOF
 
 sudo chmod +x /home/ec2-user/minecraft/idle-check.sh
-sudo echo "*/10 * * * * /home/ec2-user/minecraft/idle-check.sh" >> /var/spool/cron/root
+echo "*/10 * * * * /home/ec2-user/minecraft/idle-check.sh" | sudo tee -a /var/spool/cron/root
