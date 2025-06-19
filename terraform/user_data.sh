@@ -1,7 +1,12 @@
 #!/bin/bash
+set -euo pipefail
 # This variable is replaced by Terraform at deploy time
 # shellcheck disable=SC2269
 BACKUP_BUCKET="${BACKUP_BUCKET}"
+
+LOG_FILE=/var/log/minecraft-setup.log
+exec > >(tee -a "$LOG_FILE") 2>&1
+
 yum update -y
 
 # Create a 2 GB swap file
@@ -120,6 +125,8 @@ echo "0 3 * * * /home/ec2-user/minecraft/backup.sh" | sudo tee -a /var/spool/cro
 # Create idle check script
 cat << 'EOF' > /home/ec2-user/minecraft/idle-check.sh
 #!/bin/bash
+set -euo pipefail
+exec >> /var/log/minecraft-idle.log 2>&1
 
 RCON_HOST="127.0.0.1"
 RCON_PORT=25575
