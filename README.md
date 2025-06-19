@@ -33,8 +33,8 @@ if desired:
 
 ```
 terraform fmt -check -recursive
-terraform init
-terraform validate ./terraform
+terraform -chdir=terraform init
+terraform -chdir=terraform validate
 shellcheck terraform/user_data.sh
 python3 -m py_compile terraform/lambda/start_minecraft.py
 ```

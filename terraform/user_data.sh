@@ -154,3 +154,13 @@ echo "No players for $IDLE_LIMIT_MINUTES+ minutes. Shutting down..."
 mcrcon -H "$RCON_HOST" -P "$RCON_PORT" -p "$RCON_PASSWORD" "save-all"
 mcrcon -H "$RCON_HOST" -P "$RCON_PORT" -p "$RCON_PASSWORD" "say Server is shutting down due to inactivity."
 sleep 10
+rm "$TIME_FILE"
+sudo shutdown -h now
+fi
+}
+
+main
+EOF
+
+sudo chmod +x /home/ec2-user/minecraft/idle-check.sh
+sudo echo "*/10 * * * * /home/ec2-user/minecraft/idle-check.sh" >> /var/spool/cron/root
