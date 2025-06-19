@@ -10,7 +10,7 @@ async function fetchStatus() {
     const res = await fetch(STATUS_URL);
     const data = await res.json();
     if (data.state === 'running') {
-      const players = data.players !== null && data.players !== undefined ? data.players : 0;
+      const players = data.players ?? 0;
       statusDiv.textContent = `Server is running with ${players} player${players === 1 ? '' : 's'} online.`;
       startBtn.style.display = 'none';
     } else {
