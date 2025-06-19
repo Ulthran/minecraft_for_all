@@ -65,3 +65,9 @@ python3 dev_server.py
 This starts a server on `http://localhost:8000` that serves the files from the
 `web` directory and provides dummy endpoints at `/STATUS_API_URL` and
 `/START_API_URL`.
+
+## SaaS Architecture
+
+A design proposal for running each tenant in a separate AWS account is available in [docs/saas_layer.md](docs/saas_layer.md).
+
+The `saas` directory contains Terraform configuration for creating tenant AWS accounts and a Cognito user pool for authentication. Copy `saas/terraform.tfvars.example` to `saas/terraform.tfvars` and update the values before running `terraform -chdir=saas apply` from a management account that has access to AWS Organizations.

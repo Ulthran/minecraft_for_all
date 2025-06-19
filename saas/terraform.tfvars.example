@@ -1,0 +1,3 @@
+tenant_account_name  = "example-tenant"
+tenant_account_email = "example+tenant@example.com"
+tenant_id            = "example"
