@@ -53,3 +53,15 @@ After applying the Terraform configuration, upload the contents of the `web`
 folder to the created bucket and replace the `STATUS_API_URL` and
 `START_API_URL` placeholders in `app.js` with the values from the Terraform
 outputs `status_minecraft_api_url` and `start_minecraft_api_url`.
+
+### Local Testing
+
+A helper script is provided for testing the web interface without AWS. Run:
+
+```
+python3 dev_server.py
+```
+
+This starts a server on `http://localhost:8000` that serves the files from the
+`web` directory and provides dummy endpoints at `/STATUS_API_URL` and
+`/START_API_URL`.
