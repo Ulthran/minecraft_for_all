@@ -26,6 +26,8 @@ const options = {
       { path: '/pricing', component: () => window['vue3-sfc-loader'].loadModule('./components/Pricing.vue', options) },
       { path: '/support', component: () => window['vue3-sfc-loader'].loadModule('./components/Support.vue', options) },
       { path: '/about', component: () => window['vue3-sfc-loader'].loadModule('./components/About.vue', options) },
+      { path: '/login', component: () => window['vue3-sfc-loader'].loadModule('./components/Login.vue', options) },
+      { path: '/console', component: () => window['vue3-sfc-loader'].loadModule('./components/Console.vue', options) },
       { path: '/start', component: () => window['vue3-sfc-loader'].loadModule('./components/Start.vue', options) },
     ],
   });

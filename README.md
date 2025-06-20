@@ -69,13 +69,13 @@ Step-by-step instructions for deploying the SaaS site and tenant provisioning La
 
 The `saas` directory contains Terraform configuration for creating tenant AWS accounts and a Cognito user pool for authentication. Copy `saas/terraform.tfvars.example` to `saas/terraform.tfvars` and update the values before running `terraform -chdir=saas apply` from a management account that has access to AWS Organizations.
 
-### SaaS Landing Page
+### SaaS Website
 
-The `saas_web` folder holds a small landing page used for the main SaaS sign‑up
-site. Terraform creates an S3 bucket and CloudFront distribution when
-`frontend_bucket_name` is set. Upload the contents of `saas_web` to that bucket
-and update `SIGNUP_API_URL` in `saas_web/app.js` to point at the future signup
-API endpoint.
+The `saas_web` folder now contains the main SaaS site with signup, login and a
+simple management console. Terraform creates an S3 bucket and CloudFront
+distribution when `frontend_bucket_name` is set. Upload the contents of
+`saas_web` to that bucket and update the `*_API_URL` placeholders in the Vue
+components to point at your backend APIs.
 
 To run the SaaS site locally, use the development server with the `--site`
 option:
@@ -84,5 +84,5 @@ option:
 python3 dev_server.py --site saas_web
 ```
 
-This serves the files from `saas_web` and mocks a `/SIGNUP_API_URL` endpoint so
-the form can be tested without deploying any backend.
+This serves the files from `saas_web` and mocks the various API endpoints so the
+forms and console can be tested without deploying any backend.
