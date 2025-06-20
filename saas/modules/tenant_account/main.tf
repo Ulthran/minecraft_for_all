@@ -52,7 +52,6 @@ resource "aws_iam_role_policy_attachment" "cost_logs" {
 }
 
 data "archive_file" "lambda_cost_report" {
-  provider    = aws.tenant
   type        = "zip"
   source_file = "${path.module}/../../lambda/cost_report.py"
   output_path = "${path.module}/lambda_cost_report.zip"
