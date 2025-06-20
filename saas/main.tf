@@ -9,14 +9,6 @@ module "frontend_site" {
   bucket_name = var.frontend_bucket_name
 }
 
-output "cost_api_url" {
-  value = module.tenant_account.cost_api_url
-}
-
-output "tenant_account_id" {
-  value = module.tenant_account.tenant_account_id
-}
-
 output "user_pool_id" {
   value = module.auth.user_pool_id
 }
