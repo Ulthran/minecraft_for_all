@@ -77,9 +77,6 @@ distribution when `frontend_bucket_name` is set. Upload the contents of
 `saas_web` to that bucket and update the `*_API_URL` placeholders (including
 `COST_API_URL`) in the Vue components to point at your backend APIs.
 
-The Terraform outputs include `cost_api_url`, which points at a Lambda-powered
-endpoint in each tenant account that returns the current month's cost
-information.
 
 To run the SaaS site locally, use the development server with the `--site`
 option:
