@@ -61,6 +61,9 @@ if __name__ == '__main__':
     else:
         MOCK_RESPONSES.update({
             ('POST', '/SIGNUP_API_URL'): (200, None),
+            ('POST', '/LOGIN_API_URL'): (200, {'token': 'dummy'}),
+            ('GET', '/STATUS_API_URL'): (200, {'state': 'offline'}),
+            ('POST', '/START_API_URL'): (200, None),
         })
 
     logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
