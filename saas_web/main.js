@@ -29,7 +29,21 @@ const options = {
     ],
   });
 
-  const vuetify = Vuetify.createVuetify();
+  const vuetify = Vuetify.createVuetify({
+    theme: {
+      defaultTheme: 'dark',
+      themes: {
+        dark: {
+          colors: {
+            background: '#1a1a2e',
+            surface: '#1a1a2e',
+            primary: '#81d4fa',
+            secondary: '#b39ddb',
+          },
+        },
+      },
+    },
+  });
 
   Vue.createApp(App).use(router).use(vuetify).mount('#app');
 })();
