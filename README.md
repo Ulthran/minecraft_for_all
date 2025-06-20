@@ -67,15 +67,19 @@ A design proposal for running each tenant in a separate AWS account is available
 
 Step-by-step instructions for deploying the SaaS site and tenant provisioning Lambda are provided in [docs/saas_setup.md](docs/saas_setup.md).
 
-The `saas` directory contains Terraform configuration for the Cognito user pool, the tenant provisioning Lambda and the landing site. Copy `saas/terraform.tfvars.example` to `saas/terraform.tfvars` and set `frontend_bucket_name` before running `terraform -chdir=saas apply` from a management account that has access to AWS Organizations. Tenant accounts are created later when users sign up.
+The `saas` directory contains Terraform configuration for creating tenant AWS accounts and a Cognito user pool for authentication. Copy `saas/terraform.tfvars.example` to `saas/terraform.tfvars` and update the values. Run `terraform -chdir=saas init` once to download the providers and modules, then you can use `terraform -chdir=saas validate` or `terraform -chdir=saas apply` from a management account that has access to AWS Organizations.
 
 ### SaaS Website
 
 The `saas_web` folder now contains the main SaaS site with signup, login and a
 simple management console. Terraform creates an S3 bucket and CloudFront
 distribution when `frontend_bucket_name` is set. Upload the contents of
-`saas_web` to that bucket and update the `*_API_URL` placeholders in the Vue
-components to point at your backend APIs.
+`saas_web` to that bucket and update the `*_API_URL` placeholders (including
+`COST_API_URL`) in the Vue components to point at your backend APIs.
+
+The Terraform outputs include `cost_api_url`, which points at a Lambda-powered
+endpoint in each tenant account that returns the current month's cost
+information.
 
 To run the SaaS site locally, use the development server with the `--site`
 option:
@@ -85,4 +89,5 @@ python3 dev_server.py --site saas_web
 ```
 
 This serves the files from `saas_web` and mocks the various API endpoints so the
-forms and console can be tested without deploying any backend.
+forms and console can be tested without deploying any backend, including a dummy
+`/COST_API_URL` used on the console page.
