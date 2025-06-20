@@ -70,6 +70,8 @@ This starts a server on `http://localhost:8000` that serves the files from the
 
 A design proposal for running each tenant in a separate AWS account is available in [docs/saas_layer.md](docs/saas_layer.md).
 
+Step-by-step instructions for deploying the SaaS site and tenant provisioning Lambda are provided in [docs/saas_setup.md](docs/saas_setup.md).
+
 The `saas` directory contains Terraform configuration for creating tenant AWS accounts and a Cognito user pool for authentication. Copy `saas/terraform.tfvars.example` to `saas/terraform.tfvars` and update the values before running `terraform -chdir=saas apply` from a management account that has access to AWS Organizations.
 
 ### SaaS Landing Page
@@ -79,3 +81,13 @@ site. Terraform creates an S3 bucket and CloudFront distribution when
 `frontend_bucket_name` is set. Upload the contents of `saas_web` to that bucket
 and update `SIGNUP_API_URL` in `saas_web/app.js` to point at the future signup
 API endpoint.
+
+To run the SaaS site locally, use the development server with the `--site`
+option:
+
+```bash
+python3 dev_server.py --site saas_web
+```
+
+This serves the files from `saas_web` and mocks a `/SIGNUP_API_URL` endpoint so
+the form can be tested without deploying any backend.
