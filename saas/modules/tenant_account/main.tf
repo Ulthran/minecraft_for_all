@@ -75,17 +75,17 @@ resource "aws_api_gateway_rest_api" "cost" {
 }
 
 resource "aws_api_gateway_resource" "cost" {
-  provider   = aws.tenant
+  provider    = aws.tenant
   rest_api_id = aws_api_gateway_rest_api.cost.id
   parent_id   = aws_api_gateway_rest_api.cost.root_resource_id
   path_part   = "cost"
 }
 
 resource "aws_api_gateway_method" "cost" {
-  provider   = aws.tenant
-  rest_api_id = aws_api_gateway_rest_api.cost.id
-  resource_id = aws_api_gateway_resource.cost.id
-  http_method = "GET"
+  provider      = aws.tenant
+  rest_api_id   = aws_api_gateway_rest_api.cost.id
+  resource_id   = aws_api_gateway_resource.cost.id
+  http_method   = "GET"
   authorization = "NONE"
 }
 
@@ -109,13 +109,13 @@ resource "aws_lambda_permission" "cost_apigw" {
 }
 
 resource "aws_api_gateway_deployment" "cost" {
-  provider   = aws.tenant
-  depends_on = [aws_api_gateway_integration.cost]
+  provider    = aws.tenant
+  depends_on  = [aws_api_gateway_integration.cost]
   rest_api_id = aws_api_gateway_rest_api.cost.id
 }
 
 resource "aws_api_gateway_stage" "cost" {
-  provider     = aws.tenant
+  provider      = aws.tenant
   deployment_id = aws_api_gateway_deployment.cost.id
   rest_api_id   = aws_api_gateway_rest_api.cost.id
   stage_name    = "prod"
