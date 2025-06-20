@@ -12,6 +12,11 @@ module "auth" {
   client_name    = var.client_name
 }
 
+module "frontend_site" {
+  source      = "./modules/frontend_site"
+  bucket_name = var.frontend_bucket_name
+}
+
 output "tenant_account_id" {
   value = module.tenant_account.tenant_account_id
 }
@@ -22,4 +27,12 @@ output "user_pool_id" {
 
 output "user_pool_client_id" {
   value = module.auth.user_pool_client_id
+}
+
+output "frontend_bucket" {
+  value = module.frontend_site.bucket_name
+}
+
+output "frontend_url" {
+  value = module.frontend_site.cloudfront_domain
 }
