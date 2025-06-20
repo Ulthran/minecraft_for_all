@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar color="secondary" dark>
+    <v-app-bar color="secondary" dark app>
       <v-toolbar-title>
         <router-link to="/" style="color: inherit; text-decoration: none;">Minecraft for All</router-link>
       </v-toolbar-title>
