@@ -6,13 +6,6 @@ an EC2 instance, S3 backups and a small Lambda function for starting the server.
 
 ## Usage
 
-### CloudFormation demo
-
-```
-cd cloudformation
-./deploy-stack.sh
-```
-
 ### Terraform
 
 ```
