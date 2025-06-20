@@ -4,7 +4,8 @@
 By default it serves the files from the ``web`` directory and exposes dummy
 API endpoints so the frontend can be tested locally without deploying any
 infrastructure. Pass ``--site saas_web`` to serve the SaaS landing page and
-mock its signup endpoint.
+mock its signup endpoint. The SaaS mode also provides a mock cost endpoint
+used by the console page.
 """
 
 import http.server
@@ -64,6 +65,13 @@ if __name__ == '__main__':
             ('POST', '/LOGIN_API_URL'): (200, {'token': 'dummy'}),
             ('GET', '/STATUS_API_URL'): (200, {'state': 'offline'}),
             ('POST', '/START_API_URL'): (200, None),
+            ('GET', '/COST_API_URL'): (200, {
+                'total': 12.34,
+                'breakdown': {
+                    'EC2': 10.00,
+                    'S3': 2.34,
+                }
+            }),
         })
 
     logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')

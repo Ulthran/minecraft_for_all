@@ -12,8 +12,8 @@ provisioned when a user confirms their account.
    an AWS account with access to AWS Organizations. This creates the user pool
    and S3 bucket/CloudFront distribution for the website.
 3. Upload the contents of the `saas_web` directory to the created S3 bucket and
-   update the `*_API_URL` placeholders inside the Vue components to point at your
-   deployed APIs.
+   update the `*_API_URL` placeholders (including `COST_API_URL`) inside the Vue
+   components to point at your deployed APIs.
 
 ## Local Development
 
@@ -24,7 +24,8 @@ python3 dev_server.py --site saas_web
 ```
 
 This serves the site at <http://localhost:8000> and mocks all API endpoints so
-signup, login and the console work offline.
+signup, login and the console work offline, including a fake cost API used on
+the console page.
 
 ## Tenant Provisioning Lambda
 
@@ -41,3 +42,12 @@ The function currently performs the following steps:
 
 The `saas` Terraform code builds and deploys this Lambda automatically and
 grants the user pool permission to invoke it.
+
+## Cost Reporting Lambda
+
+Each tenant account also includes a simple `cost_report` Lambda function that is
+exposed through an API Gateway endpoint. This function queries the AWS Cost
+Explorer API for the current month's charges and returns the total along with a
+breakdown by service. The endpoint URL is output as `cost_api_url` when the
+Terraform code is applied and should be used to replace the `COST_API_URL`
+placeholder in the Vue console component.

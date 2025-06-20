@@ -2,9 +2,10 @@
   <v-container>
     <v-row>
       <v-col>
-        <h2 class="text-h5 mb-4">Server Console</h2>
-        <div>{{ status }}</div>
-        <v-btn v-if="showStart" @click="start" class="mt-2">Start Server</v-btn>
+      <h2 class="text-h5 mb-4">Server Console</h2>
+      <div>{{ status }}</div>
+      <div class="mt-2">{{ cost }}</div>
+      <v-btn v-if="showStart" @click="start" class="mt-2">Start Server</v-btn>
       </v-col>
     </v-row>
   </v-container>
@@ -17,11 +18,13 @@ export default {
     return {
       status: 'Checking status...',
       showStart: false,
+      cost: 'Fetching cost...',
       interval: null,
     };
   },
   mounted() {
     this.fetchStatus();
+    this.fetchCost();
     this.interval = setInterval(this.fetchStatus, 30000);
   },
   beforeUnmount() {
@@ -59,6 +62,21 @@ export default {
         console.error(err);
         this.status = 'Could not start server.';
         this.showStart = true;
+      }
+    },
+    async fetchCost() {
+      try {
+        const res = await fetch('COST_API_URL', { headers: this.authHeader() });
+        const data = await res.json();
+        let text = `Monthly cost so far: $${data.total ?? 0}`;
+        if (data.breakdown) {
+          const parts = Object.entries(data.breakdown).map(([k, v]) => `${k}: $${v}`);
+          if (parts.length) text += ` ( ${parts.join(', ')} )`;
+        }
+        this.cost = text;
+      } catch (err) {
+        console.error(err);
+        this.cost = 'Error fetching cost.';
       }
     },
   },
