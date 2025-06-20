@@ -1,0 +1,22 @@
+{
+  "name": "minecraft_for_all",
+  "version": "1.0.0",
+  "description": "This repo contains example infrastructure code for running a Minecraft server on AWS. It includes both the original CloudFormation template and a Terraform setup with an EC2 instance, S3 backups and a small Lambda function for starting the server.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "vue": "^3.5.17",
+    "vue-router": "^4.5.1",
+    "vue3-sfc-loader": "^0.9.5",
+    "vuetify": "^3.8.10"
+  }
+}
