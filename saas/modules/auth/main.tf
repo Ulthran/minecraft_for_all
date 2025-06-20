@@ -30,8 +30,15 @@ resource "aws_iam_role_policy" "create_tenant" {
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
-      Effect   = "Allow",
-      Action   = ["organizations:CreateAccount"],
+      Effect = "Allow",
+      Action = [
+        "organizations:CreateAccount",
+        "organizations:DescribeCreateAccountStatus",
+        "organizations:ListRoots",
+        "organizations:ListOrganizationalUnitsForParent",
+        "organizations:CreateOrganizationalUnit",
+        "organizations:MoveAccount",
+      ],
       Resource = "*",
     }]
   })
