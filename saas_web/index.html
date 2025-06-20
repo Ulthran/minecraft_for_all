@@ -3,29 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <title>Minecraft for All</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="vendor/vuetify.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { margin: 0; }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Minecraft for All</h1>
-    <p id="tagline">Run your own dedicated Minecraft server in minutes.</p>
-  </header>
-  <main>
-    <section>
-      <h2>Why choose us?</h2>
-      <p>We handle the boring stuff so you can focus on playing with your friends. Each server runs
-        in its own AWS account for maximum isolation, and you only pay for the time your server is
-        online.</p>
-    </section>
-    <section>
-      <h2>Sign up for early access</h2>
-      <form id="signup-form">
-        <input type="email" id="email" placeholder="you@example.com" required />
-        <button type="submit">Sign Up</button>
-      </form>
-      <div id="signup-message"></div>
-    </section>
-  </main>
-  <script src="app.js"></script>
+  <div id="app"></div>
+  <script src="vendor/vue.global.prod.js"></script>
+  <script src="vendor/vue-router.global.prod.js"></script>
+  <script src="vendor/vuetify.min.js"></script>
+  <script src="vendor/vue3-sfc-loader.js"></script>
+  <script type="module" src="./main.js"></script>
 </body>
 </html>
