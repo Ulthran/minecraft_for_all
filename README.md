@@ -27,9 +27,11 @@ to `terraform.tfvars` and fill in your values before running `terraform apply`.
 ## Testing
 
 Basic checks run automatically via GitHub Actions whenever you push changes.
-The workflow formats and validates Terraform, lints `user_data.sh` with
-ShellCheck, and compiles the Lambda function. You can run the commands locally
-if desired:
+Separate workflows validate the standalone server Terraform configuration, the
+SaaS Terraform layer and the two static sites. The Terraform workflows format
+and validate their directories, while the server workflow also runs ShellCheck
+and compiles the Lambda code. The site workflows validate the HTML using
+`html5validator`. You can run the main Terraform checks locally if desired:
 
 ```
 terraform fmt -check -recursive
