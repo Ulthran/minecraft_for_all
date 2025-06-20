@@ -13,6 +13,7 @@ SERVER_IP = os.environ.get("SERVER_IP")
 
 ec2 = boto3.client("ec2")
 
+
 def handler(event, context):
     logger.debug("Status request event: %s", event)
     try:
@@ -26,7 +27,9 @@ def handler(event, context):
     players = None
     if state == "running" and SERVER_IP:
         try:
-            with urllib.request.urlopen(f"https://api.mcstatus.io/v2/status/java/{SERVER_IP}") as f:
+            with urllib.request.urlopen(
+                f"https://api.mcstatus.io/v2/status/java/{SERVER_IP}"
+            ) as f:
                 data = json.load(f)
                 players = data.get("players", {}).get("online")
                 logger.info("Online players: %s", players)
@@ -34,7 +37,4 @@ def handler(event, context):
             logger.warning("Failed to query player count: %s", e)
             players = None
 
-    return {
-        "statusCode": 200,
-        "body": json.dumps({"state": state, "players": players})
-    }
+    return {"statusCode": 200, "body": json.dumps({"state": state, "players": players})}

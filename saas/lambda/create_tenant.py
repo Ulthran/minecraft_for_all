@@ -10,6 +10,7 @@ org = boto3.client("organizations")
 
 TENANT_OU_NAME = "MinecraftTenants"
 
+
 def ensure_tenant_ou():
     """Return the root and OU IDs, creating the OU if needed."""
     roots = org.list_roots()["Roots"]
@@ -25,6 +26,7 @@ def ensure_tenant_ou():
     ou_id = resp["OrganizationalUnit"]["Id"]
     logging.info("Created tenant OU %s", ou_id)
     return root_id, ou_id
+
 
 def handler(event, context):
     """Create a new tenant account when a user is confirmed."""
@@ -46,10 +48,16 @@ def handler(event, context):
         # Poll for completion briefly so the account can be moved into the tenant OU
         deadline = time.time() + 20
         while time.time() < deadline:
-            status = org.describe_create_account_status(CreateAccountRequestId=create_id)["CreateAccountStatus"]
+            status = org.describe_create_account_status(
+                CreateAccountRequestId=create_id
+            )["CreateAccountStatus"]
             if status["State"] == "SUCCEEDED":
                 account_id = status["AccountId"]
-                org.move_account(AccountId=account_id, SourceParentId=root_id, DestinationParentId=ou_id)
+                org.move_account(
+                    AccountId=account_id,
+                    SourceParentId=root_id,
+                    DestinationParentId=ou_id,
+                )
                 logger.info("Moved account %s to OU %s", account_id, ou_id)
                 break
             if status["State"] == "FAILED":

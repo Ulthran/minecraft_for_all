@@ -6,6 +6,7 @@ import logging
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+
 def handler(event, context):
     instance_id = os.environ["INSTANCE_ID"]
     ec2 = boto3.client("ec2")
@@ -16,11 +17,11 @@ def handler(event, context):
         logger.info("Start response: %s", response)
         return {
             "statusCode": 200,
-            "body": f"Starting instance {instance_id}: {response}"
+            "body": f"Starting instance {instance_id}: {response}",
         }
     except Exception as e:
         logger.exception("Error starting instance %s", instance_id)
         return {
             "statusCode": 500,
-            "body": f"Error starting instance {instance_id}: {e}"
+            "body": f"Error starting instance {instance_id}: {e}",
         }
