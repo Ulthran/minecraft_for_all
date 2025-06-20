@@ -23,18 +23,20 @@ resource "aws_iam_role" "lambda" {
     }]
   })
 
-  inline_policy {
-    name = "create-tenant"
-    policy = jsonencode({
-      Version = "2012-10-17",
-      Statement = [{
-        Effect   = "Allow",
-        Action   = ["organizations:CreateAccount"],
-        Resource = "*"
-      }]
-    })
-  }
 }
+resource "aws_iam_role_policy" "create_tenant" {
+  name = "create-tenant"
+  role = aws_iam_role.lambda.id
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect   = "Allow",
+      Action   = ["organizations:CreateAccount"],
+      Resource = "*",
+    }]
+  })
+}
+
 
 resource "aws_iam_role_policy_attachment" "lambda_logs" {
   role       = aws_iam_role.lambda.name

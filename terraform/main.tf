@@ -117,7 +117,7 @@ resource "aws_security_group" "minecraft" {
 }
 
 resource "aws_eip" "minecraft" {
-  vpc = true
+  domain = "vpc"
 }
 
 resource "aws_iam_role" "minecraft" {
