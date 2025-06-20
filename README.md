@@ -67,7 +67,7 @@ A design proposal for running each tenant in a separate AWS account is available
 
 Step-by-step instructions for deploying the SaaS site and tenant provisioning Lambda are provided in [docs/saas_setup.md](docs/saas_setup.md).
 
-The `saas` directory contains Terraform configuration for creating tenant AWS accounts and a Cognito user pool for authentication. Copy `saas/terraform.tfvars.example` to `saas/terraform.tfvars` and update the values before running `terraform -chdir=saas apply` from a management account that has access to AWS Organizations.
+The `saas` directory contains Terraform configuration for the Cognito user pool, the tenant provisioning Lambda and the landing site. Copy `saas/terraform.tfvars.example` to `saas/terraform.tfvars` and set `frontend_bucket_name` before running `terraform -chdir=saas apply` from a management account that has access to AWS Organizations. Tenant accounts are created later when users sign up.
 
 ### SaaS Website
 

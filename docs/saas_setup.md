@@ -5,12 +5,11 @@ provisioned when a user confirms their account.
 
 ## Deploying the Website
 
-1. Copy `saas/terraform.tfvars.example` to `saas/terraform.tfvars` and set the
-   required values. The `frontend_bucket_name` variable controls where the site
-   will be hosted.
+1. Copy `saas/terraform.tfvars.example` to `saas/terraform.tfvars` and set
+   `frontend_bucket_name` to the S3 bucket that will host the site.
 2. Run `terraform -chdir=saas init` followed by `terraform -chdir=saas apply` from
-   an AWS account with access to AWS Organizations. This creates the user pool
-   and S3 bucket/CloudFront distribution for the website.
+   an AWS account with access to AWS Organizations. This creates the user pool,
+   tenant provisioning Lambda and S3 bucket/CloudFront distribution for the website.
 3. Upload the contents of the `saas_web` directory to the created S3 bucket and
    update the `*_API_URL` placeholders (including `COST_API_URL`) inside the Vue
    components to point at your deployed APIs.
@@ -38,7 +37,9 @@ The function currently performs the following steps:
 
 1. Read the confirmed user's email from the event.
 2. Generate a short tenant identifier.
-3. Call `organizations.create_account` with the email and a default account name.
+3. Ensure an organizational unit named `MinecraftTenants` exists.
+4. Call `organizations.create_account` with the email and a default account name.
+5. Once creation completes, move the new account into that organizational unit.
 
 The `saas` Terraform code builds and deploys this Lambda automatically and
 grants the user pool permission to invoke it.

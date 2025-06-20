@@ -1,4 +1,1 @@
-tenant_account_name  = "example-tenant"
-tenant_account_email = "example+tenant@example.com"
-tenant_id            = "example"
 frontend_bucket_name = "example-landing-bucket"

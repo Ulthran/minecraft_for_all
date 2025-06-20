@@ -1,11 +1,3 @@
-module "tenant_account" {
-  source        = "./modules/tenant_account"
-  account_name  = var.tenant_account_name
-  account_email = var.tenant_account_email
-  tenant_id     = var.tenant_id
-  region        = var.region
-}
-
 module "auth" {
   source         = "./modules/auth"
   user_pool_name = var.user_pool_name

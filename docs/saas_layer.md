@@ -4,6 +4,7 @@ This document outlines a high level plan for supporting a multi‑tenant setup w
 
 ## Account Creation
 - Use the `aws_organizations_account` resource from the AWS provider to create a new member account for each tenant.
+- All tenant accounts are placed in an organizational unit called `MinecraftTenants` for easier management.
 - After creation, Terraform can assume an IAM role in the new account (e.g. `OrganizationAccountAccessRole`) to deploy the server infrastructure.
 - Each tenant account receives its own VPC, EC2 instance and web bucket. An Elastic IP is allocated so the server address stays constant.
 
