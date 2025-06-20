@@ -1,0 +1,21 @@
+name: SaaS Site
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Install html5validator
+        run: pip install html5validator
+      - name: Validate HTML
+        run: html5validator --root saas_web
