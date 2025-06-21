@@ -50,16 +50,15 @@ simple management console. Terraform creates a **private** S3 bucket and a
 CloudFront distribution using an Origin Access Identity when
 `frontend_bucket_name` is set. The website files are uploaded automatically
 during `terraform apply`. The `SIGNUP_API_URL` and `LOGIN_API_URL` placeholders
-in the Vue components are replaced with the Cognito endpoints you provide. The
-console obtains the cost, start and status endpoints from the tenant
-infrastructure after a user logs in, so those placeholders remain unchanged.
+in the Vue components are replaced with endpoints derived from the Cognito user
+pool so no additional variables are needed. The console obtains the cost, start
+and status endpoints from the tenant infrastructure after a user logs in, so
+those placeholders remain unchanged.
 
 Example `terraform.tfvars` entries:
 
 ```hcl
 frontend_bucket_name = "example-landing-bucket"
-signup_api_url      = "https://example.com/signup"
-login_api_url       = "https://example.com/login"
 ```
 
 
