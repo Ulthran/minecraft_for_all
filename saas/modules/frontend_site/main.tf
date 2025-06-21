@@ -2,25 +2,24 @@ resource "aws_s3_bucket" "this" {
   bucket = var.bucket_name
 }
 
-resource "aws_s3_bucket_website_configuration" "this" {
-  bucket = aws_s3_bucket.this.id
+resource "aws_cloudfront_origin_access_identity" "this" {
+  comment = "SaaS frontend access"
+}
 
-  index_document {
-    suffix = "index.html"
+data "aws_iam_policy_document" "allow_cloudfront" {
+  statement {
+    actions   = ["s3:GetObject"]
+    resources = ["${aws_s3_bucket.this.arn}/*"]
+    principals {
+      type        = "AWS"
+      identifiers = [aws_cloudfront_origin_access_identity.this.iam_arn]
+    }
   }
 }
 
-resource "aws_s3_bucket_policy" "public" {
+resource "aws_s3_bucket_policy" "allow_cloudfront" {
   bucket = aws_s3_bucket.this.id
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect    = "Allow"
-      Principal = "*"
-      Action    = ["s3:GetObject"]
-      Resource  = "${aws_s3_bucket.this.arn}/*"
-    }]
-  })
+  policy = data.aws_iam_policy_document.allow_cloudfront.json
 }
 
 resource "aws_cloudfront_distribution" "this" {
@@ -30,6 +29,9 @@ resource "aws_cloudfront_distribution" "this" {
   origin {
     domain_name = aws_s3_bucket.this.bucket_regional_domain_name
     origin_id   = "s3-frontend"
+    s3_origin_config {
+      origin_access_identity = aws_cloudfront_origin_access_identity.this.cloudfront_access_identity_path
+    }
   }
 
   default_cache_behavior {

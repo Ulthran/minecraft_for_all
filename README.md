@@ -72,10 +72,11 @@ The `saas` directory contains Terraform configuration for creating tenant AWS ac
 ### SaaS Website
 
 The `saas_web` folder now contains the main SaaS site with signup, login and a
-simple management console. Terraform creates an S3 bucket and CloudFront
-distribution when `frontend_bucket_name` is set. Upload the contents of
-`saas_web` to that bucket and update the `*_API_URL` placeholders (including
-`COST_API_URL`) in the Vue components to point at your backend APIs.
+simple management console. Terraform creates a **private** S3 bucket and a
+CloudFront distribution using an Origin Access Identity when
+`frontend_bucket_name` is set. Upload the contents of `saas_web` to that bucket
+and update the `*_API_URL` placeholders (including `COST_API_URL`) in the Vue
+components to point at your backend APIs.
 
 
 To run the SaaS site locally, use the development server with the `--site`

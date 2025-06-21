@@ -6,10 +6,12 @@ provisioned when a user confirms their account.
 ## Deploying the Website
 
 1. Copy `saas/terraform.tfvars.example` to `saas/terraform.tfvars` and set
-   `frontend_bucket_name` to the S3 bucket that will host the site.
+   `frontend_bucket_name` to the S3 bucket that will host the site. The bucket
+   remains private.
 2. Run `terraform -chdir=saas init` followed by `terraform -chdir=saas apply` from
    an AWS account with access to AWS Organizations. This creates the user pool,
-   tenant provisioning Lambda and S3 bucket/CloudFront distribution for the website.
+   tenant provisioning Lambda and a CloudFront distribution configured with an
+   Origin Access Identity for the bucket.
 3. Upload the contents of the `saas_web` directory to the created S3 bucket and
    update the `*_API_URL` placeholders (including `COST_API_URL`) inside the Vue
    components to point at your deployed APIs.
