@@ -88,17 +88,19 @@ resource "aws_security_group" "minecraft" {
   vpc_id      = var.vpc_id
 
   ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   }
 
   ingress {
-    from_port   = 25565
-    to_port     = 25565
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port        = 25565
+    to_port          = 25565
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   }
 
   ingress {
@@ -109,15 +111,12 @@ resource "aws_security_group" "minecraft" {
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   }
-}
-
-resource "aws_eip" "minecraft" {
-  domain = "vpc"
 }
 
 resource "aws_iam_role" "minecraft" {
@@ -165,6 +164,7 @@ resource "aws_instance" "minecraft" {
   vpc_security_group_ids = [aws_security_group.minecraft.id]
   key_name               = var.key_pair_name
   iam_instance_profile   = aws_iam_instance_profile.minecraft.name
+  ipv6_address_count     = 1
 
   root_block_device {
     volume_size = 30
@@ -176,10 +176,6 @@ resource "aws_instance" "minecraft" {
   })
 }
 
-resource "aws_eip_association" "minecraft" {
-  instance_id   = aws_instance.minecraft.id
-  allocation_id = aws_eip.minecraft.id
-}
 
 resource "aws_iam_role" "lambda" {
   name = "minecraft-lambda-role"
@@ -233,7 +229,7 @@ resource "aws_lambda_function" "status_minecraft" {
   environment {
     variables = {
       INSTANCE_ID = aws_instance.minecraft.id
-      SERVER_IP   = aws_eip.minecraft.public_ip
+      SERVER_IP   = aws_instance.minecraft.ipv6_addresses[0]
     }
   }
 }
@@ -341,7 +337,7 @@ resource "aws_api_gateway_stage" "status" {
 }
 
 output "minecraft_server_ip" {
-  value = aws_eip.minecraft.public_ip
+  value = aws_instance.minecraft.ipv6_addresses[0]
 }
 
 output "backup_bucket" {
