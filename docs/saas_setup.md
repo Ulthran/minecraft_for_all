@@ -12,9 +12,11 @@ provisioned when a user confirms their account.
    an AWS account with access to AWS Organizations. This creates the user pool,
    tenant provisioning Lambda and a CloudFront distribution configured with an
    Origin Access Identity for the bucket.
-3. Upload the contents of the `saas_web` directory to the created S3 bucket and
-   update the `*_API_URL` placeholders (including `COST_API_URL`) inside the Vue
-   components to point at your deployed APIs.
+3. `terraform -chdir=saas apply` will automatically upload the contents of
+   `saas_web` to the created S3 bucket. Only the `SIGNUP_API_URL` and
+   `LOGIN_API_URL` placeholders are replaced during apply. The console fetches
+   the cost, start and status endpoints from the tenant infrastructure after a
+   user logs in.
 
 ## Local Development
 
@@ -51,6 +53,5 @@ grants the user pool permission to invoke it.
 Each tenant account also includes a simple `cost_report` Lambda function that is
 exposed through an API Gateway endpoint. This function queries the AWS Cost
 Explorer API for the current month's charges and returns the total along with a
-breakdown by service. The endpoint URL is output as `cost_api_url` when the
-Terraform code is applied and should be used to replace the `COST_API_URL`
-placeholder in the Vue console component.
+breakdown by service. The console calls this endpoint after authenticating the
+user; no manual placeholder replacement is required.
