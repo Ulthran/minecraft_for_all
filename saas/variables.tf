@@ -10,4 +10,5 @@ variable "client_name" {
 
 variable "frontend_bucket_name" {
   type = string
+  default = "minecraft-saas-frontend"
 }
