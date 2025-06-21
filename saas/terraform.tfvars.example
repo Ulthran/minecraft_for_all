@@ -1,1 +1,3 @@
 frontend_bucket_name = "example-landing-bucket"
+signup_api_url      = "https://example.com/signup"
+login_api_url       = "https://example.com/login"
