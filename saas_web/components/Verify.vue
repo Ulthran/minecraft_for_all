@@ -37,7 +37,9 @@ export default {
         });
         if (!res.ok) throw new Error('Failed');
         this.message = 'Email verified! You can now log in.';
-        this.$router.push('/login');
+        setTimeout(() => {
+          this.$router.push('/login');
+        }, 2000);
       } catch (err) {
         console.error(err);
         this.message = 'Verification failed. Please try again.';

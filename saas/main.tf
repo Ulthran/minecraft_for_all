@@ -13,8 +13,8 @@ locals {
   site_dir   = "${path.root}/../saas_web"
   site_files = fileset(local.site_dir, "**")
   placeholders = {
-    "SIGNUP_API_URL" = module.auth.signup_api_url
-    "LOGIN_API_URL"  = module.auth.login_api_url
+    "SIGNUP_API_URL"  = module.auth.signup_api_url
+    "LOGIN_API_URL"   = module.auth.login_api_url
     "CONFIRM_API_URL" = module.auth.confirm_api_url
   }
 

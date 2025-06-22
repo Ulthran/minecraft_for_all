@@ -51,7 +51,9 @@ export default {
         });
         if (!res.ok) throw new Error('Failed');
         this.message = 'Check your email for the verification code.';
-        this.$router.push({ path: '/verify', query: { email: this.email } });
+        setTimeout(() => {
+          this.$router.push({ path: '/verify', query: { email: this.email } });
+        }, 3000);
       } catch (err) {
         console.error(err);
         this.message = 'Request failed. Please try again later.';
