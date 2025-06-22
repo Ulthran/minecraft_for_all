@@ -22,6 +22,13 @@ resource "aws_s3_bucket_policy" "allow_cloudfront" {
   policy = data.aws_iam_policy_document.allow_cloudfront.json
 }
 
+resource "aws_cloudfront_function" "spa_rewrite" {
+  name    = "${var.bucket_name}-spa-rewrite"
+  runtime = "cloudfront-js-1.0"
+  publish = true
+  code    = file("${path.module}/spa-redirect.js")
+}
+
 resource "aws_cloudfront_distribution" "this" {
   enabled             = true
   default_root_object = "index.html"
@@ -40,12 +47,32 @@ resource "aws_cloudfront_distribution" "this" {
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
 
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.spa_rewrite.arn
+    }
+
     forwarded_values {
       query_string = false
       cookies { forward = "none" }
     }
   }
 
+  dynamic "custom_error_response" {
+    for_each = {
+      403 = { response_code = 404, response_page_path = "/404.html" }
+      404 = { response_code = 404, response_page_path = "/404.html" }
+      500 = { response_code = 500, response_page_path = "/50x.html" }
+      502 = { response_code = 500, response_page_path = "/50x.html" }
+      503 = { response_code = 500, response_page_path = "/50x.html" }
+      504 = { response_code = 500, response_page_path = "/50x.html" }
+    }
+    content {
+      error_code         = custom_error_response.key
+      response_code      = custom_error_response.value.response_code
+      response_page_path = custom_error_response.value.response_page_path
+    }
+  }
   price_class = "PriceClass_100"
   viewer_certificate {
     cloudfront_default_certificate = true
