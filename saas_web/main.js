@@ -20,7 +20,7 @@ const options = {
   ]);
 
   const router = VueRouter.createRouter({
-    history: VueRouter.createWebHashHistory(),
+    history: VueRouter.createWebHistory(),
     routes: [
       { path: '/', component: () => window['vue3-sfc-loader'].loadModule('./components/Home.vue', options) },
       { path: '/pricing', component: () => window['vue3-sfc-loader'].loadModule('./components/Pricing.vue', options) },
@@ -29,6 +29,7 @@ const options = {
       { path: '/login', component: () => window['vue3-sfc-loader'].loadModule('./components/Login.vue', options) },
       { path: '/console', component: () => window['vue3-sfc-loader'].loadModule('./components/Console.vue', options) },
       { path: '/start', component: () => window['vue3-sfc-loader'].loadModule('./components/Start.vue', options) },
+      { path: '/:pathMatch(.*)*', component: () => window['vue3-sfc-loader'].loadModule('./components/NotFound.vue', options) },
     ],
   });
 
