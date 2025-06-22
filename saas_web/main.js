@@ -29,6 +29,7 @@ const options = {
       { path: '/login', component: () => window['vue3-sfc-loader'].loadModule('./components/Login.vue', options) },
       { path: '/console', component: () => window['vue3-sfc-loader'].loadModule('./components/Console.vue', options) },
       { path: '/start', component: () => window['vue3-sfc-loader'].loadModule('./components/Start.vue', options) },
+      { path: '/verify', component: () => window['vue3-sfc-loader'].loadModule('./components/Verify.vue', options) },
       { path: '/:pathMatch(.*)*', component: () => window['vue3-sfc-loader'].loadModule('./components/NotFound.vue', options) },
     ],
   });

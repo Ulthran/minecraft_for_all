@@ -9,6 +9,10 @@
           <v-btn type="submit" color="deep-purple-accent-2" class="mt-2">Login</v-btn>
         </v-form>
         <div class="mt-2">{{ message }}</div>
+        <div class="mt-2">
+          Don't have an account?
+          <router-link to="/start">Sign up here</router-link>
+        </div>
       </v-col>
     </v-row>
   </v-container>
