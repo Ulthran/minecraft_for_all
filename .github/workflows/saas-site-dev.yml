@@ -1,0 +1,38 @@
+name: SaaS Site Dev Deploy
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Install html5validator
+        run: pip install html5validator
+      - name: Validate HTML
+        run: html5validator --root saas_web
+
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+      - uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Terraform init
+        run: terraform -chdir=saas init
+      - name: Deploy website
+        run: terraform -chdir=saas apply -auto-approve
+        env:
+          TF_VAR_frontend_bucket_name: ${{ secrets.DEV_FRONTEND_BUCKET }}
