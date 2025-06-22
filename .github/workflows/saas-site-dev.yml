@@ -2,8 +2,9 @@ name: SaaS Site Dev Deploy
 
 on:
   push:
-    branches:
-      - dev
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   validate:

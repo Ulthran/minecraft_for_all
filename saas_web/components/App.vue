@@ -12,7 +12,7 @@
       <v-btn to="/console" variant="text" router>Console</v-btn>
       <v-btn to="/start" color="primary" router>Start</v-btn>
     </v-app-bar>
-    <v-main class="py-4">
+    <v-main class="pa-15">
       <router-view></router-view>
     </v-main>
   </v-app>
