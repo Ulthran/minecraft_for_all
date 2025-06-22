@@ -23,9 +23,3 @@ export default {
   name: 'App',
 };
 </script>
-
-<style scoped>
-.v-application {
-  background: transparent;
-}
-</style>
