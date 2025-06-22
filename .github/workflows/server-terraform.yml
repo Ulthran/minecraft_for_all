@@ -23,7 +23,7 @@ jobs:
       - name: Shellcheck user_data
         run: shellcheck terraform/user_data.sh
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
       - name: Compile lambda code
