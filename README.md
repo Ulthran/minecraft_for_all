@@ -62,11 +62,11 @@ frontend_bucket_name = "example-landing-bucket"
 ```
 
 
-To run the SaaS site locally, use the development server with the `--site`
+To run the SaaS site locally,
 option:
 
 ```bash
-python3 dev_server.py --site saas_web
+python3 dev_server.py
 ```
 
 This serves the files from `saas_web` and mocks the various API endpoints so the
