@@ -14,6 +14,6 @@ This is a SaaS for providing a simple, pay-for-usage Minecraft server hosting op
 
 ## Testing
 
-Before making your final contributions, make sure to perform thorough linting and testing of any changed components. For any subdirectory of root that there are changes for, make sure to at least do what the corresponding GitHub Actions workflow would do and verify the outcomes are passing.
+Before making your final contributions, make sure to perform linting and testing of any changed components. Anything that can be compiled should do so without error or warnings. If warnings are persistent, don't worry about it, we can address them later.
 
 Testing is very lightweight for now as we don't actually have anything in production yet.

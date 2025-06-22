@@ -47,10 +47,10 @@ resource "aws_cloudfront_distribution" "this" {
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
 
-    function_association {
-      event_type   = "viewer-request"
-      function_arn = aws_cloudfront_function.spa_rewrite.arn
-    }
+    #function_association {
+    #  event_type   = "viewer-request"
+    #  function_arn = aws_cloudfront_function.spa_rewrite.arn
+    #}
 
     forwarded_values {
       query_string = false
