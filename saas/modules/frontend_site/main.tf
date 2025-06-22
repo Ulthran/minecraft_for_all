@@ -46,6 +46,42 @@ resource "aws_cloudfront_distribution" "this" {
     }
   }
 
+  custom_error_response {
+    error_code         = 403
+    response_code      = 404
+    response_page_path = "/404.html"
+  }
+
+  custom_error_response {
+    error_code         = 404
+    response_code      = 404
+    response_page_path = "/404.html"
+  }
+
+  custom_error_response {
+    error_code         = 500
+    response_code      = 500
+    response_page_path = "/50x.html"
+  }
+
+  custom_error_response {
+    error_code         = 502
+    response_code      = 500
+    response_page_path = "/50x.html"
+  }
+
+  custom_error_response {
+    error_code         = 503
+    response_code      = 500
+    response_page_path = "/50x.html"
+  }
+
+  custom_error_response {
+    error_code         = 504
+    response_code      = 500
+    response_page_path = "/50x.html"
+  }
+
   price_class = "PriceClass_100"
   viewer_certificate {
     cloudfront_default_certificate = true
