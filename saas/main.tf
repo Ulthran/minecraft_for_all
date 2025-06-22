@@ -15,16 +15,20 @@ locals {
   placeholders = {
     "SIGNUP_API_URL" = module.auth.signup_api_url
     "LOGIN_API_URL"  = module.auth.login_api_url
+    "CONFIRM_API_URL" = module.auth.confirm_api_url
   }
 
   processed_files = {
     for f in local.site_files :
     f => replace(
       replace(
-        file("${local.site_dir}/${f}"),
-        "SIGNUP_API_URL", local.placeholders["SIGNUP_API_URL"]
+        replace(
+          file("${local.site_dir}/${f}"),
+          "SIGNUP_API_URL", local.placeholders["SIGNUP_API_URL"]
+        ),
+        "LOGIN_API_URL", local.placeholders["LOGIN_API_URL"]
       ),
-      "LOGIN_API_URL", local.placeholders["LOGIN_API_URL"]
+      "CONFIRM_API_URL", local.placeholders["CONFIRM_API_URL"]
     )
   }
 

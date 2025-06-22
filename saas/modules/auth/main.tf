@@ -89,3 +89,7 @@ output "signup_api_url" {
 output "login_api_url" {
   value = "${aws_cognito_user_pool.this.endpoint}/login"
 }
+
+output "confirm_api_url" {
+  value = "${aws_cognito_user_pool.this.endpoint}/confirm"
+}
