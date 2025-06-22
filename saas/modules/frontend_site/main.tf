@@ -47,10 +47,10 @@ resource "aws_cloudfront_distribution" "this" {
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
 
-    #function_association {
-    #  event_type   = "viewer-request"
-    #  function_arn = aws_cloudfront_function.spa_rewrite.arn
-    #}
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.spa_rewrite.arn
+    }
 
     forwarded_values {
       query_string = false
@@ -58,7 +58,7 @@ resource "aws_cloudfront_distribution" "this" {
     }
   }
 
-  /*dynamic "custom_error_response" {
+  dynamic "custom_error_response" {
     for_each = {
       403 = { response_code = 404, response_page_path = "/404.html" }
       404 = { response_code = 404, response_page_path = "/404.html" }
@@ -72,7 +72,8 @@ resource "aws_cloudfront_distribution" "this" {
       response_code      = custom_error_response.value.response_code
       response_page_path = custom_error_response.value.response_page_path
     }
-  }*/
+  }
+  
   price_class = "PriceClass_100"
   viewer_certificate {
     cloudfront_default_certificate = true

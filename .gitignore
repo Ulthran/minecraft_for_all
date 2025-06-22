@@ -3,5 +3,7 @@ terraform/lambda.zip
 .terraform/
 .terraform.lock.hcl
 terraform/lambda/__pycache__/
-tf.zip
+*.zip
 node_modules/
+*.tfstate
+*.tfstate.backup
