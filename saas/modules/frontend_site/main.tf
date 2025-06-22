@@ -73,7 +73,7 @@ resource "aws_cloudfront_distribution" "this" {
       response_page_path = custom_error_response.value.response_page_path
     }
   }
-  
+
   price_class = "PriceClass_100"
   viewer_certificate {
     cloudfront_default_certificate = true
