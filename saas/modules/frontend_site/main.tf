@@ -58,42 +58,21 @@ resource "aws_cloudfront_distribution" "this" {
     }
   }
 
-  custom_error_response {
-    error_code         = 403
-    response_code      = 404
-    response_page_path = "/404.html"
+  dynamic "custom_error_response" {
+    for_each = {
+      403 = { response_code = 404, response_page_path = "/404.html" }
+      404 = { response_code = 404, response_page_path = "/404.html" }
+      500 = { response_code = 500, response_page_path = "/50x.html" }
+      502 = { response_code = 500, response_page_path = "/50x.html" }
+      503 = { response_code = 500, response_page_path = "/50x.html" }
+      504 = { response_code = 500, response_page_path = "/50x.html" }
+    }
+    content {
+      error_code         = custom_error_response.key
+      response_code      = custom_error_response.value.response_code
+      response_page_path = custom_error_response.value.response_page_path
+    }
   }
-
-  custom_error_response {
-    error_code         = 404
-    response_code      = 404
-    response_page_path = "/404.html"
-  }
-
-  custom_error_response {
-    error_code         = 500
-    response_code      = 500
-    response_page_path = "/50x.html"
-  }
-
-  custom_error_response {
-    error_code         = 502
-    response_code      = 500
-    response_page_path = "/50x.html"
-  }
-
-  custom_error_response {
-    error_code         = 503
-    response_code      = 500
-    response_page_path = "/50x.html"
-  }
-
-  custom_error_response {
-    error_code         = 504
-    response_code      = 500
-    response_page_path = "/50x.html"
-  }
-
   price_class = "PriceClass_100"
   viewer_certificate {
     cloudfront_default_certificate = true
