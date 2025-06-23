@@ -102,13 +102,13 @@ output "user_pool_client_id" {
 }
 
 output "signup_api_url" {
-  value = "${aws_cognito_user_pool.this.endpoint}/signup"
+  value = "https://${aws_cognito_user_pool.this.endpoint}/signup"
 }
 
 output "login_api_url" {
-  value = "${aws_cognito_user_pool.this.endpoint}/login"
+  value = "https://${aws_cognito_user_pool.this.endpoint}/login"
 }
 
 output "confirm_api_url" {
-  value = "${aws_cognito_user_pool.this.endpoint}/confirm"
+  value = "https://${aws_cognito_user_pool.this.endpoint}/confirm"
 }
