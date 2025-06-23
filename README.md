@@ -46,7 +46,8 @@ The `saas` directory contains Terraform configuration for creating tenant AWS ac
 ### SaaS Website
 
 The `saas_web` folder now contains the main SaaS site with signup, login and a
-simple management console. Terraform creates a **private** S3 bucket and a
+simple management console. It also includes a small projected cost calculator on
+the home page to help estimate monthly expenses. Terraform creates a **private** S3 bucket and a
 CloudFront distribution using an Origin Access Identity when
 `frontend_bucket_name` is set. The website files are uploaded automatically
 during `terraform apply`. The `SIGNUP_API_URL` and `LOGIN_API_URL` placeholders

@@ -3,6 +3,7 @@
     <v-row>
       <v-col>
       <h2 class="text-h5 mb-4">Server Console</h2>
+      <div v-if="userEmail" class="mb-2">Welcome {{ userEmail }}</div>
       <div>{{ status }}</div>
       <div class="mt-2">{{ cost }}</div>
       <v-btn v-if="showStart" @click="start" class="mt-2">Start Server</v-btn>
@@ -19,6 +20,7 @@ export default {
       status: 'Checking status...',
       showStart: false,
       cost: 'Fetching cost...',
+      userEmail: '',
       interval: null,
     };
   },
@@ -26,6 +28,11 @@ export default {
     this.fetchStatus();
     this.fetchCost();
     this.interval = setInterval(this.fetchStatus, 30000);
+    const token = localStorage.getItem('token');
+    if (token) {
+      const payload = this.parseJwt(token);
+      this.userEmail = payload.email || '';
+    }
   },
   beforeUnmount() {
     clearInterval(this.interval);
@@ -77,6 +84,17 @@ export default {
       } catch (err) {
         console.error(err);
         this.cost = 'Error fetching cost.';
+      }
+    },
+    parseJwt(token) {
+      try {
+        const base = token.split('.')[1];
+        const base64 = base.replace(/-/g, '+').replace(/_/g, '/');
+        const padded = base64.padEnd(base64.length + (4 - base64.length % 4) % 4, '=');
+        return JSON.parse(atob(padded));
+      } catch (err) {
+        console.error('Invalid token', err);
+        return {};
       }
     },
   },
