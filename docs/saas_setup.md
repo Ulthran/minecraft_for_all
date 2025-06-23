@@ -15,8 +15,8 @@ provisioned when a user confirms their account.
 3. `terraform -chdir=saas apply` will automatically upload the contents of
    `saas_web` to the created S3 bucket. The `SIGNUP_API_URL` and
    `LOGIN_API_URL` placeholders are filled in using values derived from the
-   Cognito user pool. The console fetches the cost, start and status endpoints
-   from the tenant infrastructure after a user logs in.
+   Cognito user pool. The console reads the cost, start and status endpoints
+   from custom attributes on the Cognito user after login.
 
 ## Local Development
 

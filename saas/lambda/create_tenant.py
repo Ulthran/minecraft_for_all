@@ -7,6 +7,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 org = boto3.client("organizations")
+cognito = boto3.client("cognito-idp")
 
 TENANT_OU_NAME = "MinecraftTenants"
 
@@ -33,6 +34,8 @@ def handler(event, context):
     logger.debug("Received event: %s", event)
     try:
         email = event["request"]["userAttributes"]["email"]
+        user_pool_id = event["userPoolId"]
+        username = event["userName"]
     except KeyError:
         logger.error("Email not found in event")
         return event
@@ -72,5 +75,20 @@ def handler(event, context):
         }
     except Exception:
         logger.exception("Failed to create account for %s", email)
+
+    # Ensure custom attributes exist for API endpoints
+    try:
+        cognito.admin_update_user_attributes(
+            UserPoolId=user_pool_id,
+            Username=username,
+            UserAttributes=[
+                {"Name": "custom:start_url", "Value": ""},
+                {"Name": "custom:status_url", "Value": ""},
+                {"Name": "custom:cost_url", "Value": ""},
+            ],
+        )
+        logger.info("Initialized custom attributes for %s", username)
+    except Exception:
+        logger.exception("Failed to set default attributes for %s", username)
 
     return event

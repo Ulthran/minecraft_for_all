@@ -40,6 +40,17 @@ export default {
         if (!res.ok) throw new Error('Failed');
         const data = await res.json();
         localStorage.setItem('token', data.token);
+        try {
+          const payload = JSON.parse(atob(data.token.split('.')[1]));
+          const urls = {
+            start_url: payload['custom:start_url'] || '',
+            status_url: payload['custom:status_url'] || '',
+            cost_url: payload['custom:cost_url'] || '',
+          };
+          localStorage.setItem('urls', JSON.stringify(urls));
+        } catch (e) {
+          console.error('Failed to parse token', e);
+        }
         this.message = 'Logged in!';
         this.$router.push('/console');
       } catch (err) {
