@@ -34,10 +34,20 @@ def handler(event, context):
     logger.debug("Received event: %s", event)
     try:
         email = event["request"]["userAttributes"]["email"]
-        user_pool_id = event["userPoolId"]
-        username = event["userName"]
     except KeyError:
         logger.error("Email not found in event")
+        return event
+
+    try:
+        user_pool_id = event["userPoolId"]
+    except KeyError:
+        logger.error("userPoolId not found in event")
+        return event
+
+    try:
+        username = event["userName"]
+    except KeyError:
+        logger.error("userName not found in event")
         return event
 
     tenant_id = str(uuid.uuid4())[:8]
