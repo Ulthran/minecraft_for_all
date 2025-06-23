@@ -17,7 +17,7 @@
         <v-col cols="12" md="6" lg="5">
           <h2 class="text-h5 mb-2">Projected Cost Calculator</h2>
           <v-form>
-            <v-switch v-model="statsMode" label="Stats mode" class="mb-4" false-value="false" true-value="true"></v-switch>
+            <v-switch v-model="statsMode" label="Stats mode" class="mb-4"></v-switch>
             <div v-if="!statsMode">
               <v-text-field v-model.number="players" label="Expected number of players" type="number"></v-text-field>
               <v-text-field v-model.number="playtime" label="Expected playtime per week (hrs)" type="number"></v-text-field>
