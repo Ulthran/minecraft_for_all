@@ -51,9 +51,10 @@ CloudFront distribution using an Origin Access Identity when
 `frontend_bucket_name` is set. The website files are uploaded automatically
 during `terraform apply`. The `SIGNUP_API_URL` and `LOGIN_API_URL` placeholders
 in the Vue components are replaced with endpoints derived from the Cognito user
-pool so no additional variables are needed. The console obtains the cost, start
-and status endpoints from the tenant infrastructure after a user logs in, so
-those placeholders remain unchanged.
+  pool so no additional variables are needed. The console reads the cost,
+  start and status endpoints from custom attributes on the Cognito user after
+  logging in using `vue-jwt-decode` to parse the token, so no manual placeholder
+  replacement is required.
 
 Example `terraform.tfvars` entries:
 

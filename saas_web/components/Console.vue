@@ -20,6 +20,14 @@ export default {
       showStart: false,
       cost: 'Fetching cost...',
       interval: null,
+      urls: (() => {
+        try {
+          return JSON.parse(localStorage.getItem('urls') || '{}');
+        } catch (err) {
+          console.error('Error parsing urls from localStorage:', err);
+          return {};
+        }
+      })(),
     };
   },
   mounted() {
@@ -35,9 +43,12 @@ export default {
       const token = localStorage.getItem('token');
       return token ? { Authorization: `Bearer ${token}` } : {};
     },
+    endpoint(name) {
+      return this.urls[name] || name;
+    },
     async fetchStatus() {
       try {
-        const res = await fetch('STATUS_API_URL', { headers: this.authHeader() });
+        const res = await fetch(this.endpoint('status_url'), { headers: this.authHeader() });
         const data = await res.json();
         if (data.state === 'running') {
           const players = data.players ?? 0;
@@ -56,7 +67,7 @@ export default {
       this.showStart = false;
       this.status = 'Starting...';
       try {
-        const res = await fetch('START_API_URL', { method: 'POST', headers: this.authHeader() });
+        const res = await fetch(this.endpoint('start_url'), { method: 'POST', headers: this.authHeader() });
         if (!res.ok) throw new Error('Failed');
       } catch (err) {
         console.error(err);
@@ -66,7 +77,7 @@ export default {
     },
     async fetchCost() {
       try {
-        const res = await fetch('COST_API_URL', { headers: this.authHeader() });
+        const res = await fetch(this.endpoint('cost_url'), { headers: this.authHeader() });
         const data = await res.json();
         let text = `Monthly cost so far: $${data.total ?? 0}`;
         if (data.breakdown) {
