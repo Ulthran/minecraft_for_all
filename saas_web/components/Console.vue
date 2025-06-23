@@ -20,7 +20,14 @@ export default {
       showStart: false,
       cost: 'Fetching cost...',
       interval: null,
-      urls: JSON.parse(localStorage.getItem('urls') || '{}'),
+      urls: (() => {
+        try {
+          return JSON.parse(localStorage.getItem('urls') || '{}');
+        } catch (err) {
+          console.error('Error parsing urls from localStorage:', err);
+          return {};
+        }
+      })(),
     };
   },
   mounted() {
