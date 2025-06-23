@@ -19,6 +19,8 @@
 </template>
 
 <script>
+import VueJwtDecode from 'vue-jwt-decode'
+
 export default {
   name: 'Login',
   data() {
@@ -41,7 +43,7 @@ export default {
         const data = await res.json();
         localStorage.setItem('token', data.token);
         try {
-          const payload = JSON.parse(atob(data.token.split('.')[1]));
+          const payload = VueJwtDecode.decode(data.token);
           const urls = {
             start_url: payload['custom:start_url'] || '',
             status_url: payload['custom:status_url'] || '',

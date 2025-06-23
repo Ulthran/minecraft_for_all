@@ -15,6 +15,7 @@
   "type": "commonjs",
   "dependencies": {
     "vue": "^3.5.17",
+    "vue-jwt-decode": "^0.1.0",
     "vue-router": "^4.5.1",
     "vue3-sfc-loader": "^0.9.5",
     "vuetify": "^3.8.10"

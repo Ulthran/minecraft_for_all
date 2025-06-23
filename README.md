@@ -53,7 +53,8 @@ during `terraform apply`. The `SIGNUP_API_URL` and `LOGIN_API_URL` placeholders
 in the Vue components are replaced with endpoints derived from the Cognito user
   pool so no additional variables are needed. The console reads the cost,
   start and status endpoints from custom attributes on the Cognito user after
-  logging in, so no manual placeholder replacement is required.
+  logging in using `vue-jwt-decode` to parse the token, so no manual placeholder
+  replacement is required.
 
 Example `terraform.tfvars` entries:
 
