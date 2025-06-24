@@ -92,12 +92,10 @@ def handler(event, context):
             UserPoolId=user_pool_id,
             Username=username,
             UserAttributes=[
-                {"Name": "custom:start_url", "Value": ""},
-                {"Name": "custom:status_url", "Value": ""},
-                {"Name": "custom:cost_url", "Value": ""},
+                {"Name": "custom:mc_api_url", "Value": ""},
             ],
         )
-        logger.info("Initialized custom attributes for %s", username)
+        logger.info("Initialized custom attribute for %s", username)
     except Exception:
         logger.exception("Failed to set default attributes for %s", username)
 

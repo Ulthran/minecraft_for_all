@@ -5,22 +5,10 @@ resource "aws_cognito_user_pool" "this" {
     post_confirmation = aws_lambda_function.create_tenant.arn
   }
 
-  # Custom attributes store per-tenant API endpoints
+  # Custom attribute for the tenant API base URL
   schema {
     attribute_data_type = "String"
-    name                = "start_url"
-    mutable             = true
-  }
-
-  schema {
-    attribute_data_type = "String"
-    name                = "status_url"
-    mutable             = true
-  }
-
-  schema {
-    attribute_data_type = "String"
-    name                = "cost_url"
+    name                = "mc_api_url"
     mutable             = true
   }
 }

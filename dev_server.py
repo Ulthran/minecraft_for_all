@@ -51,9 +51,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 if __name__ == "__main__":
     dummy_token = (
         "eyJhbGciOiAibm9uZSJ9."
-        "eyJjdXN0b206c3RhcnRfdXJsIjogIi9TVEFSVF9BUElfVVJMIiwg"
-        "ImN1c3RvbTpzdGF0dXNfdXJsIjogIi9TVEFUVVNfQVBJX1VSTCIsICJj"
-        "dXN0b206Y29zdF91cmwiOiAiL0NPU1RfQVBJX1VSTCJ9."
+        "eyJjdXN0b206bWNfYXBpX3VybCI6ICIvTUNfQVBJIn0=."
     )
 
     MOCK_RESPONSES.update(
@@ -61,9 +59,9 @@ if __name__ == "__main__":
             ("POST", "/SIGNUP_API_URL"): (200, None),
             ("POST", "/CONFIRM_API_URL"): (200, None),
             ("POST", "/LOGIN_API_URL"): (200, {"token": dummy_token}),
-            ("GET", "/STATUS_API_URL"): (200, {"state": "offline"}),
-            ("POST", "/START_API_URL"): (200, None),
-            ("GET", "/COST_API_URL"): (200, {"total": 0}),
+            ("GET", "/MC_API/status"): (200, {"state": "offline"}),
+            ("POST", "/MC_API/start"): (200, None),
+            ("GET", "/MC_API/cost"): (200, {"total": 0}),
         }
     )
 

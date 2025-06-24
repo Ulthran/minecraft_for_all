@@ -56,12 +56,8 @@ export default {
         localStorage.setItem('token', token);
         try {
           const payload = VueJwtDecode.decode(token);
-          const urls = {
-            start_url: payload['custom:start_url'] || '',
-            status_url: payload['custom:status_url'] || '',
-            cost_url: payload['custom:cost_url'] || '',
-          };
-          localStorage.setItem('urls', JSON.stringify(urls));
+          const apiUrl = payload['custom:mc_api_url'] || '';
+          localStorage.setItem('api_url', apiUrl);
         } catch (e) {
           console.error('Failed to parse token', e);
         }
