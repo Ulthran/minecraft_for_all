@@ -9,3 +9,15 @@ variable "client_name" {
 variable "config_table_name" {
   type = string
 }
+
+variable "account_email_domain" {
+  type = string
+}
+
+variable "tenant_scp_id" {
+  type = string
+}
+
+variable "tenant_ou_id" {
+  type = string
+}

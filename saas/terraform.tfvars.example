@@ -1,3 +1,4 @@
 frontend_bucket_name = "example-landing-bucket"
 config_table_name   = "minecraft-configs"
 
+account_email_domain = "tenants.example.com"

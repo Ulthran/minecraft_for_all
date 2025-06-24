@@ -1,9 +1,12 @@
 
 module "auth" {
-  source            = "./modules/auth"
-  user_pool_name    = var.user_pool_name
-  client_name       = var.client_name
-  config_table_name = var.config_table_name
+  source               = "./modules/auth"
+  user_pool_name       = var.user_pool_name
+  client_name          = var.client_name
+  config_table_name    = var.config_table_name
+  account_email_domain = var.account_email_domain
+  tenant_scp_id        = aws_organizations_policy.tenant_scp.id
+  tenant_ou_id         = aws_organizations_organizational_unit.tenants.id
 }
 
 module "frontend_site" {
