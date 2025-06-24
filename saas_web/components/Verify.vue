@@ -7,6 +7,12 @@
           <v-text-field v-model="code" label="Verification Code" required></v-text-field>
           <v-btn type="submit" color="deep-purple-accent-2" class="mt-2">Verify</v-btn>
         </v-form>
+        <v-btn
+          color="deep-purple-accent-2"
+          class="mt-2"
+          variant="outlined"
+          @click="resend"
+        >Resend Code</v-btn>
         <div class="mt-2">{{ message }}</div>
       </v-col>
     </v-row>
@@ -49,6 +55,27 @@ export default {
       } catch (err) {
         console.error(err);
         this.message = 'Verification failed. Please try again.';
+      }
+    },
+    async resend() {
+      this.message = 'Resending code...';
+      try {
+        const cognitoUser = new AmazonCognitoIdentity.CognitoUser({
+          Username: this.email,
+          Pool: userPool,
+        });
+
+        await new Promise((resolve, reject) => {
+          cognitoUser.resendConfirmationCode((err, result) => {
+            if (err) return reject(err);
+            return resolve(result);
+          });
+        });
+
+        this.message = 'Verification code resent.';
+      } catch (err) {
+        console.error(err);
+        this.message = 'Failed to resend code. Please try again later.';
       }
     },
   },
