@@ -1,10 +1,3 @@
-provider "aws" {
-  alias  = "tenant"
-  region = var.region
-  assume_role {
-    role_arn = "arn:aws:iam::${var.tenant_account_id}:role/OrganizationAccountAccessRole"
-  }
-}
 
 module "auth" {
   source         = "./modules/auth"
@@ -70,10 +63,8 @@ resource "aws_s3_object" "site" {
 }
 module "tenant_codebuild" {
   source         = "./modules/codebuild_provisioner"
-  providers      = { aws = aws.tenant }
   project_name   = "tenant-terraform"
   repository_url = var.repository_url
-  count          = var.tenant_account_id == "" ? 0 : 1
 }
 
 
