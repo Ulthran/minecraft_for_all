@@ -20,12 +20,20 @@
         <p>We've developed a number of solutions to keep cost down for you. When there are no players on your server for a certain amount of time the server will shut down automatically (but don't worry, you can turn it back on quickly and easily). We also automate your server data's lifecycle, essentially meaning it's available when you want it but also cheaper than standard.</p>
       </v-col>
     </v-row>
+
+    <v-row>
+      <v-col cols="12" md="6" lg="5">
+        <CostCalculator />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
 <script>
+import CostCalculator from './CostCalculator.vue';
 export default {
   name: 'Pricing',
+  components: { CostCalculator },
 };
 </script>
 
