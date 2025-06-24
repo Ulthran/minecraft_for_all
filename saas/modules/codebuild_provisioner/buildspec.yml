@@ -8,8 +8,18 @@ phases:
       - curl -Lo terraform.zip https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_linux_amd64.zip
       - unzip terraform.zip
       - mv terraform /usr/local/bin/terraform
+      - yum install -y jq
   build:
     commands:
+      - |
+          if [ -z "$TENANT_ACCOUNT_ID" ]; then
+            echo "TENANT_ACCOUNT_ID not set"
+            exit 1
+          fi
+      - creds=$(aws sts assume-role --role-arn arn:aws:iam::${TENANT_ACCOUNT_ID}:role/OrganizationAccountAccessRole --role-session-name codebuild-tenant)
+      - export AWS_ACCESS_KEY_ID=$(echo $creds | jq -r .Credentials.AccessKeyId)
+      - export AWS_SECRET_ACCESS_KEY=$(echo $creds | jq -r .Credentials.SecretAccessKey)
+      - export AWS_SESSION_TOKEN=$(echo $creds | jq -r .Credentials.SessionToken)
       - git clone $REPOSITORY_URL repo
       - cd repo/terraform
       - terraform init -input=false
