@@ -15,6 +15,3 @@ variable "tenant_scp_id" {
   type = string
 }
 
-variable "tenant_ou_id" {
-  type = string
-}

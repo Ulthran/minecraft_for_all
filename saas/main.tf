@@ -5,7 +5,6 @@ module "auth" {
   client_name          = var.client_name
   account_email_domain = var.account_email_domain
   tenant_scp_id        = aws_organizations_policy.tenant_scp.id
-  tenant_ou_id         = aws_organizations_organizational_unit.tenants.id
 }
 
 module "frontend_site" {

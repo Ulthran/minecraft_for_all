@@ -43,9 +43,8 @@ The function currently performs the following steps:
 
 1. Read the confirmed user's email from the event.
 2. Generate a short tenant identifier.
-3. Ensure an organizational unit named `MinecraftTenants` exists.
-4. Call `organizations.create_account` with the email and a default account name.
-5. Once creation completes, move the new account into that organizational unit.
+3. Call `organizations.create_account` using an internal email based on the tenant ID.
+4. Once creation completes, attach a service control policy restricting available services.
 
 The `saas` Terraform code builds and deploys this Lambda automatically and
 grants the user pool permission to invoke it.

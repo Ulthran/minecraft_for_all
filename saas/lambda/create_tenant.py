@@ -14,29 +14,6 @@ EMAIL_DOMAIN = os.environ.get("EMAIL_DOMAIN")
 if not EMAIL_DOMAIN:
     raise RuntimeError("EMAIL_DOMAIN environment variable must be set")
 SCP_ID = os.environ.get("SCP_ID")
-TENANT_OU_ID = os.environ.get("TENANT_OU_ID")
-
-TENANT_OU_NAME = "MinecraftTenants"
-
-
-def ensure_tenant_ou():
-    """Return the root and OU IDs. Create the OU if needed and no ID set."""
-    roots = org.list_roots()["Roots"]
-    root_id = roots[0]["Id"]
-
-    if TENANT_OU_ID:
-        return root_id, TENANT_OU_ID
-
-    paginator = org.get_paginator("list_organizational_units_for_parent")
-    for page in paginator.paginate(ParentId=root_id):
-        for ou in page["OrganizationalUnits"]:
-            if ou["Name"] == TENANT_OU_NAME:
-                return root_id, ou["Id"]
-
-    resp = org.create_organizational_unit(ParentId=root_id, Name=TENANT_OU_NAME)
-    ou_id = resp["OrganizationalUnit"]["Id"]
-    logging.info("Created tenant OU %s", ou_id)
-    return root_id, ou_id
 
 
 def handler(event, context):
@@ -63,7 +40,6 @@ def handler(event, context):
 
     tenant_id = str(uuid.uuid4())[:8]
     account_name = f"minecraft-{tenant_id}"
-    root_id, ou_id = ensure_tenant_ou()
 
     account_email = f"{tenant_id}@{EMAIL_DOMAIN}"
 
@@ -72,7 +48,7 @@ def handler(event, context):
         create_id = resp["CreateAccountStatus"]["Id"]
         logger.info("Started account creation %s for %s", create_id, account_email)
 
-        # Poll for completion briefly so the account can be moved into the tenant OU
+        # Poll for completion briefly so the account can be initialized
         deadline = time.time() + 20
         while time.time() < deadline:
             status = org.describe_create_account_status(
@@ -80,12 +56,6 @@ def handler(event, context):
             )["CreateAccountStatus"]
             if status["State"] == "SUCCEEDED":
                 account_id = status["AccountId"]
-                org.move_account(
-                    AccountId=account_id,
-                    SourceParentId=root_id,
-                    DestinationParentId=ou_id,
-                )
-                logger.info("Moved account %s to OU %s", account_id, ou_id)
                 if SCP_ID:
                     org.attach_policy(PolicyId=SCP_ID, TargetId=account_id)
                     logger.info("Attached SCP %s to %s", SCP_ID, account_id)
@@ -98,7 +68,6 @@ def handler(event, context):
         event.setdefault("response", {})["tenant_info"] = {
             "tenant_id": tenant_id,
             "create_id": create_id,
-            "ou_id": ou_id,
         }
     except Exception:
         logger.exception("Failed to create account for %s", account_email)

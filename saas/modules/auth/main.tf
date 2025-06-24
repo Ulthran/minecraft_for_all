@@ -71,10 +71,7 @@ resource "aws_iam_role_policy" "create_tenant" {
         Action = [
           "organizations:CreateAccount",
           "organizations:DescribeCreateAccountStatus",
-          "organizations:ListRoots",
-          "organizations:ListOrganizationalUnitsForParent",
-          "organizations:CreateOrganizationalUnit",
-          "organizations:MoveAccount",
+          "organizations:AttachPolicy",
         ],
         Resource = "*"
       }
@@ -106,7 +103,6 @@ resource "aws_lambda_function" "create_tenant" {
     variables = {
       EMAIL_DOMAIN = var.account_email_domain
       SCP_ID       = var.tenant_scp_id
-      TENANT_OU_ID = var.tenant_ou_id
     }
   }
 }
