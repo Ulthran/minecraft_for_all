@@ -1,5 +1,6 @@
 import boto3
 import logging
+import os
 import time
 import uuid
 
@@ -8,6 +9,7 @@ logger.setLevel(logging.INFO)
 
 org = boto3.client("organizations")
 cognito = boto3.client("cognito-idp")
+dynamodb = boto3.resource("dynamodb")
 
 TENANT_OU_NAME = "MinecraftTenants"
 
@@ -50,6 +52,15 @@ def handler(event, context):
         logger.error("userName not found in event")
         return event
 
+    config = None
+    try:
+        table = dynamodb.Table(os.environ["CONFIG_TABLE"])
+        resp = table.get_item(Key={"user_id": username})
+        config = resp.get("Item")
+        logger.info("Loaded pending config for %s", username)
+    except Exception:
+        logger.exception("Failed to load config for %s", username)
+
     tenant_id = str(uuid.uuid4())[:8]
     account_name = f"minecraft-{tenant_id}"
     root_id, ou_id = ensure_tenant_ou()
@@ -83,6 +94,8 @@ def handler(event, context):
             "create_id": create_id,
             "ou_id": ou_id,
         }
+        if config:
+            event["response"]["server_config"] = config
     except Exception:
         logger.exception("Failed to create account for %s", email)
 
