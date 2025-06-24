@@ -28,5 +28,9 @@ variable "repository_url" {
 variable "tenant_account_id" {
   description = "ID of the tenant AWS account for provisioning"
   type        = string
-  default     = ""
+  default     = null
+  validation {
+    condition     = var.tenant_account_id != null && length(var.tenant_account_id) > 0
+    error_message = "The tenant_account_id must be provided and cannot be empty."
+  }
 }
