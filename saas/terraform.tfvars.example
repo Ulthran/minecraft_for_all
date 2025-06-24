@@ -1,2 +1,3 @@
 frontend_bucket_name = "example-landing-bucket"
+config_table_name   = "minecraft-configs"
 
