@@ -44,7 +44,8 @@ purposes.
 The function currently performs the following steps:
 
 1. Read the confirmed user's email from the event.
-2. Generate a short tenant identifier.
+2. Generate a tenant identifier by appending the current UTC timestamp to a
+   short UUID.
 3. Persist the identifier as a `tenant_id` custom attribute on the Cognito user
    and include it in the Lambda response so downstream provisioning can tag
   resources appropriately.
