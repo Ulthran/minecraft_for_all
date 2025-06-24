@@ -42,14 +42,14 @@ const options = {
     theme: {
       defaultTheme: 'dark',
       themes: {
-        dark: {
-          colors: {
-            background: '#000000',
-            surface: '#1a1a2e',
-            primary: '#00e5ff',
-            secondary: '#ff1493',
+          dark: {
+            colors: {
+              background: '#000000',
+              surface: '#1a1a2e',
+              primary: '#89cff0',
+              secondary: '#ffb6c1',
+            },
           },
-        },
       },
     },
   });

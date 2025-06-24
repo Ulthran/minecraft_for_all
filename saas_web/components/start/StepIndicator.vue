@@ -26,16 +26,16 @@ export default {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  border: 2px solid var(--v-theme-deep-purple-accent-2);
+  border: 2px solid var(--v-theme-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--v-theme-deep-purple-accent-2);
+  color: var(--v-theme-secondary);
   font-weight: 500;
 }
 .step-circle.active,
 .step-circle.done {
-  background-color: var(--v-theme-deep-purple-accent-2);
+  background-color: var(--v-theme-secondary);
   color: white;
 }
 </style>

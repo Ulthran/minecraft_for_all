@@ -3,7 +3,7 @@
     <v-form @submit.prevent="submit">
       <v-select v-model="players" :items="playerOptions" label="Players" required></v-select>
       <v-checkbox v-model="pregen" label="Pregenerate world"></v-checkbox>
-      <v-btn type="submit" color="deep-purple-accent-2" class="mt-2">Launch</v-btn>
+        <v-btn type="submit" color="secondary" class="mt-2">Launch</v-btn>
     </v-form>
     <div class="mt-2">{{ message }}</div>
   </div>
