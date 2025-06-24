@@ -13,10 +13,10 @@ provisioned when a user confirms their account.
    tenant provisioning Lambda and a CloudFront distribution configured with an
    Origin Access Identity for the bucket.
 3. `terraform -chdir=saas apply` will automatically upload the contents of
-   `saas_web` to the created S3 bucket. The `SIGNUP_API_URL` and
-   `LOGIN_API_URL` placeholders are filled in using values derived from the
-   Cognito user pool. The console reads the cost, start and status endpoints
-   from custom attributes on the Cognito user after login using the
+   `saas_web` to the created S3 bucket. The Cognito user pool ID and client ID
+   are injected into `cognito.js` so the frontend can use the Amazon Cognito
+   JavaScript SDK. The console reads the cost, start and status endpoints from
+   custom attributes on the Cognito user after login using the
    `vue-jwt-decode` library to parse the token.
 
 ## Local Development

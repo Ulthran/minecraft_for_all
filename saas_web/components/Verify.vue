@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import { userPool } from '../cognito.js';
 export default {
   name: 'Verify',
   data() {
@@ -30,12 +31,18 @@ export default {
     async submit() {
       this.message = 'Verifying...';
       try {
-        const res = await fetch('CONFIRM_API_URL', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: this.email, code: this.code }),
+        const cognitoUser = new AmazonCognitoIdentity.CognitoUser({
+          Username: this.email,
+          Pool: userPool,
         });
-        if (!res.ok) throw new Error('Failed');
+
+        await new Promise((resolve, reject) => {
+          cognitoUser.confirmRegistration(this.code, true, (err, result) => {
+            if (err) return reject(err);
+            return resolve(result);
+          });
+        });
+
         this.message = 'Email verified! You can now log in.';
         setTimeout(() => {
           this.$router.push('/login');

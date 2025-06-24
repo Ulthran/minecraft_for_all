@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import { userPool } from '../cognito.js';
 export default {
   name: 'Start',
   data() {
@@ -39,17 +40,26 @@ export default {
         return;
       }
       try {
-        const res = await fetch('SIGNUP_API_URL', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: this.email,
-            password: this.password,
-            players: this.players,
-            pregen: this.pregen,
+        const attributeList = [
+          new AmazonCognitoIdentity.CognitoUserAttribute({
+            Name: 'email',
+            Value: this.email,
           }),
+        ];
+
+        await new Promise((resolve, reject) => {
+          userPool.signUp(
+            this.email,
+            this.password,
+            attributeList,
+            null,
+            (err, result) => {
+              if (err) return reject(err);
+              return resolve(result);
+            },
+          );
         });
-        if (!res.ok) throw new Error('Failed');
+
         this.message = 'Check your email for the verification code.';
         setTimeout(() => {
           this.$router.push({ path: '/verify', query: { email: this.email } });
