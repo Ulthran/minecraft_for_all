@@ -3,19 +3,19 @@
     <v-container>
       <v-row class="mb-6">
         <v-col>
-          <h2 class="text-h5">Small servers, big fun</h2>
+          <h2 class="text-h5"><i class="fas fa-users mr-2"></i>Small servers, big fun</h2>
           <p>Launch a customizable Minecraft server with just a few clicks. Our simple web interface makes it easy to manage your world.</p>
         </v-col>
       </v-row>
       <v-row class="mb-6">
         <v-col>
-          <h2 class="text-h5">Only pay for uptime</h2>
+          <h2 class="text-h5"><i class="fas fa-clock mr-2"></i>Only pay for uptime</h2>
           <p>No monthly commitments. Keep costs low by paying only while your server is running.</p>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" md="6" lg="5">
-          <h2 class="text-h5 mb-2">Projected Cost Calculator</h2>
+          <h2 class="text-h5 mb-2"><i class="fas fa-calculator mr-2"></i>Projected Cost Calculator</h2>
           <v-form>
             <v-switch v-model="statsMode" label="Stats mode" class="mb-4"></v-switch>
             <div v-if="!statsMode">
