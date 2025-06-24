@@ -38,7 +38,7 @@ Storing the configuration in DynamoDB avoids Cognito's 2048 character limit for 
 
 ## 2. Post‑Verification Hook
 
-`saas/lambda/create_tenant.py` runs when the user confirms their account. The function now simply generates a tenant identifier and adds a placeholder `mc_api_url` attribute. It can also read the custom attributes or look up the pending configuration in DynamoDB. The values are included when triggering the CodeBuild provisioning project:
+`saas/lambda/create_tenant.py` runs when the user confirms their account. The function generates a short tenant identifier, stores it as the `tenant_id` custom attribute on the user and adds a placeholder `mc_api_url` attribute. It can also read the custom attributes or look up the pending configuration in DynamoDB. The values are included when triggering the CodeBuild provisioning project:
 
 ```python
 codebuild.start_build(
@@ -52,6 +52,9 @@ codebuild.start_build(
 ```
 
 The build spec then passes these variables to Terraform so the infrastructure matches the selected options.
+
+The `tenant_id` attribute persists in Cognito, so the console can read it from
+the ID token on subsequent logins and include it in API requests.
 
 ## 3. Payment Integration
 

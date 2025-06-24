@@ -38,16 +38,17 @@ def handler(event, context):
         "tenant_id": tenant_id,
     }
 
-    # Ensure custom attributes exist for API endpoints
+    # Persist the new tenant ID along with other custom attributes
     try:
         cognito.admin_update_user_attributes(
             UserPoolId=user_pool_id,
             Username=username,
             UserAttributes=[
                 {"Name": "custom:mc_api_url", "Value": ""},
+                {"Name": "custom:tenant_id", "Value": tenant_id},
             ],
         )
-        logger.info("Initialized custom attribute for %s", username)
+        logger.info("Stored tenant id for %s", username)
     except Exception:
         logger.exception("Failed to set default attributes for %s", username)
 

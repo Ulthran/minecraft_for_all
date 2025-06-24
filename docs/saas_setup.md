@@ -45,11 +45,16 @@ The function currently performs the following steps:
 
 1. Read the confirmed user's email from the event.
 2. Generate a short tenant identifier.
-3. Store the identifier in the Lambda response so downstream provisioning can
-   tag resources appropriately.
+3. Persist the identifier as a `tenant_id` custom attribute on the Cognito user
+   and include it in the Lambda response so downstream provisioning can tag
+  resources appropriately.
 
 The `saas` Terraform code builds and deploys this Lambda automatically and
 grants the user pool permission to invoke it.
+
+On subsequent logins the `tenant_id` attribute is included in the Cognito ID
+token, so the frontend can retrieve it along with the API endpoint URLs using
+`vue-jwt-decode`.
 
 ## Cost Reporting Lambda
 

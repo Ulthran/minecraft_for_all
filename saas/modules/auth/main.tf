@@ -32,6 +32,13 @@ EOF
     mutable             = true
   }
 
+  # Custom attribute storing the tenant identifier assigned during signup
+  schema {
+    attribute_data_type = "String"
+    name                = "tenant_id"
+    mutable             = true
+  }
+
   # Once a schema attribute is created it cannot be modified in place.
   # Terraform occasionally tries to update this block when provider
   # defaults change, which results in a failure.  Ignore any changes

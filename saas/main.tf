@@ -10,6 +10,11 @@ module "frontend_site" {
   bucket_name = var.frontend_bucket_name
 }
 
+module "tenant_account" {
+  source               = "./modules/account"
+  tenant_account_email = var.tenant_account_email
+}
+
 locals {
   site_dir   = "${path.root}/../saas_web"
   site_files = fileset(local.site_dir, "**")
@@ -82,4 +87,8 @@ output "frontend_bucket" {
 
 output "frontend_url" {
   value = module.frontend_site.cloudfront_domain
+}
+
+output "tenant_account_id" {
+  value = module.tenant_account.tenant_account_id
 }
