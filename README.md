@@ -41,6 +41,7 @@ A design proposal for running each tenant in a separate AWS account is available
 
 Step-by-step instructions for deploying the SaaS site and tenant provisioning Lambda are provided in [docs/saas_setup.md](docs/saas_setup.md).
 
+The same Terraform layer can also provision an optional CodeBuild project in each tenant account for running the server configuration.
 The `saas` directory contains Terraform configuration for creating tenant AWS accounts and a Cognito user pool for authentication. Copy `saas/terraform.tfvars.example` to `saas/terraform.tfvars` and update the values. Run `terraform -chdir=saas init` once to download the providers and modules, then you can use `terraform -chdir=saas validate` or `terraform -chdir=saas apply` from a management account that has access to AWS Organizations.
 
 ### SaaS Website

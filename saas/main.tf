@@ -1,3 +1,11 @@
+provider "aws" {
+  alias  = "tenant"
+  region = var.region
+  assume_role {
+    role_arn = "arn:aws:iam::${var.tenant_account_id}:role/OrganizationAccountAccessRole"
+  }
+}
+
 module "auth" {
   source         = "./modules/auth"
   user_pool_name = var.user_pool_name
@@ -60,6 +68,14 @@ resource "aws_s3_object" "site" {
   )
   etag = md5(each.value)
 }
+module "tenant_codebuild" {
+  source         = "./modules/codebuild_provisioner"
+  providers      = { aws = aws.tenant }
+  project_name   = "tenant-terraform"
+  repository_url = var.repository_url
+  count          = var.tenant_account_id == "" ? 0 : 1
+}
+
 
 output "user_pool_id" {
   value = module.auth.user_pool_id

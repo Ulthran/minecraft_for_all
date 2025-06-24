@@ -56,3 +56,16 @@ exposed through an API Gateway endpoint. This function queries the AWS Cost
 Explorer API for the current month's charges and returns the total along with a
 breakdown by service. The console calls this endpoint after authenticating the
 user; no manual placeholder replacement is required.
+
+## Provisioning Pipeline
+
+After a tenant account is created the SaaS layer can run Terraform automatically using AWS CodeBuild. A small module in the `saas` directory creates a CodeBuild project inside the tenant account. The project clones this repository and applies the configuration in `terraform/`.
+
+Example variables when applying the SaaS Terraform again after account creation:
+
+```hcl
+repository_url    = "https://github.com/example/minecraft_for_all.git"
+tenant_account_id = "123456789012"
+```
+
+Running `terraform -chdir=saas apply` with these variables provisions the build project so the job's cost is billed to the tenant account.
