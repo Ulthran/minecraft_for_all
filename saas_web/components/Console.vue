@@ -37,7 +37,8 @@ export default {
       return token ? { Authorization: `Bearer ${token}` } : {};
     },
     endpoint(path) {
-      return this.api_url ? `${this.api_url}/${path}` : path;
+      const normalizedApiUrl = this.api_url.replace(/\/+$/, ''); // Remove trailing slashes
+      return normalizedApiUrl ? `${normalizedApiUrl}/${path}` : path;
     },
     async fetchStatus() {
       try {
