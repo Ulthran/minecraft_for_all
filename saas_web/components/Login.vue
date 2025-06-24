@@ -6,7 +6,7 @@
         <v-form @submit.prevent="submit">
           <v-text-field v-model="email" label="Email" type="email" required></v-text-field>
           <v-text-field v-model="password" label="Password" type="password" required></v-text-field>
-          <v-btn type="submit" color="deep-purple-accent-2" class="mt-2">Login</v-btn>
+            <v-btn type="submit" color="secondary" class="mt-2">Login</v-btn>
         </v-form>
         <div class="mt-2">{{ message }}</div>
         <div class="mt-2">

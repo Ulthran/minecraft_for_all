@@ -4,15 +4,15 @@
       <v-text-field v-model="email" label="Email" type="email" required></v-text-field>
       <v-text-field v-model="password" label="Password" type="password" required></v-text-field>
       <v-text-field v-model="confirm" label="Confirm Password" type="password" required></v-text-field>
-      <v-btn type="submit" color="deep-purple-accent-2" class="mt-2">Create Account</v-btn>
+        <v-btn type="submit" color="secondary" class="mt-2">Create Account</v-btn>
     </v-form>
     <div v-else>
       <v-form @submit.prevent="verifyCode">
         <v-text-field v-model="code" label="Verification Code" required></v-text-field>
-        <v-btn type="submit" color="deep-purple-accent-2" class="mt-2">Verify</v-btn>
+          <v-btn type="submit" color="secondary" class="mt-2">Verify</v-btn>
       </v-form>
-      <v-btn
-        color="deep-purple-accent-2"
+        <v-btn
+          color="secondary"
         class="mt-2"
         variant="outlined"
         @click="resendCode"
