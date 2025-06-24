@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import VueJwtDecode from 'vue-jwt-decode'
 export default {
   name: 'Console',
   data() {
@@ -24,14 +25,65 @@ export default {
     };
   },
   mounted() {
-    this.fetchStatus();
-    this.fetchCost();
-    this.interval = setInterval(this.fetchStatus, 30000);
+    this.pollApiUrl();
   },
   beforeUnmount() {
     clearInterval(this.interval);
   },
   methods: {
+    async pollApiUrl() {
+      if (this.api_url) {
+        this.fetchStatus();
+        this.fetchCost();
+        this.interval = setInterval(this.fetchStatus, 30000);
+        return;
+      }
+
+      const token = localStorage.getItem('token');
+      if (!token) {
+        this.status = 'Please log in.';
+        return;
+      }
+
+      try {
+        const payload = VueJwtDecode.decode(token);
+        const user = new AmazonCognitoIdentity.CognitoUser({
+          Username: payload.email || payload['cognito:username'],
+          Pool: userPool,
+        });
+
+        await new Promise((resolve, reject) => {
+          user.getSession((err, session) => {
+            if (err) return reject(err);
+            return resolve(session);
+          });
+        });
+
+        const attrs = await new Promise((resolve, reject) => {
+          user.getUserAttributes((err, result) => {
+            if (err) return reject(err);
+            return resolve(result);
+          });
+        });
+
+        const apiAttr = attrs.find(a => a.getName() === 'custom:mc_api_url');
+        const url = apiAttr ? apiAttr.getValue() : '';
+        if (url) {
+          localStorage.setItem('api_url', url);
+          this.api_url = url;
+          this.fetchStatus();
+          this.fetchCost();
+          this.interval = setInterval(this.fetchStatus, 30000);
+        } else {
+          this.status = 'Provisioning your server...';
+          setTimeout(this.pollApiUrl, 15000);
+        }
+      } catch (err) {
+        console.error(err);
+        this.status = 'Error checking server setup.';
+        setTimeout(this.pollApiUrl, 30000);
+      }
+    },
     authHeader() {
       const token = localStorage.getItem('token');
       return token ? { Authorization: `Bearer ${token}` } : {};
