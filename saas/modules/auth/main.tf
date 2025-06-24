@@ -47,17 +47,6 @@ resource "aws_cognito_user_pool_client" "this" {
   explicit_auth_flows = ["ALLOW_USER_PASSWORD_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"]
 }
 
-resource "aws_dynamodb_table" "config" {
-  name         = var.config_table_name
-  billing_mode = "PAY_PER_REQUEST"
-
-  hash_key = "user_id"
-
-  attribute {
-    name = "user_id"
-    type = "S"
-  }
-}
 
 resource "aws_iam_role" "lambda" {
   name = "create-tenant-role"
@@ -88,15 +77,6 @@ resource "aws_iam_role_policy" "create_tenant" {
           "organizations:MoveAccount",
         ],
         Resource = "*"
-      },
-      {
-        Effect = "Allow",
-        Action = [
-          "dynamodb:GetItem",
-          "dynamodb:PutItem",
-          "dynamodb:DeleteItem"
-        ],
-        Resource = aws_dynamodb_table.config.arn
       }
     ]
   })
@@ -124,7 +104,6 @@ resource "aws_lambda_function" "create_tenant" {
   timeout          = 30
   environment {
     variables = {
-      CONFIG_TABLE = aws_dynamodb_table.config.name
       EMAIL_DOMAIN = var.account_email_domain
       SCP_ID       = var.tenant_scp_id
       TENANT_OU_ID = var.tenant_ou_id
@@ -160,6 +139,3 @@ output "confirm_api_url" {
   value = "https://${aws_cognito_user_pool.this.endpoint}/confirm"
 }
 
-output "config_table_name" {
-  value = aws_dynamodb_table.config.name
-}

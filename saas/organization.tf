@@ -1,4 +1,4 @@
-resource "aws_organizations_organization" "main" {
+resource "aws_organizations_organization" "minecraft" {
   feature_set = "ALL"
 }
 
@@ -26,7 +26,7 @@ resource "aws_organizations_policy" "tenant_scp" {
 
 resource "aws_organizations_organizational_unit" "tenants" {
   name      = "MinecraftTenants"
-  parent_id = aws_organizations_organization.main.roots[0].id
+  parent_id = aws_organizations_organization.minecraft.roots[0].id
 }
 
 resource "aws_organizations_policy_attachment" "tenant_ou" {

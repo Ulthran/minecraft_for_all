@@ -6,9 +6,6 @@ variable "client_name" {
   type = string
 }
 
-variable "config_table_name" {
-  type = string
-}
 
 variable "account_email_domain" {
   type = string
