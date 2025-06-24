@@ -10,9 +10,9 @@ provisioned when a user confirms their account.
    remains private.
 2. Run `terraform -chdir=saas init` followed by `terraform -chdir=saas apply` from
    an AWS account with access to AWS Organizations. This creates the user pool,
-   tenant provisioning Lambda and a CloudFront distribution configured with an
-   Origin Access Identity for the bucket. No tenant information is required for
-   this initial deployment.
+   a dedicated tenant account and the provisioning Lambda along with a CloudFront
+   distribution for the site. No tenant information is required for this initial
+   deployment.
 3. `terraform -chdir=saas apply` will automatically upload the contents of
    `saas_web` to the created S3 bucket. The Cognito user pool ID and client ID
    are injected into `cognito.js` so the frontend can use the Amazon Cognito
@@ -36,15 +36,17 @@ the console page.
 
 The `create_tenant` Lambda function (`saas/lambda/create_tenant.py`) is attached
 as a *post confirmation* trigger on the Cognito user pool. When a new user
-confirms their account the function uses the AWS Organizations API to create a
-fresh member account for that tenant.
+confirms their account the function simply generates a tenant identifier and
+initializes the custom attributes for that user. All tenant infrastructure is
+deployed into a shared AWS account and tagged with this tenant ID for billing
+purposes.
 
 The function currently performs the following steps:
 
 1. Read the confirmed user's email from the event.
 2. Generate a short tenant identifier.
-3. Call `organizations.create_account` using an internal email based on the tenant ID.
-4. Once creation completes, attach a service control policy restricting available services.
+3. Store the identifier in the Lambda response so downstream provisioning can
+   tag resources appropriately.
 
 The `saas` Terraform code builds and deploys this Lambda automatically and
 grants the user pool permission to invoke it.
@@ -59,6 +61,6 @@ user; no manual placeholder replacement is required.
 
 ## Provisioning Pipeline
 
-After a tenant account is created the SaaS layer can run Terraform automatically using AWS CodeBuild. The `saas` configuration provisions a single CodeBuild project in the management account named `tenant-terraform`. The build assumes the `OrganizationAccountAccessRole` of the target account at runtime and then applies the Terraform in `terraform/`.
+After a tenant is registered the SaaS layer can run Terraform automatically using AWS CodeBuild. The `saas` configuration provisions a single CodeBuild project in the management account named `tenant-terraform`. The build deploys resources into the shared tenant account and tags everything with the provided tenant ID.
 
-To provision infrastructure for a specific tenant, start a build and override the `TENANT_ACCOUNT_ID` environment variable with the tenant's AWS account ID.
+To provision infrastructure for a specific tenant, start a build and override the `TENANT_ID` environment variable so the tags are applied correctly.

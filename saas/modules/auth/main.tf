@@ -60,25 +60,6 @@ resource "aws_iam_role" "lambda" {
   })
 
 }
-resource "aws_iam_role_policy" "create_tenant" {
-  name = "create-tenant"
-  role = aws_iam_role.lambda.id
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Action = [
-          "organizations:CreateAccount",
-          "organizations:DescribeCreateAccountStatus",
-          "organizations:AttachPolicy",
-        ],
-        Resource = "*"
-      }
-    ]
-  })
-}
-
 
 resource "aws_iam_role_policy_attachment" "lambda_logs" {
   role       = aws_iam_role.lambda.name
@@ -99,12 +80,7 @@ resource "aws_lambda_function" "create_tenant" {
   handler          = "create_tenant.handler"
   runtime          = "python3.11"
   timeout          = 30
-  environment {
-    variables = {
-      EMAIL_DOMAIN = var.account_email_domain
-      SCP_ID       = var.tenant_scp_id
-    }
-  }
+
 }
 
 resource "aws_lambda_permission" "allow_cognito" {

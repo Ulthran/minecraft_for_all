@@ -25,7 +25,7 @@ variable "repository_url" {
 }
 
 
-variable "account_email_domain" {
-  description = "Domain used when creating tenant AWS accounts"
+variable "tenant_account_email" {
+  description = "Email used for the shared tenant AWS account"
   type        = string
 }
