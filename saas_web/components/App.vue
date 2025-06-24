@@ -25,6 +25,7 @@ import { useRouter } from 'vue-router';
 export default {
   name: 'App',
   setup() {
+    const router = useRouter();
     const authState = ref(!!localStorage.getItem('token'));
     const logout = () => {
       localStorage.removeItem('token');
