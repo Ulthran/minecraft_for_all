@@ -49,12 +49,12 @@ The `saas_web` folder now contains the main SaaS site with signup, login and a
 simple management console. Terraform creates a **private** S3 bucket and a
 CloudFront distribution using an Origin Access Identity when
 `frontend_bucket_name` is set. The website files are uploaded automatically
-during `terraform apply`. The `SIGNUP_API_URL` and `LOGIN_API_URL` placeholders
-in the Vue components are replaced with endpoints derived from the Cognito user
-  pool so no additional variables are needed. The console reads the cost,
-  start and status endpoints from custom attributes on the Cognito user after
-  logging in using `vue-jwt-decode` to parse the token, so no manual placeholder
-  replacement is required.
+during `terraform apply`. The website files also receive the Cognito user pool
+ID and client ID which are inserted into a small helper module. The signup,
+verification and login components use the Amazon Cognito JavaScript SDK instead
+of raw API requests. The console reads the cost, start and status endpoints from
+custom attributes on the Cognito user after logging in using `vue-jwt-decode` to
+parse the token, so no manual placeholder replacement is required.
 
 Example `terraform.tfvars` entries:
 

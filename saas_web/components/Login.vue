@@ -20,6 +20,7 @@
 
 <script>
 import VueJwtDecode from 'vue-jwt-decode'
+import { userPool } from '../cognito.js';
 
 export default {
   name: 'Login',
@@ -34,16 +35,27 @@ export default {
     async submit() {
       this.message = 'Logging in...';
       try {
-        const res = await fetch('LOGIN_API_URL', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: this.email, password: this.password }),
+        const authDetails = new AmazonCognitoIdentity.AuthenticationDetails({
+          Username: this.email,
+          Password: this.password,
         });
-        if (!res.ok) throw new Error('Failed');
-        const data = await res.json();
-        localStorage.setItem('token', data.token);
+
+        const cognitoUser = new AmazonCognitoIdentity.CognitoUser({
+          Username: this.email,
+          Pool: userPool,
+        });
+
+        const session = await new Promise((resolve, reject) => {
+          cognitoUser.authenticateUser(authDetails, {
+            onSuccess: resolve,
+            onFailure: reject,
+          });
+        });
+
+        const token = session.getIdToken().getJwtToken();
+        localStorage.setItem('token', token);
         try {
-          const payload = VueJwtDecode.decode(data.token);
+          const payload = VueJwtDecode.decode(token);
           const urls = {
             start_url: payload['custom:start_url'] || '',
             status_url: payload['custom:status_url'] || '',
