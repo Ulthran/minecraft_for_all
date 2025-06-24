@@ -11,9 +11,26 @@ resource "aws_iam_role" "codebuild" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "admin" {
-  role       = aws_iam_role.codebuild.name
-  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+resource "aws_iam_role_policy" "terraform" {
+  name = "codebuild-terraform-policy"
+  role = aws_iam_role.codebuild.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = [
+        "s3:*",
+        "ec2:*",
+        "iam:*",
+        "lambda:*",
+        "apigateway:*",
+        "cloudfront:*",
+        "logs:*"
+      ]
+      Resource = "*"
+    }]
+  })
 }
 
 resource "aws_codebuild_project" "this" {
