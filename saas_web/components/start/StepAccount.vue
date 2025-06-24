@@ -25,7 +25,6 @@
 </template>
 
 <script>
-import { signUpUser, confirmUser, resendConfirmation, loginUser } from '../../auth.js';
 export default {
   name: 'StepAccount',
   data() {
@@ -71,6 +70,60 @@ export default {
         }
       }, 1000);
     },
+    signUpUser(email, password) {
+      const attributeList = [
+        new AmazonCognitoIdentity.CognitoUserAttribute({
+          Name: 'email',
+          Value: email,
+        }),
+      ];
+      return new Promise((resolve, reject) => {
+        window.userPool.signUp(email, password, attributeList, null, (err, result) => {
+          if (err) return reject(err);
+          resolve(result);
+        });
+      });
+    },
+    confirmUser(email, code) {
+      const user = new AmazonCognitoIdentity.CognitoUser({
+        Username: email,
+        Pool: window.userPool,
+      });
+      return new Promise((resolve, reject) => {
+        user.confirmRegistration(code, true, (err, result) => {
+          if (err) return reject(err);
+          resolve(result);
+        });
+      });
+    },
+    resendConfirmation(email) {
+      const user = new AmazonCognitoIdentity.CognitoUser({
+        Username: email,
+        Pool: window.userPool,
+      });
+      return new Promise((resolve, reject) => {
+        user.resendConfirmationCode((err, result) => {
+          if (err) return reject(err);
+          resolve(result);
+        });
+      });
+    },
+    loginUser(email, password) {
+      const authDetails = new AmazonCognitoIdentity.AuthenticationDetails({
+        Username: email,
+        Password: password,
+      });
+      const user = new AmazonCognitoIdentity.CognitoUser({
+        Username: email,
+        Pool: window.userPool,
+      });
+      return new Promise((resolve, reject) => {
+        user.authenticateUser(authDetails, {
+          onSuccess: resolve,
+          onFailure: reject,
+        });
+      });
+    },
     async signUp() {
       this.message = 'Submitting...';
       if (!this.validateEmail(this.email)) {
@@ -87,7 +140,7 @@ export default {
         return;
       }
       try {
-        await signUpUser(this.email, this.password);
+        await this.signUpUser(this.email, this.password);
         this.message = 'Check your email for the verification code.';
         this.awaitingVerification = true;
         this.startTimer();
@@ -99,9 +152,9 @@ export default {
     async verifyCode() {
       this.message = 'Verifying...';
       try {
-        await confirmUser(this.email, this.code);
+        await this.confirmUser(this.email, this.code);
         try {
-          const session = await loginUser(this.email, this.password);
+          const session = await this.loginUser(this.email, this.password);
           const token = session.getIdToken().getJwtToken();
           localStorage.setItem('token', token);
         } catch (e) {
@@ -118,7 +171,7 @@ export default {
     async resendCode() {
       this.message = 'Resending code...';
       try {
-        await resendConfirmation(this.email);
+        await this.resendConfirmation(this.email);
         this.message = 'Verification code resent.';
         this.startTimer();
       } catch (err) {
