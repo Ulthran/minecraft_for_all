@@ -5,6 +5,16 @@ resource "aws_cognito_user_pool" "this" {
     post_confirmation = aws_lambda_function.create_tenant.arn
   }
 
+  auto_verified_attributes = ["email"]
+
+  password_policy {
+    minimum_length    = 8
+    require_lowercase = true
+    require_uppercase = false
+    require_numbers   = true
+    require_symbols   = false
+  }
+
   # Custom attribute for the tenant API base URL
   schema {
     attribute_data_type = "String"

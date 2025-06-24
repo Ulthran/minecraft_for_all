@@ -39,17 +39,11 @@ export default {
       if (this.password.length < 8) {
         return 'be at least 8 characters long';
       }
-      if (!/[a-z]/.test(this.password)) {
-        return 'include a lowercase letter';
-      }
-      if (!/[A-Z]/.test(this.password)) {
-        return 'include an uppercase letter';
+      if (!/[A-Za-z]/.test(this.password)) {
+        return 'include at least one letter';
       }
       if (!/[0-9]/.test(this.password)) {
-        return 'include a number';
-      }
-      if (!/[!@#$%^&*(),.?":{}|<>]/.test(this.password)) {
-        return 'include a special character';
+        return 'include at least one number';
       }
       return '';
     },
