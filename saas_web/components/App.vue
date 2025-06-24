@@ -20,19 +20,19 @@
 </template>
 
 <script>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 export default {
   name: 'App',
-  computed: {
-    loggedIn() {
-      return !!localStorage.getItem('token');
-    },
-  },
-  methods: {
-    logout() {
+  setup() {
+    const authState = ref(!!localStorage.getItem('token'));
+    const logout = () => {
       localStorage.removeItem('token');
       localStorage.removeItem('urls');
-      this.$router.push('/');
-    },
+      authState.value = false;
+      router.push('/');
+    };
+    return { authState, logout };
   },
 };
 </script>
