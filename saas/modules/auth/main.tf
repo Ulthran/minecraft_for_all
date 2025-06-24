@@ -11,6 +11,14 @@ resource "aws_cognito_user_pool" "this" {
     name                = "mc_api_url"
     mutable             = true
   }
+
+  # Once a schema attribute is created it cannot be modified in place.
+  # Terraform occasionally tries to update this block when provider
+  # defaults change, which results in a failure.  Ignore any changes
+  # so that the pool remains intact.
+  lifecycle {
+    ignore_changes = [schema]
+  }
 }
 
 resource "aws_cognito_user_pool_client" "this" {
