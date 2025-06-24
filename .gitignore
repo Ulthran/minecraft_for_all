@@ -6,4 +6,5 @@ terraform/lambda/__pycache__/
 *.zip
 node_modules/
 *.tfstate
-*.tfstate.backup
+*.tfstate.*
+*.tfvars
