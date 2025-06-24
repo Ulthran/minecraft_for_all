@@ -1,9 +1,8 @@
 
 module "auth" {
-  source            = "./modules/auth"
-  user_pool_name    = var.user_pool_name
-  client_name       = var.client_name
-  config_table_name = var.config_table_name
+  source         = "./modules/auth"
+  user_pool_name = var.user_pool_name
+  client_name    = var.client_name
 }
 
 module "frontend_site" {

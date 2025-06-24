@@ -19,14 +19,13 @@ variable "frontend_bucket_name" {
   default = "minecraft-saas-frontend"
 }
 
-variable "config_table_name" {
-  type    = string
-  default = "minecraft-configs"
-}
-
-
 variable "repository_url" {
   description = "Git repository URL with Terraform for tenant infrastructure"
   type        = string
 }
 
+
+variable "tenant_account_email" {
+  description = "Email used for the shared tenant AWS account"
+  type        = string
+}

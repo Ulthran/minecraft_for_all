@@ -1,12 +1,14 @@
 # SaaS Architecture Overview
 
-This document outlines a high level plan for supporting a multi‑tenant setup where each customer runs their Minecraft server in an isolated AWS account created with Terraform.
+This document outlines a high level plan for supporting multiple tenants in a
+single dedicated AWS account. Each tenant's resources are tagged and isolated
+through IAM roles rather than separate AWS accounts.
 
-## Account Creation
-- Use the `aws_organizations_account` resource from the AWS provider to create a new member account for each tenant.
-- All tenant accounts are placed in an organizational unit called `MinecraftTenants` for easier management.
-- After creation, Terraform can assume an IAM role in the new account (e.g. `OrganizationAccountAccessRole`) to deploy the server infrastructure.
-- Each tenant account receives its own VPC, EC2 instance and web bucket. The instance relies on its static IPv6 address instead of an Elastic IP for a consistent endpoint.
+## Tenant Account
+- Use the `aws_organizations_account` resource to create a single account that hosts all tenant infrastructure.
+- Resources for each tenant are tagged with a unique identifier so usage and billing can be tracked per customer.
+- IAM roles restrict each tenant to only their tagged resources.
+- Each tenant still receives a dedicated VPC, EC2 instance and web bucket within the shared account.
 
 ## Authentication
 - Central authentication can be provided by Amazon Cognito in the management account.

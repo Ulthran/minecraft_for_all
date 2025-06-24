@@ -5,7 +5,3 @@ variable "user_pool_name" {
 variable "client_name" {
   type = string
 }
-
-variable "config_table_name" {
-  type = string
-}

@@ -47,17 +47,6 @@ resource "aws_cognito_user_pool_client" "this" {
   explicit_auth_flows = ["ALLOW_USER_PASSWORD_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"]
 }
 
-resource "aws_dynamodb_table" "config" {
-  name         = var.config_table_name
-  billing_mode = "PAY_PER_REQUEST"
-
-  hash_key = "user_id"
-
-  attribute {
-    name = "user_id"
-    type = "S"
-  }
-}
 
 resource "aws_iam_role" "lambda" {
   name = "create-tenant-role"
@@ -71,37 +60,6 @@ resource "aws_iam_role" "lambda" {
   })
 
 }
-resource "aws_iam_role_policy" "create_tenant" {
-  name = "create-tenant"
-  role = aws_iam_role.lambda.id
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Action = [
-          "organizations:CreateAccount",
-          "organizations:DescribeCreateAccountStatus",
-          "organizations:ListRoots",
-          "organizations:ListOrganizationalUnitsForParent",
-          "organizations:CreateOrganizationalUnit",
-          "organizations:MoveAccount",
-        ],
-        Resource = "*"
-      },
-      {
-        Effect = "Allow",
-        Action = [
-          "dynamodb:GetItem",
-          "dynamodb:PutItem",
-          "dynamodb:DeleteItem"
-        ],
-        Resource = aws_dynamodb_table.config.arn
-      }
-    ]
-  })
-}
-
 
 resource "aws_iam_role_policy_attachment" "lambda_logs" {
   role       = aws_iam_role.lambda.name
@@ -122,11 +80,7 @@ resource "aws_lambda_function" "create_tenant" {
   handler          = "create_tenant.handler"
   runtime          = "python3.11"
   timeout          = 30
-  environment {
-    variables = {
-      CONFIG_TABLE = aws_dynamodb_table.config.name
-    }
-  }
+
 }
 
 resource "aws_lambda_permission" "allow_cognito" {
@@ -157,6 +111,3 @@ output "confirm_api_url" {
   value = "https://${aws_cognito_user_pool.this.endpoint}/confirm"
 }
 
-output "config_table_name" {
-  value = aws_dynamodb_table.config.name
-}
