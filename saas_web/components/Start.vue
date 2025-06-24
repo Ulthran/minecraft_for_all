@@ -32,8 +32,38 @@ export default {
     };
   },
   methods: {
+    validateEmail(email) {
+      return /^[^@]+@[^@]+\.[^@]+$/.test(email);
+    },
+    validatePassword() {
+      if (this.password.length < 8) {
+        return 'be at least 8 characters long';
+      }
+      if (!/[a-z]/.test(this.password)) {
+        return 'include a lowercase letter';
+      }
+      if (!/[A-Z]/.test(this.password)) {
+        return 'include an uppercase letter';
+      }
+      if (!/[0-9]/.test(this.password)) {
+        return 'include a number';
+      }
+      if (!/[!@#$%^&*(),.?":{}|<>]/.test(this.password)) {
+        return 'include a special character';
+      }
+      return '';
+    },
     async submit() {
       this.message = 'Submitting...';
+      if (!this.validateEmail(this.email)) {
+        this.message = 'Please enter a valid email address.';
+        return;
+      }
+      const pwError = this.validatePassword();
+      if (pwError) {
+        this.message = `Password must ${pwError}.`;
+        return;
+      }
       if (this.password !== this.confirm) {
         this.message = 'Passwords do not match.';
         return;
@@ -65,7 +95,7 @@ export default {
         }, 3000);
       } catch (err) {
         console.error(err);
-        this.message = 'Request failed. Please try again later.';
+        this.message = err.message || 'Request failed. Please try again later.';
       }
     },
   },
