@@ -44,10 +44,10 @@ const options = {
       themes: {
         dark: {
           colors: {
-            background: '#1a1a2e',
+            background: '#000000',
             surface: '#1a1a2e',
-            primary: '#81d4fa',
-            secondary: '#b39ddb',
+            primary: '#00e5ff',
+            secondary: '#ff1493',
           },
         },
       },
