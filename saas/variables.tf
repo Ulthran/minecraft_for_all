@@ -34,5 +34,4 @@ variable "repository_url" {
 variable "account_email_domain" {
   description = "Domain used when creating tenant AWS accounts"
   type        = string
-  default     = "tenants.example.com"
 }

@@ -12,6 +12,8 @@ cognito = boto3.client("cognito-idp")
 dynamodb = boto3.resource("dynamodb")
 
 EMAIL_DOMAIN = os.environ.get("EMAIL_DOMAIN")
+if not EMAIL_DOMAIN:
+    raise RuntimeError("EMAIL_DOMAIN environment variable must be set")
 SCP_ID = os.environ.get("SCP_ID")
 TENANT_OU_ID = os.environ.get("TENANT_OU_ID")
 
@@ -72,9 +74,7 @@ def handler(event, context):
     account_name = f"minecraft-{tenant_id}"
     root_id, ou_id = ensure_tenant_ou()
 
-    account_email = email
-    if EMAIL_DOMAIN:
-        account_email = f"{tenant_id}@{EMAIL_DOMAIN}"
+    account_email = f"{tenant_id}@{EMAIL_DOMAIN}"
 
     try:
         resp = org.create_account(Email=account_email, AccountName=account_name)
