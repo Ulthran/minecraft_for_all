@@ -12,7 +12,9 @@
           class="mt-2"
           variant="outlined"
           @click="resend"
+          :disabled="resendSeconds > 0"
         >Resend Code</v-btn>
+        <small v-if="resendSeconds > 0" class="ml-1 text-caption">{{ resendSeconds }}</small>
         <div class="mt-2">{{ message }}</div>
       </v-col>
     </v-row>
@@ -27,12 +29,27 @@ export default {
       email: '',
       code: '',
       message: '',
+      resendSeconds: 10,
+      timer: null,
     };
   },
   created() {
     this.email = this.$route.query.email || '';
+    this.startTimer();
   },
   methods: {
+    startTimer() {
+      this.resendSeconds = 10;
+      if (this.timer) clearInterval(this.timer);
+      this.timer = setInterval(() => {
+        if (this.resendSeconds > 0) {
+          this.resendSeconds -= 1;
+        } else {
+          clearInterval(this.timer);
+          this.timer = null;
+        }
+      }, 1000);
+    },
     async submit() {
       this.message = 'Verifying...';
       try {
@@ -73,6 +90,7 @@ export default {
         });
 
         this.message = 'Verification code resent.';
+        this.startTimer();
       } catch (err) {
         console.error(err);
         this.message = 'Failed to resend code. Please try again later.';
