@@ -4,3 +4,7 @@ export const poolData = {
 };
 
 export const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+
+if (typeof window !== 'undefined') {
+  window.userPool = userPool;
+}

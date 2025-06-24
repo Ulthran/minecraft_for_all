@@ -20,7 +20,6 @@
 
 <script>
 import VueJwtDecode from 'vue-jwt-decode'
-import { userPool } from '../cognito.js';
 
 export default {
   name: 'Login',

@@ -18,7 +18,6 @@
 </template>
 
 <script>
-import { userPool } from '../cognito.js';
 export default {
   name: 'Start',
   data() {

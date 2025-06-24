@@ -14,7 +14,6 @@
 </template>
 
 <script>
-import { userPool } from '../cognito.js';
 export default {
   name: 'Verify',
   data() {

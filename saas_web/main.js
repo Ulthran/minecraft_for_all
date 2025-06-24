@@ -1,5 +1,9 @@
 const options = {
-  moduleCache: { vue: Vue, 'vue-router': VueRouter },
+  moduleCache: {
+    vue: Vue,
+    'vue-router': VueRouter,
+    'vue-jwt-decode': window['vue-jwt-decode'],
+  },
   async getFile(url) {
     const res = await fetch(url);
     if (!res.ok) throw Object.assign(new Error(res.statusText + ' ' + url), { res });
