@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import VueJwtDecode from 'vue-jwt-decode'
 export default {
   name: 'Verify',
   data() {
@@ -64,10 +65,45 @@ export default {
             return resolve(result);
           });
         });
+        this.message = 'Email verified! Logging in...';
 
-        this.message = 'Email verified! You can now log in.';
+        const creds = JSON.parse(sessionStorage.getItem('pendingCreds') || '{}');
+        let loggedIn = false;
+        if (creds.email === this.email && creds.password) {
+          try {
+            const authDetails = new AmazonCognitoIdentity.AuthenticationDetails({
+              Username: creds.email,
+              Password: creds.password,
+            });
+            const loginUser = new AmazonCognitoIdentity.CognitoUser({
+              Username: creds.email,
+              Pool: userPool,
+            });
+            const session = await new Promise((resolve, reject) => {
+              loginUser.authenticateUser(authDetails, {
+                onSuccess: resolve,
+                onFailure: reject,
+              });
+            });
+            const token = session.getIdToken().getJwtToken();
+            localStorage.setItem('token', token);
+            try {
+              const payload = VueJwtDecode.decode(token);
+              const apiUrl = payload['custom:mc_api_url'] || '';
+              localStorage.setItem('api_url', apiUrl);
+            } catch (e) {
+              console.error('Failed to parse token', e);
+            }
+            sessionStorage.removeItem('pendingCreds');
+            loggedIn = true;
+          } catch (e) {
+            console.error('Auto login failed', e);
+          }
+        }
+
+        this.message = 'Email verified! Redirecting...';
         setTimeout(() => {
-          this.$router.push('/login');
+          this.$router.push('/console');
         }, 2000);
       } catch (err) {
         console.error(err);

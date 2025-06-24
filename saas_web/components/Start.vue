@@ -83,6 +83,12 @@ export default {
           );
         });
 
+        // Store credentials temporarily so Verify.vue can log in
+        sessionStorage.setItem(
+          'pendingCreds',
+          JSON.stringify({ email: this.email, password: this.password }),
+        );
+
         this.message = 'Check your email for the verification code.';
         setTimeout(() => {
           this.$router.push({ path: '/verify', query: { email: this.email } });
