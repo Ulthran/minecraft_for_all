@@ -15,6 +15,16 @@ resource "aws_cognito_user_pool" "this" {
     require_symbols   = false
   }
 
+  verification_message_template {
+    default_email_option = "CONFIRM_WITH_CODE"
+    email_subject        = "Welcome to Minecraft For All"
+    email_message        = <<EOF
+Thank you for joining Minecraft For All!
+Your verification code is {####}.
+Happy crafting!
+EOF
+  }
+
   # Custom attribute for the tenant API base URL
   schema {
     attribute_data_type = "String"
