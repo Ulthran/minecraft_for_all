@@ -7,14 +7,13 @@
     >
       <div
         class="step-circle"
-        :class="{ done: n < step, active: n === step }"
+        :class="{ active: n === step }"
       >
         {{ n }}
       </div>
       <div
         v-if="n < total"
         class="step-line"
-        :class="{ done: n < step }"
       ></div>
     </div>
   </div>
@@ -39,26 +38,22 @@ export default {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  border: 2px solid var(--v-theme-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--v-theme-secondary);
   font-weight: 500;
-  background-color: white;
+  color: white;
+  background-color: #603652;
 }
+
+.step-circle.active {
+  border: 2px solid white;
+  background-color: transparent;
+}
+
 .step-line {
   width: 40px;
   height: 2px;
-  background-color: var(--v-theme-secondary);
-  opacity: 0.3;
-}
-.step-circle.active,
-.step-circle.done {
-  background-color: var(--v-theme-secondary);
-  color: white;
-}
-.step-line.done {
-  opacity: 1;
+  background-color: #603652;
 }
 </style>
