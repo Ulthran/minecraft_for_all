@@ -20,30 +20,21 @@
 </template>
 
 <script>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '../store.js';
 export default {
   name: 'App',
   setup() {
     const router = useRouter();
-    const loggedIn = ref(!!localStorage.getItem('token'));
-    const updateLoggedIn = () => {
-      loggedIn.value = !!localStorage.getItem('token');
-    };
-    onMounted(() => {
-      window.addEventListener('token-changed', updateLoggedIn);
-    });
-    onUnmounted(() => {
-      window.removeEventListener('token-changed', updateLoggedIn);
-    });
+    const auth = useAuthStore();
     const logout = () => {
       localStorage.removeItem('token');
       localStorage.removeItem('urls');
-      loggedIn.value = false;
-      window.dispatchEvent(new Event('token-changed'));
+      auth.updateLoggedIn();
       router.push('/');
     };
-    return { loggedIn, logout };
+    return { loggedIn: computed(() => auth.loggedIn), logout };
   },
 };
 </script>

@@ -23,6 +23,7 @@
 
 <script>
 import VueJwtDecode from 'vue-jwt-decode'
+import { useAuthStore } from '../store.js';
 
 const poolData = {
   UserPoolId: 'USER_POOL_ID',
@@ -93,7 +94,7 @@ export default {
             });
             const token = session.getIdToken().getJwtToken();
             localStorage.setItem('token', token);
-            window.dispatchEvent(new Event('token-changed'));
+            useAuthStore().updateLoggedIn();
             try {
               const payload = VueJwtDecode.decode(token);
               const tenantId = payload['custom:tenant_id'] || '';
