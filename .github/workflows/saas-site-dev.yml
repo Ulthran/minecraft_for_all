@@ -31,6 +31,7 @@ jobs:
         with:
           python-version: '3.x'
       - name: Cache Playwright
+        id: cache-playwright
         uses: actions/cache@v4
         with:
           path: |
@@ -38,9 +39,10 @@ jobs:
             ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('tests/test_console.py') }}
           restore-keys: ${{ runner.os }}-playwright-
-      - name: Install Playwright
-        run: |
-          pip install playwright
-          playwright install --with-deps
+      - name: Install Playwright Python package
+        run: pip install playwright
+      - name: Install Playwright browsers
+        if: steps.cache-playwright.outputs.cache-hit != 'true'
+        run: playwright install --with-deps
       - name: Run console tests
         run: python tests/test_console.py
