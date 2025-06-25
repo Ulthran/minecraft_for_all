@@ -30,7 +30,7 @@ locals {
     "CONFIRM_API_URL"     = module.auth.confirm_api_url
     "USER_POOL_ID"        = module.auth.user_pool_id
     "USER_POOL_CLIENT_ID" = module.auth.user_pool_client_id
-    "INIT_SERVER_API_URL" = var.init_server_api_url
+    "INIT_SERVER_API_URL" = "${module.tenant_api.api_url}/init"
   }
 
   processed_files = {
@@ -113,7 +113,7 @@ output "tenant_account_id" {
 output "tenant_api_url" {
   value = module.tenant_api.api_url
 }
-  
+
 output "backup_bucket" {
   value = module.backup_bucket.bucket_name
 }
