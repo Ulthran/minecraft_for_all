@@ -114,6 +114,13 @@ resource "aws_lambda_permission" "apigw_init" {
 resource "aws_apigatewayv2_api" "this" {
   name          = "tenant-api"
   protocol_type = "HTTP"
+
+  cors_configuration {
+    allow_headers     = ["Authorization", "Content-Type"]
+    allow_methods     = ["GET", "POST", "OPTIONS"]
+    allow_origins     = var.allowed_origins
+    allow_credentials = true
+  }
 }
 
 resource "aws_apigatewayv2_authorizer" "jwt" {

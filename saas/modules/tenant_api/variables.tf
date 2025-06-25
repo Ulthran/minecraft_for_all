@@ -12,3 +12,12 @@ variable "region" {
   description = "AWS region"
   type        = string
 }
+
+variable "allowed_origins" {
+  description = "Origins allowed to call this API"
+  type        = list(string)
+  validation {
+    condition     = alltrue([for origin in var.allowed_origins : can(regex("^https?://[a-zA-Z0-9.-]+(:[0-9]+)?(/.*)?$", origin))])
+    error_message = "Each entry in allowed_origins must be a valid URL starting with http:// or https://."
+  }
+}
