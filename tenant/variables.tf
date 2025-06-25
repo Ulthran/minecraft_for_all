@@ -27,3 +27,14 @@ variable "web_bucket_name" {
   description = "Unique S3 bucket name for the web interface"
   type        = string
 }
+
+variable "tenant_id" {
+  description = "Unique identifier for the tenant"
+  type        = string
+}
+
+variable "tags" {
+  description = "Tags to apply to all resources"
+  type        = map(string)
+  default     = {}
+}

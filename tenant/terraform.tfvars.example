@@ -4,3 +4,5 @@ backup_bucket_name = "example-backup-bucket"
 vpc_id = "vpc-xxxxxxxx"
 subnet_id = "subnet-xxxxxxxx"
 web_bucket_name = "example-web-bucket"
+tenant_id = "example"
+tags = {}

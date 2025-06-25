@@ -7,13 +7,15 @@ Minecraft server SaaS with AWS.
 ### Terraform
 
 ```
-cd terraform
+cd tenant
 terraform init    # downloads providers
 terraform apply   # creates resources (requires AWS credentials)
 ```
 
 Terraform variables are defined in `variables.tf`. Copy `terraform.tfvars.example`
 to `terraform.tfvars` and fill in your values before running `terraform apply`.
+The `tenant_id` variable is required but normally passed in automatically by
+the provisioning pipeline.
 
 ## Testing
 
@@ -26,10 +28,10 @@ and compiles the Lambda code. The site workflows validate the HTML using
 
 ```
 terraform fmt -check -recursive
-terraform -chdir=terraform init
-terraform -chdir=terraform validate
-shellcheck terraform/user_data.sh
-python3 -m py_compile terraform/lambda/start_minecraft.py
+terraform -chdir=tenant init
+terraform -chdir=tenant validate
+shellcheck tenant/user_data.sh
+python3 -m py_compile tenant/lambda/start_minecraft.py
 ```
 
 `terraform validate` may fail if provider plugins cannot be downloaded due to
