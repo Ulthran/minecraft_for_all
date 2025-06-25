@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime
 
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 cognito = boto3.client("cognito-idp")
 
