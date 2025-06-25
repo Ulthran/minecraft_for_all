@@ -16,9 +16,9 @@ provisioned when a user confirms their account.
 3. `terraform -chdir=saas apply` will automatically upload the contents of
    `saas_web` to the created S3 bucket. The Cognito user pool ID and client ID
    are injected directly into the Vue components so the frontend can use the
-   Amazon Cognito JavaScript SDK. The console reads the cost, start and status endpoints from
-   custom attributes on the Cognito user after login using the
-   `vue-jwt-decode` library to parse the token.
+   Amazon Cognito JavaScript SDK. After login the console decodes the ID token
+   with `vue-jwt-decode`, reads the `tenant_id` attribute and builds the cost,
+   start and status URLs from that identifier.
 
 ## Local Development
 

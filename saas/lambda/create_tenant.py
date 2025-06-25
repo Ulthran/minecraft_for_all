@@ -39,13 +39,12 @@ def handler(event, context):
         "tenant_id": tenant_id,
     }
 
-    # Persist the new tenant ID along with other custom attributes
+    # Persist the new tenant ID
     try:
         cognito.admin_update_user_attributes(
             UserPoolId=user_pool_id,
             Username=username,
             UserAttributes=[
-                {"Name": "custom:mc_api_url", "Value": ""},
                 {"Name": "custom:tenant_id", "Value": tenant_id},
             ],
         )

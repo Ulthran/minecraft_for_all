@@ -95,7 +95,9 @@ export default {
             localStorage.setItem('token', token);
             try {
               const payload = VueJwtDecode.decode(token);
-              const apiUrl = payload['custom:mc_api_url'] || '';
+              const tenantId = payload['custom:tenant_id'] || '';
+              const apiUrl = tenantId ? `/MC_API/${tenantId}` : '';
+              localStorage.setItem('tenant_id', tenantId);
               localStorage.setItem('api_url', apiUrl);
             } catch (e) {
               console.error('Failed to parse token', e);
