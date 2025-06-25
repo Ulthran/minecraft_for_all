@@ -27,17 +27,18 @@ export default {
       showStart: false,
       cost: 'Fetching cost...',
       interval: null,
+      tenant_id: localStorage.getItem('tenant_id') || '',
       api_url: localStorage.getItem('api_url') || '',
     };
   },
   mounted() {
-    this.pollApiUrl();
+    this.initApiUrl();
   },
   beforeUnmount() {
     clearInterval(this.interval);
   },
   methods: {
-    async pollApiUrl() {
+    async initApiUrl() {
       if (this.api_url) {
         this.fetchStatus();
         this.fetchCost();
@@ -53,41 +54,24 @@ export default {
 
       try {
         const payload = VueJwtDecode.decode(token);
-        const user = new AmazonCognitoIdentity.CognitoUser({
-          Username: payload.email || payload['cognito:username'],
-          Pool: userPool,
-        });
-
-        await new Promise((resolve, reject) => {
-          user.getSession((err, session) => {
-            if (err) return reject(err);
-            return resolve(session);
-          });
-        });
-
-        const attrs = await new Promise((resolve, reject) => {
-          user.getUserAttributes((err, result) => {
-            if (err) return reject(err);
-            return resolve(result);
-          });
-        });
-
-        const apiAttr = attrs.find(a => a.getName() === 'custom:mc_api_url');
-        const url = apiAttr ? apiAttr.getValue() : '';
-        if (url) {
+        const tenantId = payload['custom:tenant_id'] || '';
+        if (tenantId) {
+          const url = `/MC_API/${tenantId}`;
+          localStorage.setItem('tenant_id', tenantId);
           localStorage.setItem('api_url', url);
+          this.tenant_id = tenantId;
           this.api_url = url;
           this.fetchStatus();
           this.fetchCost();
           this.interval = setInterval(this.fetchStatus, 30000);
         } else {
           this.status = 'Provisioning your server...';
-          setTimeout(this.pollApiUrl, 15000);
+          setTimeout(this.initApiUrl, 15000);
         }
       } catch (err) {
         console.error(err);
         this.status = 'Error checking server setup.';
-        setTimeout(this.pollApiUrl, 30000);
+        setTimeout(this.initApiUrl, 30000);
       }
     },
     authHeader() {
