@@ -35,32 +35,33 @@ locals {
 
   processed_files = {
     for f in local.site_files :
-    f => replace(
+    f => endswith(f, "favicon.ico") ? filebase64("${local.site_dir}/${f}") : replace(
+      replace(
       replace(
         replace(
+        replace(
           replace(
-            replace(
-              replace(
-                file("${local.site_dir}/${f}"),
-                "SIGNUP_API_URL", local.placeholders["SIGNUP_API_URL"]
-              ),
-              "LOGIN_API_URL", local.placeholders["LOGIN_API_URL"]
-            ),
-            "CONFIRM_API_URL", local.placeholders["CONFIRM_API_URL"]
+          file("${local.site_dir}/${f}"),
+          "SIGNUP_API_URL", local.placeholders["SIGNUP_API_URL"]
           ),
-          "USER_POOL_ID", local.placeholders["USER_POOL_ID"]
+          "LOGIN_API_URL", local.placeholders["LOGIN_API_URL"]
         ),
-        "USER_POOL_CLIENT_ID", local.placeholders["USER_POOL_CLIENT_ID"]
+        "CONFIRM_API_URL", local.placeholders["CONFIRM_API_URL"]
+        ),
+        "USER_POOL_ID", local.placeholders["USER_POOL_ID"]
+      ),
+      "USER_POOL_CLIENT_ID", local.placeholders["USER_POOL_CLIENT_ID"]
       ),
       "INIT_SERVER_API_URL", local.placeholders["INIT_SERVER_API_URL"]
     )
-  }
+    }
 
   mime_types = {
     html = "text/html"
     js   = "application/javascript"
     css  = "text/css"
     vue  = "text/plain"
+    ico = "image/x-icon"
   }
 }
 
