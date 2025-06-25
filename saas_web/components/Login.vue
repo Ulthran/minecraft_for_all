@@ -56,7 +56,9 @@ export default {
         });
 
         const token = session.getIdToken().getJwtToken();
+        const refreshToken = session.getRefreshToken().getToken();
         localStorage.setItem('token', token);
+        localStorage.setItem('refreshToken', refreshToken);
         this.message = 'Logged in!';
         this.$router.push('/console');
       } catch (err) {
