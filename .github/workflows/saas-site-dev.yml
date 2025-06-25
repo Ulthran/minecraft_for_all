@@ -31,6 +31,7 @@ jobs:
         with:
           python-version: '3.x'
       - name: Cache Playwright
+        id: cache-playwright
         uses: actions/cache@v4
         with:
           path: |
@@ -39,6 +40,7 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ hashFiles('tests/test_console.py') }}
           restore-keys: ${{ runner.os }}-playwright-
       - name: Install Playwright
+        if: steps.cache-playwright.outputs.cache-hit != 'true'
         run: |
           pip install playwright
           playwright install --with-deps
