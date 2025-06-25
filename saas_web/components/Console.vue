@@ -28,23 +28,17 @@ export default {
       cost: 'Fetching cost...',
       interval: null,
       tenant_id: localStorage.getItem('tenant_id') || '',
-      api_url: localStorage.getItem('api_url') || '',
+      api_url: '/MC_API',
     };
   },
   mounted() {
-    this.initApiUrl();
+    this.initApi();
   },
   beforeUnmount() {
     clearInterval(this.interval);
   },
   methods: {
-    async initApiUrl() {
-      if (this.api_url) {
-        this.fetchStatus();
-        this.fetchCost();
-        this.interval = setInterval(this.fetchStatus, 30000);
-        return;
-      }
+    async initApi() {
 
       const token = localStorage.getItem('token');
       if (!token) {
@@ -56,22 +50,19 @@ export default {
         const payload = VueJwtDecode.decode(token);
         const tenantId = payload['custom:tenant_id'] || '';
         if (tenantId) {
-          const url = `/MC_API/${tenantId}`;
           localStorage.setItem('tenant_id', tenantId);
-          localStorage.setItem('api_url', url);
           this.tenant_id = tenantId;
-          this.api_url = url;
           this.fetchStatus();
           this.fetchCost();
           this.interval = setInterval(this.fetchStatus, 30000);
         } else {
           this.status = 'Provisioning your server...';
-          setTimeout(this.initApiUrl, 15000);
+          setTimeout(this.initApi, 15000);
         }
       } catch (err) {
         console.error(err);
         this.status = 'Error checking server setup.';
-        setTimeout(this.initApiUrl, 30000);
+        setTimeout(this.initApi, 30000);
       }
     },
     authHeader() {
@@ -79,8 +70,8 @@ export default {
       return token ? { Authorization: `Bearer ${token}` } : {};
     },
     endpoint(path) {
-      const normalizedApiUrl = this.api_url.replace(/\/+$/, ''); // Remove trailing slashes
-      return normalizedApiUrl ? `${normalizedApiUrl}/${path}` : path;
+      const normalizedApiUrl = this.api_url.replace(/\/+$/, '');
+      return `${normalizedApiUrl}/${path}`;
     },
     async fetchStatus() {
       try {
