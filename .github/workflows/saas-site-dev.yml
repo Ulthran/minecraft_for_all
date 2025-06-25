@@ -30,6 +30,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
+      - name: Cache Playwright
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('tests/test_console.py') }}
+          restore-keys: ${{ runner.os }}-playwright-
       - name: Install Playwright
         run: |
           pip install playwright
