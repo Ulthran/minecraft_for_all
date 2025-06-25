@@ -1,4 +1,4 @@
-name: SaaS Site Dev Deploy
+name: SaaS Site Dev Test
 
 on:
   workflow_dispatch:
@@ -21,20 +21,18 @@ jobs:
       - name: Validate HTML
         run: html5validator --root saas_web
 
-  deploy:
+  console-check:
     needs: validate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: hashicorp/setup-terraform@v3
-      - uses: aws-actions/configure-aws-credentials@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-      - name: Terraform init
-        run: terraform -chdir=saas init
-      - name: Deploy website
-        run: terraform -chdir=saas apply -auto-approve
-        env:
-          TF_VAR_frontend_bucket_name: ${{ secrets.DEV_FRONTEND_BUCKET }}
+          python-version: '3.x'
+      - name: Install Playwright
+        run: |
+          pip install playwright
+          playwright install --with-deps
+      - name: Run console tests
+        run: python tests/test_console.py
