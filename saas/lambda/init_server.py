@@ -45,16 +45,26 @@ def handler(event, context):
     try:
         overworld_border = int(body.get("overworld_border", 3000))
     except (TypeError, ValueError):
-        return {"statusCode": 400, "body": json.dumps({"error": "invalid overworld_border"})}
+        return {"statusCode": 400, "body": json.dumps({"error": "overworld_border must be an integer"})}
     if not MIN_BORDER <= overworld_border <= MAX_BORDER:
-        return {"statusCode": 400, "body": json.dumps({"error": "invalid overworld_border"})}
+        return {
+            "statusCode": 400,
+            "body": json.dumps(
+                {"error": f"overworld_border must be between {MIN_BORDER} and {MAX_BORDER}"}
+            ),
+        }
 
     try:
         nether_border = int(body.get("nether_border", 3000))
     except (TypeError, ValueError):
-        return {"statusCode": 400, "body": json.dumps({"error": "invalid nether_border"})}
+        return {"statusCode": 400, "body": json.dumps({"error": "nether_border must be an integer"})}
     if not MIN_BORDER <= nether_border <= MAX_BORDER:
-        return {"statusCode": 400, "body": json.dumps({"error": "invalid nether_border"})}
+        return {
+            "statusCode": 400,
+            "body": json.dumps(
+                {"error": f"nether_border must be between {MIN_BORDER} and {MAX_BORDER}"}
+            ),
+        }
 
     params = [
         {"name": "TENANT_ID", "value": tenant_id, "type": "PLAINTEXT"},
