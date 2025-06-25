@@ -56,7 +56,7 @@ resource "aws_cognito_user_pool_client" "this" {
 
 
 resource "aws_iam_role" "lambda" {
-  name = "create-tenant-role"
+  name = "minecraft-create-tenant-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
@@ -82,7 +82,7 @@ data "archive_file" "lambda_create_tenant" {
 resource "aws_lambda_function" "create_tenant" {
   filename         = data.archive_file.lambda_create_tenant.output_path
   source_code_hash = data.archive_file.lambda_create_tenant.output_base64sha256
-  function_name    = "create-tenant"
+  function_name    = "minecraft-create-tenant"
   role             = aws_iam_role.lambda.arn
   handler          = "create_tenant.handler"
   runtime          = "python3.11"

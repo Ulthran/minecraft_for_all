@@ -6,7 +6,7 @@ variable "project_name" {
 variable "role_name" {
   description = "IAM role name for CodeBuild"
   type        = string
-  default     = "tenant-terraform-build"
+  default     = "minecraft-tenant-terraform-build"
 }
 
 variable "repository_url" {
