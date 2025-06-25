@@ -9,17 +9,32 @@ logger.setLevel(logging.INFO)
 ce = boto3.client("ce")
 
 def handler(event, context):
-    """Return this month's accumulated cost for the account."""
+    """Return this month's accumulated cost for the tenant."""
+    claims = (
+        event.get("requestContext", {})
+        .get("authorizer", {})
+        .get("jwt", {})
+        .get("claims", {})
+    )
+    tenant_id = claims.get("custom:tenant_id")
     today = date.today()
     start = today.replace(day=1).strftime("%Y-%m-%d")
     end = today.strftime("%Y-%m-%d")
     try:
-        resp = ce.get_cost_and_usage(
-            TimePeriod={"Start": start, "End": end},
-            Granularity="MONTHLY",
-            Metrics=["UnblendedCost"],
-            GroupBy=[{"Type": "DIMENSION", "Key": "SERVICE"}],
-        )
+        params = {
+            "TimePeriod": {"Start": start, "End": end},
+            "Granularity": "MONTHLY",
+            "Metrics": ["UnblendedCost"],
+            "GroupBy": [{"Type": "DIMENSION", "Key": "SERVICE"}],
+        }
+        if tenant_id:
+            params["Filter"] = {
+                "Tags": {
+                    "Key": "tenant_id",
+                    "Values": [tenant_id],
+                }
+            }
+        resp = ce.get_cost_and_usage(**params)
     except Exception:
         logger.exception("Failed to query cost explorer")
         return {"statusCode": 500, "body": json.dumps({"error": "Could not retrieve cost"})}

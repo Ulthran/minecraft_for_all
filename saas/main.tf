@@ -76,6 +76,13 @@ module "tenant_codebuild" {
   repository_url = var.repository_url
 }
 
+module "tenant_api" {
+  source              = "./modules/tenant_api"
+  user_pool_id        = module.auth.user_pool_id
+  user_pool_client_id = module.auth.user_pool_client_id
+  region              = var.region
+}
+
 
 output "user_pool_id" {
   value = module.auth.user_pool_id
@@ -95,4 +102,8 @@ output "frontend_url" {
 
 output "tenant_account_id" {
   value = module.tenant_account.tenant_account_id
+}
+
+output "tenant_api_url" {
+  value = module.tenant_api.api_url
 }
