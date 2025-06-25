@@ -8,15 +8,19 @@ def handler(event, context):
 
     cognito_client = boto3.client('cognito-idp')
 
-    cognito_client.admin_update_user_attributes(
-        UserPoolId=user_pool_id,
-        Username=username,
-        UserAttributes=[
-            {
-                'Name': 'custom:uuid',
-                'Value': str(uuid.uuid4())
-            }
-        ]
-    )
+    try:
+        cognito_client.admin_update_user_attributes(
+            UserPoolId=user_pool_id,
+            Username=username,
+            UserAttributes=[
+                {
+                    'Name': 'custom:uuid',
+                    'Value': str(uuid.uuid4())
+                }
+            ]
+        )
+    except Exception as e:
+        logger.error("Failed to update user attributes for user %s in pool %s: %s", username, user_pool_id, str(e))
+        raise
 
     return event
