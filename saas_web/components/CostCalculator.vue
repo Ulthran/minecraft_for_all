@@ -29,17 +29,26 @@
 </template>
 
 <script>
-import {
-  baseRates,
-  styleMultipliers,
-  hoursPerWeekToMonth,
-  storageRate,
-  dataTransferPerPlayerPerHour,
-  freeDataTransferGb,
-  dataTransferRate,
-  vcpuRate,
-  memoryRate,
-} from '../pricingData.js';
+const baseRates = {
+  Vanilla: 0.0168,
+  'Vanilla-ish PaperMC': 0.0336,
+  'PaperMC (heavier mods)': 0.0832,
+};
+
+const styleMultipliers = {
+  'Adventure and build bases together': 1,
+  'We like to make a lot of farms': 1.5,
+  "It's really best to have a villager breeder per chunk...": 2,
+};
+
+const hoursPerWeekToMonth = 4.3;
+const storageRate = 0.08;
+const dataTransferPerPlayerPerHour = 0.1;
+const freeDataTransferGb = 1;
+const dataTransferRate = 0.09;
+
+const vcpuRate = 0.008;
+const memoryRate = 0.004;
 
 export default {
   name: 'CostCalculator',

@@ -25,6 +25,12 @@
 </template>
 
 <script>
+const poolData = {
+  UserPoolId: 'USER_POOL_ID',
+  ClientId: 'USER_POOL_CLIENT_ID',
+};
+const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+
 export default {
   name: 'StepAccount',
   data() {
@@ -78,7 +84,7 @@ export default {
         }),
       ];
       return new Promise((resolve, reject) => {
-        window.userPool.signUp(email, password, attributeList, null, (err, result) => {
+        userPool.signUp(email, password, attributeList, null, (err, result) => {
           if (err) return reject(err);
           resolve(result);
         });
@@ -87,7 +93,7 @@ export default {
     confirmUser(email, code) {
       const user = new AmazonCognitoIdentity.CognitoUser({
         Username: email,
-        Pool: window.userPool,
+        Pool: userPool,
       });
       return new Promise((resolve, reject) => {
         user.confirmRegistration(code, true, (err, result) => {
@@ -99,7 +105,7 @@ export default {
     resendConfirmation(email) {
       const user = new AmazonCognitoIdentity.CognitoUser({
         Username: email,
-        Pool: window.userPool,
+        Pool: userPool,
       });
       return new Promise((resolve, reject) => {
         user.resendConfirmationCode((err, result) => {
@@ -115,7 +121,7 @@ export default {
       });
       const user = new AmazonCognitoIdentity.CognitoUser({
         Username: email,
-        Pool: window.userPool,
+        Pool: userPool,
       });
       return new Promise((resolve, reject) => {
         user.authenticateUser(authDetails, {

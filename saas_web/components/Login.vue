@@ -21,6 +21,12 @@
 <script>
 import VueJwtDecode from 'vue-jwt-decode'
 
+const poolData = {
+  UserPoolId: 'USER_POOL_ID',
+  ClientId: 'USER_POOL_CLIENT_ID',
+};
+const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+
 export default {
   name: 'Login',
   data() {
