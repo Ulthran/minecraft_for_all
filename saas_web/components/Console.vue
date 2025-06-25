@@ -43,7 +43,10 @@ export default {
     },
     async fetchStatus() {
       try {
-        const res = await fetch(this.endpoint('status'), { headers: this.authHeader() });
+        const res = await fetch(this.endpoint('status'), {
+          headers: this.authHeader(),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (data.state === 'running') {
           const players = data.players ?? 0;
@@ -72,7 +75,10 @@ export default {
     },
     async fetchCost() {
       try {
-        const res = await fetch(this.endpoint('cost'), { headers: this.authHeader() });
+        const res = await fetch(this.endpoint('cost'), {
+          headers: this.authHeader(),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         let text = `Monthly cost so far: $${data.total ?? 0}`;
         if (data.breakdown) {
