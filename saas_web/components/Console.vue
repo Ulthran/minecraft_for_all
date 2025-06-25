@@ -6,6 +6,8 @@
       <div>{{ status }}</div>
       <div class="mt-2">{{ cost }}</div>
       <v-btn v-if="showStart" @click="start" class="mt-2">Start Server</v-btn>
+      <h3 class="text-h6 mt-8 mb-2">Start a New Server</h3>
+      <StepConfig @complete="fetchStatus" />
       </v-col>
     </v-row>
   </v-container>
@@ -14,6 +16,14 @@
 <script>
 export default {
   name: 'Console',
+  components: {
+    StepConfig: Vue.defineAsyncComponent(() =>
+      window['vue3-sfc-loader'].loadModule(
+        `${window.componentsPath}/start/StepConfig.vue`,
+        window.loaderOptions,
+      ),
+    ),
+  },
   data() {
     return {
       status: 'Checking status...',

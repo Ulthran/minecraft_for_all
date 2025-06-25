@@ -29,9 +29,14 @@ export default {
       serverTypeOptions: ['vanilla', 'papermc'],
       instanceTypeOptions: ['t4g.small', 't4g.medium', 't4g.large'],
       playerOptions: Array.from({ length: 20 }, (_, i) => i + 1),
+      api_url: '/MC_API',
     };
   },
   methods: {
+    endpoint(path) {
+      const normalizedApiUrl = this.api_url.replace(/\/+$/, '');
+      return `${normalizedApiUrl}/${path}`;
+    },
     async initTenantServer() {
       this.message = 'Provisioning your server...';
       const token = localStorage.getItem('token');
@@ -45,7 +50,7 @@ export default {
         }
       }
       try {
-        const res = await fetch('INIT_SERVER_API_URL', {
+        const res = await fetch(this.endpoint('init'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
