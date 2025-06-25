@@ -16,6 +16,6 @@ This is a SaaS for providing a simple, pay-for-usage Minecraft server hosting op
 
 Before making your final contributions, make sure to perform linting and testing of any changed components. Anything that can be compiled should do so without error or warnings. If warnings are persistent, don't worry about it, we can address them later.
 
-Always run `terraform fmt -recursive` and `html5validator --root saas_web` before committing changes. Run `terraform init` and `terraform validate` on any terrform code that's been changed as well. Terraform can be installed through registry.terraform.io.
+Always run `terraform fmt -recursive` (install from registry.terraform.io) and `html5validator --root saas_web` before committing changes. Run `terraform init` and `terraform validate` on any terrform code that's been changed as well. Terraform can be installed through registry.terraform.io.
 
 On any changes to the Vue code, run `python dev_server.py` and check that all pages work as expected.
