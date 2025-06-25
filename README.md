@@ -39,12 +39,12 @@ network restrictions.
 
 ## SaaS Architecture
 
-A design proposal for running each tenant in a separate AWS account is available in [docs/saas_layer.md](docs/saas_layer.md).
+A design proposal for hosting all tenants in a single shared AWS account is available in [docs/saas_layer.md](docs/saas_layer.md).
 
 Step-by-step instructions for deploying the SaaS site and tenant provisioning Lambda are provided in [docs/saas_setup.md](docs/saas_setup.md).
 
-The same Terraform layer also provisions a CodeBuild project in the management account. The build assumes a role in the target tenant account when started, so no tenant information is needed until execution time.
-The `saas` directory contains Terraform configuration for creating tenant AWS accounts and a Cognito user pool for authentication. Copy `saas/terraform.tfvars.example` to `saas/terraform.tfvars` and update the values. Run `terraform -chdir=saas init` once to download the providers and modules, then you can use `terraform -chdir=saas validate` or `terraform -chdir=saas apply` from a management account that has access to AWS Organizations.
+The same Terraform layer also provisions a CodeBuild project that applies Terraform in the shared tenant account. Since everything lives in one account, the build uses its own IAM role directly.
+The `saas` directory contains Terraform configuration for creating the shared tenant AWS account and a Cognito user pool for authentication. Copy `saas/terraform.tfvars.example` to `saas/terraform.tfvars` and update the values. Run `terraform -chdir=saas init` once to download the providers and modules, then you can use `terraform -chdir=saas validate` or `terraform -chdir=saas apply` from a management account that has access to AWS Organizations.
 
 ### SaaS Website
 
