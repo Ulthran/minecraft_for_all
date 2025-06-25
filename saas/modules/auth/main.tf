@@ -2,7 +2,7 @@ resource "aws_cognito_user_pool" "this" {
   name = var.user_pool_name
 
   lambda_config {
-    post_confirmation = aws_lambda_function.create_tenant.arn
+    post_confirmation = aws_lambda_function.post_user_creation_hook.arn
   }
 
   auto_verified_attributes = ["email"]
@@ -49,7 +49,7 @@ resource "aws_cognito_user_pool_client" "this" {
 
 
 resource "aws_iam_role" "lambda" {
-  name = "minecraft-create-tenant-role"
+  name = "minecraft-post-user-creation-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
@@ -67,7 +67,7 @@ resource "aws_iam_role_policy_attachment" "lambda_logs" {
 }
 
 resource "aws_iam_role_policy" "allow_update_user" {
-  name = "minecraft-create-tenant-userupdate"
+  name = "minecraft-post-user-creation-userupdate"
   role = aws_iam_role.lambda.id
 
   policy = jsonencode({
@@ -80,18 +80,18 @@ resource "aws_iam_role_policy" "allow_update_user" {
   })
 }
 
-data "archive_file" "lambda_create_tenant" {
+data "archive_file" "lambda_post_user_creation_hook" {
   type        = "zip"
-  source_file = "${path.module}/../../lambda/create_tenant.py"
-  output_path = "${path.module}/lambda_create_tenant.zip"
+  source_file = "${path.module}/../../lambda/post_user_creation_hook.py"
+  output_path = "${path.module}/lambda_post_user_creation_hook.zip"
 }
 
-resource "aws_lambda_function" "create_tenant" {
-  filename         = data.archive_file.lambda_create_tenant.output_path
-  source_code_hash = data.archive_file.lambda_create_tenant.output_base64sha256
-  function_name    = "minecraft-create-tenant"
+resource "aws_lambda_function" "post_user_creation_hook" {
+  filename         = data.archive_file.lambda_post_user_creation_hook.output_path
+  source_code_hash = data.archive_file.lambda_post_user_creation_hook.output_base64sha256
+  function_name    = "minecraft-post-user-creation-hook"
   role             = aws_iam_role.lambda.arn
-  handler          = "create_tenant.handler"
+  handler          = "post_user_creation_hook.handler"
   runtime          = "python3.11"
   timeout          = 30
 
@@ -100,7 +100,7 @@ resource "aws_lambda_function" "create_tenant" {
 resource "aws_lambda_permission" "allow_cognito" {
   statement_id  = "AllowCognitoInvoke"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.create_tenant.function_name
+  function_name = aws_lambda_function.post_user_creation_hook.function_name
   principal     = "cognito-idp.amazonaws.com"
   source_arn    = aws_cognito_user_pool.this.arn
 }
