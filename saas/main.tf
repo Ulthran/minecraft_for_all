@@ -35,24 +35,30 @@ locals {
 
   processed_files = {
     for f in local.site_files :
-    f => replace(
-      replace(
+    f => (
+      endswith(f, "favicon.ico") ?
+      filebase64("${local.site_dir}/${f}") :
+      base64encode(
         replace(
           replace(
             replace(
               replace(
-                file("${local.site_dir}/${f}"),
-                "SIGNUP_API_URL", local.placeholders["SIGNUP_API_URL"]
+                replace(
+                  replace(
+                    file("${local.site_dir}/${f}"),
+                    "SIGNUP_API_URL", local.placeholders["SIGNUP_API_URL"]
+                  ),
+                  "LOGIN_API_URL", local.placeholders["LOGIN_API_URL"]
+                ),
+                "CONFIRM_API_URL", local.placeholders["CONFIRM_API_URL"]
               ),
-              "LOGIN_API_URL", local.placeholders["LOGIN_API_URL"]
+              "USER_POOL_ID", local.placeholders["USER_POOL_ID"]
             ),
-            "CONFIRM_API_URL", local.placeholders["CONFIRM_API_URL"]
+            "USER_POOL_CLIENT_ID", local.placeholders["USER_POOL_CLIENT_ID"]
           ),
-          "USER_POOL_ID", local.placeholders["USER_POOL_ID"]
-        ),
-        "USER_POOL_CLIENT_ID", local.placeholders["USER_POOL_CLIENT_ID"]
-      ),
-      "INIT_SERVER_API_URL", local.placeholders["INIT_SERVER_API_URL"]
+          "INIT_SERVER_API_URL", local.placeholders["INIT_SERVER_API_URL"]
+        )
+      )
     )
   }
 
@@ -61,20 +67,21 @@ locals {
     js   = "application/javascript"
     css  = "text/css"
     vue  = "text/plain"
+    ico  = "image/vnd.microsoft.icon"
   }
 }
 
 resource "aws_s3_object" "site" {
-  for_each = local.processed_files
-  bucket   = module.frontend_site.bucket_name
-  key      = each.key
-  content  = each.value
+  for_each       = local.processed_files
+  bucket         = module.frontend_site.bucket_name
+  key            = each.key
+  content_base64 = each.value
   content_type = lookup(
     local.mime_types,
     lower(element(reverse(split(".", each.key)), 0)),
-    "text/plain",
+    "application/octet-stream",
   )
-  etag = md5(each.value)
+  etag = md5(base64decode(each.value))
 }
 module "tenant_codebuild" {
   source         = "./modules/codebuild_provisioner"
