@@ -3,6 +3,7 @@ const options = {
     vue: Vue,
     'vue-router': VueRouter,
     'vue-jwt-decode': window['vue-jwt-decode'],
+    pinia: Pinia,
   },
   async getFile(url) {
     const res = await fetch(url);
@@ -54,5 +55,14 @@ const options = {
     },
   });
 
-  Vue.createApp(App).use(router).use(vuetify).mount('#app');
+  const pinia = Pinia.createPinia();
+  const authModule = await window['vue3-sfc-loader'].loadModule('./store.js', options);
+  const auth = authModule.useAuthStore(pinia);
+
+  router.beforeEach((to, from, next) => {
+    auth.updateLoggedIn();
+    next();
+  });
+
+  Vue.createApp(App).use(router).use(vuetify).use(pinia).mount('#app');
 })();
