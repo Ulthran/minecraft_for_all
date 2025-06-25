@@ -18,4 +18,4 @@ Before making your final contributions, make sure to perform linting and testing
 
 Always run `terraform fmt -recursive` (install from registry.terraform.io) and `html5validator --root saas_web` before committing changes. Run `terraform init` and `terraform validate` on any terrform code that's been changed as well. Terraform can be installed through registry.terraform.io.
 
-On any changes to the Vue code, run `python dev_server.py` and check that all pages work as expected.
+On any changes to the Vue code, run `python dev_server.py` and check that all pages work as expected. Any pages that have changed should not yield any JS errors unless expected as part of the mock endpoints.
