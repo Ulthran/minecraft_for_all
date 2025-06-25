@@ -34,6 +34,6 @@ def handler(event, context):
         codebuild.start_build(projectName=PROJECT_NAME, environmentVariablesOverride=params)
     except Exception as e:
         logger.exception("Failed to start build")
-        return {"statusCode": 500, "body": json.dumps({"error": str(e)})}
+        return {"statusCode": 500, "body": json.dumps({"error": "An internal server error occurred"})}
 
     return {"statusCode": 200, "body": json.dumps({"status": "started"})}
