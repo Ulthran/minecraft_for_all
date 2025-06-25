@@ -1,13 +1,10 @@
 #!/bin/bash
 set -euo pipefail
+# shellcheck disable=SC2269,SC2034
 # This variable is replaced by Terraform at deploy time
-# shellcheck disable=SC2269
 BACKUP_BUCKET="${BACKUP_BUCKET}"
-# shellcheck disable=SC2269
 SERVER_TYPE="${SERVER_TYPE}"
-# shellcheck disable=SC2269
 OVERWORLD_RADIUS="${OVERWORLD_RADIUS}"
-# shellcheck disable=SC2269
 NETHER_RADIUS="${NETHER_RADIUS}"
 
 LOG_FILE=/var/log/minecraft-setup.log
