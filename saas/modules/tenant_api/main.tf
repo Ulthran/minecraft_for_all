@@ -153,7 +153,7 @@ resource "aws_apigatewayv2_integration" "init" {
 
 resource "aws_apigatewayv2_route" "status" {
   api_id             = aws_apigatewayv2_api.this.id
-  route_key          = "GET /{tenant_id}/status"
+  route_key          = "GET /status"
   target             = "integrations/${aws_apigatewayv2_integration.status.id}"
   authorizer_id      = aws_apigatewayv2_authorizer.jwt.id
   authorization_type = "JWT"
@@ -161,7 +161,7 @@ resource "aws_apigatewayv2_route" "status" {
 
 resource "aws_apigatewayv2_route" "cost" {
   api_id             = aws_apigatewayv2_api.this.id
-  route_key          = "GET /{tenant_id}/cost"
+  route_key          = "GET /cost"
   target             = "integrations/${aws_apigatewayv2_integration.cost.id}"
   authorizer_id      = aws_apigatewayv2_authorizer.jwt.id
   authorization_type = "JWT"

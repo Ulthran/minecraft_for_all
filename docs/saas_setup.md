@@ -17,9 +17,9 @@ provisioned when a user confirms their account.
 3. `terraform -chdir=saas apply` will automatically upload the contents of
    `saas_web` to the created S3 bucket. The Cognito user pool ID and client ID
    are injected directly into the Vue components so the frontend can use the
-  Amazon Cognito JavaScript SDK. After login the console decodes the ID token
-  with `vue-jwt-decode` and builds the cost, start and status URLs using the
-  tenant identifier returned during signup.
+  Amazon Cognito JavaScript SDK. After login the console simply sends the ID
+  token with requests to `/MC_API` and the backend determines the tenant from
+  the JWT claims.
 
 ## Local Development
 
@@ -30,8 +30,8 @@ python3 dev_server.py --site saas_web
 ```
 
 This serves the site at <http://localhost:8000> and mocks all API endpoints so
-signup, login and the console work offline, including a fake cost API used on
-the console page.
+signup, login and the console work offline, including a fake cost API at
+`/MC_API/cost` used by the console page.
 
 ## Post Confirmation Hook
 
@@ -49,8 +49,8 @@ The function performs the following steps:
 The `saas` Terraform code builds and deploys this Lambda automatically and
 grants the user pool permission to invoke it.
 
-On subsequent logins the console can retrieve the tenant identifier from its
-stored configuration rather than the Cognito ID token.
+Because the tenant identifier is derived from the JWT, the console no longer
+stores any tenant-specific API configuration.
 
 ## Cost Reporting Lambda
 

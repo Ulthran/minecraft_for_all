@@ -22,8 +22,11 @@
 </template>
 
 <script>
+<<<<<<< HEAD
+=======
 const VueJwtDecode = window['vue-jwt-decode'];
 const useAuthStore = window.useAuthStore;
+>>>>>>> origin/main
 
 const poolData = {
   UserPoolId: 'USER_POOL_ID',
@@ -94,6 +97,8 @@ export default {
             });
             const token = session.getIdToken().getJwtToken();
             localStorage.setItem('token', token);
+<<<<<<< HEAD
+=======
             useAuthStore().updateLoggedIn();
             try {
               const payload = VueJwtDecode.decode(token);
@@ -104,6 +109,7 @@ export default {
             } catch (e) {
               console.error('Failed to parse token', e);
             }
+>>>>>>> origin/main
             sessionStorage.removeItem('pendingCreds');
             loggedIn = true;
           } catch (e) {

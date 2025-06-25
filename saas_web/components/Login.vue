@@ -19,9 +19,6 @@
 </template>
 
 <script>
-const VueJwtDecode = window['vue-jwt-decode'];
-const useAuthStore = window.useAuthStore;
-
 const poolData = {
   UserPoolId: 'USER_POOL_ID',
   ClientId: 'USER_POOL_CLIENT_ID',
@@ -60,16 +57,6 @@ export default {
 
         const token = session.getIdToken().getJwtToken();
         localStorage.setItem('token', token);
-        useAuthStore().updateLoggedIn();
-        try {
-          const payload = VueJwtDecode.decode(token);
-          const tenantId = payload['custom:tenant_id'] || '';
-          const apiUrl = tenantId ? `/MC_API/${tenantId}` : '';
-          localStorage.setItem('tenant_id', tenantId);
-          localStorage.setItem('api_url', apiUrl);
-        } catch (e) {
-          console.error('Failed to parse token', e);
-        }
         this.message = 'Logged in!';
         this.$router.push('/console');
       } catch (err) {
