@@ -10,7 +10,7 @@ This is a SaaS for providing a simple, pay-for-usage Minecraft server hosting op
 - docs/: Some docs
 - saas/: Infrastructure for the SaaS itself, things like the website, authentication set up, tenant creation capabilities
 - saas_web/: The SaaS landing page and user console
-- terraform/: The per-tenant infrastructure like the server and start/status/stop triggers
+- tenant/: The per-tenant infrastructure like the server and start/status/stop triggers
 
 ## Testing
 

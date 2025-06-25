@@ -1,8 +1,8 @@
 *.pem
-terraform/lambda.zip
+tenant/lambda.zip
 .terraform/
 .terraform.lock.hcl
-terraform/lambda/__pycache__/
+tenant/lambda/__pycache__/
 *.zip
 node_modules/
 *.tfstate

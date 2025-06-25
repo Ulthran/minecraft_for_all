@@ -21,6 +21,6 @@ phases:
       - export AWS_SECRET_ACCESS_KEY=$(echo $creds | jq -r .Credentials.SecretAccessKey)
       - export AWS_SESSION_TOKEN=$(echo $creds | jq -r .Credentials.SessionToken)
       - git clone $REPOSITORY_URL repo
-      - cd repo/terraform
+      - cd repo/tenant
       - terraform init -input=false
-      - terraform apply -auto-approve -input=false
+      - terraform apply -auto-approve -input=false -var "tenant_id=$TENANT_ID"
