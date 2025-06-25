@@ -25,6 +25,7 @@ locals {
   site_dir   = "${path.root}/../saas_web"
   site_files = fileset(local.site_dir, "**")
   placeholders = {
+<<<<<<< codex/replace-api-url-placeholder-in-site-and-terraform
     "SIGNUP_API_URL"      = module.auth.signup_api_url
     "LOGIN_API_URL"       = module.auth.login_api_url
     "CONFIRM_API_URL"     = module.auth.confirm_api_url
@@ -33,6 +34,13 @@ locals {
     "INIT_SERVER_API_URL" = "${module.tenant_api.api_url}/init"
     "MC_API_URL"          = module.tenant_api.api_url
   }
+=======
+    "SIGNUP_API_URL"  = module.auth.signup_api_url
+    "LOGIN_API_URL"   = module.auth.login_api_url
+    "CONFIRM_API_URL" = module.auth.confirm_api_url
+    "USER_POOL_ID"    = module.auth.user_pool_id
+  "USER_POOL_CLIENT_ID" = module.auth.user_pool_client_id }
+>>>>>>> main
 
   processed_files = {
     for f in local.site_files :
@@ -41,6 +49,7 @@ locals {
         replace(
           replace(
             replace(
+<<<<<<< codex/replace-api-url-placeholder-in-site-and-terraform
               replace(
                 replace(
                   file("${local.site_dir}/${f}"),
@@ -49,14 +58,18 @@ locals {
                 "SIGNUP_API_URL", local.placeholders["SIGNUP_API_URL"]
               ),
               "LOGIN_API_URL", local.placeholders["LOGIN_API_URL"]
+=======
+              file("${local.site_dir}/${f}"),
+              "SIGNUP_API_URL", local.placeholders["SIGNUP_API_URL"]
+>>>>>>> main
             ),
-            "CONFIRM_API_URL", local.placeholders["CONFIRM_API_URL"]
+            "LOGIN_API_URL", local.placeholders["LOGIN_API_URL"]
           ),
-          "USER_POOL_ID", local.placeholders["USER_POOL_ID"]
+          "CONFIRM_API_URL", local.placeholders["CONFIRM_API_URL"]
         ),
-        "USER_POOL_CLIENT_ID", local.placeholders["USER_POOL_CLIENT_ID"]
+        "USER_POOL_ID", local.placeholders["USER_POOL_ID"]
       ),
-      "INIT_SERVER_API_URL", local.placeholders["INIT_SERVER_API_URL"]
+      "USER_POOL_CLIENT_ID", local.placeholders["USER_POOL_CLIENT_ID"]
     )
   }
 
