@@ -51,5 +51,8 @@ def handler(event, context):
         logger.info("Stored tenant id for %s", username)
     except Exception:
         logger.exception("Failed to set default attributes for %s", username)
+        return { "statusCode": 500, "body": "Failed to set default attributes" }
+    
+    logger.debug("Returning event: %s", event)
 
     return event
