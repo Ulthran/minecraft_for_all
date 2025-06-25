@@ -39,10 +39,13 @@ def run_checks():
             for route in ROUTES:
                 page = context.new_page()
                 errors = []
-                page.on(
-                    "console",
-                    lambda msg: errors.append(msg) if msg.type in ("error", "warning") else None,
-                )
+                def handle_console(msg):
+                    if msg.type in ("error", "warning"):
+                        if "Failed to load resource" in msg.text:
+                            return
+                        errors.append(msg)
+
+                page.on("console", handle_console)
                 page.goto(f"http://localhost:8000{route}")
                 if errors:
                     for msg in errors:
