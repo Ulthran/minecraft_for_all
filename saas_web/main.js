@@ -57,8 +57,7 @@ window.loaderOptions = options;
   });
 
   const pinia = Pinia.createPinia();
-  const authModule = await window['vue3-sfc-loader'].loadModule('./store.js', options);
-  const auth = authModule.useAuthStore(pinia);
+  const auth = window.useAuthStore(pinia);
 
   router.beforeEach((to, from, next) => {
     auth.updateLoggedIn();

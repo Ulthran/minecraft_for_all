@@ -1,6 +1,6 @@
 const { defineStore } = Pinia;
 
-export const useAuthStore = defineStore('auth', {
+const useAuthStore = defineStore('auth', {
   state: () => ({
     loggedIn: !!localStorage.getItem('token'),
   }),
