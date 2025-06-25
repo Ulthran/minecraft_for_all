@@ -12,7 +12,7 @@ resource "aws_iam_role" "codebuild" {
 }
 
 resource "aws_iam_role_policy" "terraform" {
-  name = "codebuild-terraform-policy"
+  name = "minecraft-codebuild-terraform-policy"
   role = aws_iam_role.codebuild.id
 
   policy = jsonencode({

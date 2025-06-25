@@ -68,7 +68,7 @@ resource "aws_s3_object" "site" {
 }
 module "tenant_codebuild" {
   source         = "./modules/codebuild_provisioner"
-  project_name   = "tenant-terraform"
+  project_name   = "minecraft-tenant-terraform"
   repository_url = var.repository_url
 }
 

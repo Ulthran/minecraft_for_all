@@ -131,7 +131,7 @@ resource "aws_iam_role" "minecraft" {
   })
 
   inline_policy {
-    name = "s3-backup"
+    name = "minecraft-s3-backup"
     policy = jsonencode({
       Version = "2012-10-17"
       Statement = [{
