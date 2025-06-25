@@ -30,7 +30,7 @@ export default {
       showStart: false,
       cost: 'Fetching cost...',
       interval: null,
-      api_url: MC_API_URL,
+      api_url: 'MC_API_URL',
       };
     },
   mounted() {
