@@ -31,6 +31,7 @@ locals {
     "USER_POOL_ID"        = module.auth.user_pool_id
     "USER_POOL_CLIENT_ID" = module.auth.user_pool_client_id
     "INIT_SERVER_API_URL" = "${module.tenant_api.api_url}/init"
+    "MC_API_URL"          = module.tenant_api.api_url
   }
 
   processed_files = {
@@ -41,7 +42,10 @@ locals {
           replace(
             replace(
               replace(
-                file("${local.site_dir}/${f}"),
+                replace(
+                  file("${local.site_dir}/${f}"),
+                  "MC_API_URL", local.placeholders["MC_API_URL"]
+                ),
                 "SIGNUP_API_URL", local.placeholders["SIGNUP_API_URL"]
               ),
               "LOGIN_API_URL", local.placeholders["LOGIN_API_URL"]
