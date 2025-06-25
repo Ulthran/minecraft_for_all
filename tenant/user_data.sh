@@ -9,6 +9,8 @@ SERVER_TYPE="${SERVER_TYPE}"
 OVERWORLD_RADIUS="${OVERWORLD_RADIUS}"
 # shellcheck disable=SC2034,SC2269
 NETHER_RADIUS="${NETHER_RADIUS}"
+# shellcheck disable=SC2034,SC2269
+TENANT_ID="${TENANT_ID}"
 
 LOG_FILE=/var/log/minecraft-setup.log
 exec > >(tee -a "$LOG_FILE") 2>&1
@@ -127,7 +129,7 @@ mkdir -p "$BACKUP_DIR"
 cp -r /home/ec2-user/minecraft/world "$BACKUP_DIR"
 cd /home/ec2-user/minecraft_backup || exit
 zip -r "world-$TIMESTAMP.zip" "$TIMESTAMP"
-aws s3 cp "world-$TIMESTAMP.zip" s3://${BACKUP_BUCKET}/
+aws s3 cp "world-$TIMESTAMP.zip" "s3://${BACKUP_BUCKET}/${TENANT_ID}/" --tagging "CostCenter=${TENANT_ID}"
 rm -rf "$BACKUP_DIR" "world-$TIMESTAMP.zip"
 EOB
 
