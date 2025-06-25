@@ -17,16 +17,16 @@ export default {
   name: 'Start',
   components: {
     StepAccount: Vue.defineAsyncComponent(() =>
-      window['vue3-sfc-loader'].loadModule('./start/StepAccount.vue', window.loaderOptions)
+      window['vue3-sfc-loader'].loadModule('./components/start/StepAccount.vue', window.loaderOptions)
     ),
     StepPayment: Vue.defineAsyncComponent(() =>
-      window['vue3-sfc-loader'].loadModule('./start/StepPayment.vue', window.loaderOptions)
+      window['vue3-sfc-loader'].loadModule('./components/start/StepPayment.vue', window.loaderOptions)
     ),
     StepConfig: Vue.defineAsyncComponent(() =>
-      window['vue3-sfc-loader'].loadModule('./start/StepConfig.vue', window.loaderOptions)
+      window['vue3-sfc-loader'].loadModule('./components/start/StepConfig.vue', window.loaderOptions)
     ),
     StepIndicator: Vue.defineAsyncComponent(() =>
-      window['vue3-sfc-loader'].loadModule('./start/StepIndicator.vue', window.loaderOptions)
+      window['vue3-sfc-loader'].loadModule('./components/start/StepIndicator.vue', window.loaderOptions)
     ),
   },
   data() {
