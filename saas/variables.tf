@@ -33,6 +33,7 @@ variable "tenant_account_email" {
 variable "backup_bucket_name" {
   description = "S3 bucket for centralized tenant backups"
   type        = string
+  default     = "minecraft-saas-backups"
 }
 
 variable "tenant_ids" {
