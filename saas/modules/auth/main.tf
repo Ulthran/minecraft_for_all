@@ -73,6 +73,20 @@ resource "aws_iam_role_policy_attachment" "lambda_logs" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
+resource "aws_iam_role_policy" "allow_update_user" {
+  name = "minecraft-create-tenant-userupdate"
+  role = aws_iam_role.lambda.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect   = "Allow",
+      Action   = ["cognito-idp:AdminUpdateUserAttributes"],
+      Resource = aws_cognito_user_pool.this.arn
+    }]
+  })
+}
+
 data "archive_file" "lambda_create_tenant" {
   type        = "zip"
   source_file = "${path.module}/../../lambda/create_tenant.py"
