@@ -22,8 +22,8 @@
 </template>
 
 <script>
-import VueJwtDecode from 'vue-jwt-decode'
-import { useAuthStore } from '../store.js';
+const VueJwtDecode = window['vue-jwt-decode'];
+const useAuthStore = window.useAuthStore;
 
 const poolData = {
   UserPoolId: 'USER_POOL_ID',

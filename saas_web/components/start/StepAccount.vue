@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { useAuthStore } from '../../store.js';
+const useAuthStore = window.useAuthStore;
 const poolData = {
   UserPoolId: 'USER_POOL_ID',
   ClientId: 'USER_POOL_CLIENT_ID',
