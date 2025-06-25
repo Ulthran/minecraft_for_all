@@ -6,8 +6,9 @@ provisioned when a user confirms their account.
 ## Deploying the Website
 
 1. Copy `saas/terraform.tfvars.example` to `saas/terraform.tfvars` and set
-   `frontend_bucket_name` to the S3 bucket that will host the site. The bucket
-   remains private.
+   `frontend_bucket_name` to the S3 bucket that will host the site and
+   `backup_bucket_name` for the shared backup location. Both buckets remain
+   private.
 2. Run `terraform -chdir=saas init` followed by `terraform -chdir=saas apply` from
    an AWS account with access to AWS Organizations. This creates the user pool,
    a dedicated tenant account and the provisioning Lambda along with a CloudFront
@@ -32,22 +33,18 @@ This serves the site at <http://localhost:8000> and mocks all API endpoints so
 signup, login and the console work offline, including a fake cost API used on
 the console page.
 
-## Tenant Provisioning Lambda
+## Post Confirmation Hook
 
-The `create_tenant` Lambda function (`saas/lambda/create_tenant.py`) is attached
-as a *post confirmation* trigger on the Cognito user pool. When a new user
-confirms their account the function simply generates a tenant identifier and
-initializes the custom attributes for that user. All tenant infrastructure is
-deployed into a shared AWS account and tagged with this tenant ID for billing
-purposes.
+The `post_user_creation_hook` Lambda function (`saas/lambda/post_user_creation_hook.py`)
+is attached as a *post confirmation* trigger on the Cognito user pool. When a new
+user confirms their account the function assigns a UUID to a custom attribute so
+other services can uniquely reference the user.
 
-The function currently performs the following steps:
+The function performs the following steps:
 
-1. Read the confirmed user's email from the event.
-2. Generate a tenant identifier by appending the current UTC timestamp to a
-   short UUID.
-3. Include the identifier in the Lambda response so downstream provisioning can
-   tag resources appropriately.
+1. Read the `userPoolId` and `userName` from the event.
+2. Call Cognito's `AdminUpdateUserAttributes` API to set the `custom:uuid`
+   attribute to a random value.
 
 The `saas` Terraform code builds and deploys this Lambda automatically and
 grants the user pool permission to invoke it.

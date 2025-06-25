@@ -34,3 +34,14 @@ variable "init_server_api_url" {
   description = "API Gateway URL for initiating tenant infrastructure"
   type        = string
 }
+
+variable "backup_bucket_name" {
+  description = "S3 bucket for centralized tenant backups"
+  type        = string
+}
+
+variable "tenant_ids" {
+  description = "List of existing tenant identifiers"
+  type        = list(string)
+  default     = []
+}

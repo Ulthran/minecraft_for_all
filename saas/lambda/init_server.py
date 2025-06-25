@@ -24,16 +24,37 @@ def handler(event, context):
 
     params = [
         {"name": "TENANT_ID", "value": tenant_id, "type": "PLAINTEXT"},
-        {"name": "SERVER_TYPE", "value": body.get("server_type", "papermc"), "type": "PLAINTEXT"},
-        {"name": "INSTANCE_TYPE", "value": body.get("instance_type", "t4g.medium"), "type": "PLAINTEXT"},
-        {"name": "OVERWORLD_BORDER", "value": str(body.get("overworld_border", 3000)), "type": "PLAINTEXT"},
-        {"name": "NETHER_BORDER", "value": str(body.get("nether_border", 3000)), "type": "PLAINTEXT"},
+        {
+            "name": "SERVER_TYPE",
+            "value": body.get("server_type", "papermc"),
+            "type": "PLAINTEXT",
+        },
+        {
+            "name": "INSTANCE_TYPE",
+            "value": body.get("instance_type", "t4g.medium"),
+            "type": "PLAINTEXT",
+        },
+        {
+            "name": "OVERWORLD_BORDER",
+            "value": str(body.get("overworld_border", 3000)),
+            "type": "PLAINTEXT",
+        },
+        {
+            "name": "NETHER_BORDER",
+            "value": str(body.get("nether_border", 3000)),
+            "type": "PLAINTEXT",
+        },
     ]
 
     try:
-        codebuild.start_build(projectName=PROJECT_NAME, environmentVariablesOverride=params)
+        codebuild.start_build(
+            projectName=PROJECT_NAME, environmentVariablesOverride=params
+        )
     except Exception as e:
         logger.exception("Failed to start build")
-        return {"statusCode": 500, "body": json.dumps({"error": "An internal server error occurred"})}
+        return {
+            "statusCode": 500,
+            "body": json.dumps({"error": "An internal server error occurred"}),
+        }
 
     return {"statusCode": 200, "body": json.dumps({"status": "started"})}

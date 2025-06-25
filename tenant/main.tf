@@ -1,86 +1,3 @@
-resource "aws_s3_bucket" "backup" {
-  bucket = var.backup_bucket_name
-}
-
-resource "aws_s3_bucket" "web" {
-  bucket = var.web_bucket_name
-}
-
-resource "aws_s3_bucket_website_configuration" "web" {
-  bucket = aws_s3_bucket.web.id
-
-  index_document {
-    suffix = "index.html"
-  }
-}
-
-resource "aws_s3_bucket_policy" "web" {
-  bucket = aws_s3_bucket.web.id
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [{
-      Effect    = "Allow",
-      Principal = "*",
-      Action    = ["s3:GetObject"],
-      Resource  = "${aws_s3_bucket.web.arn}/*"
-    }]
-  })
-}
-
-resource "aws_cloudfront_distribution" "web" {
-  enabled             = true
-  default_root_object = "index.html"
-
-  origin {
-    domain_name = aws_s3_bucket.web.bucket_regional_domain_name
-    origin_id   = "s3-web"
-  }
-
-  default_cache_behavior {
-    target_origin_id       = "s3-web"
-    viewer_protocol_policy = "redirect-to-https"
-    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
-    cached_methods         = ["GET", "HEAD", "OPTIONS"]
-
-    forwarded_values {
-      query_string = false
-      cookies { forward = "none" }
-    }
-  }
-
-  price_class = "PriceClass_100"
-  viewer_certificate {
-    cloudfront_default_certificate = true
-  }
-
-  restrictions {
-    geo_restriction {
-      restriction_type = "none"
-    }
-  }
-}
-
-resource "aws_s3_bucket_lifecycle_configuration" "backup" {
-  bucket = aws_s3_bucket.backup.id
-
-  rule {
-    id     = "backup"
-    status = "Enabled"
-
-    filter {
-      prefix = ""
-    }
-
-    transition {
-      days          = 1
-      storage_class = "GLACIER"
-    }
-
-    expiration {
-      days = 365
-    }
-  }
-}
 
 resource "aws_security_group" "minecraft" {
   name        = "minecraft_sg"
@@ -344,7 +261,7 @@ output "minecraft_server_ip" {
 }
 
 output "backup_bucket" {
-  value = aws_s3_bucket.backup.bucket
+  value = var.backup_bucket_name
 }
 
 output "start_minecraft_api_url" {
@@ -355,6 +272,3 @@ output "status_minecraft_api_url" {
   value = aws_api_gateway_stage.status.invoke_url
 }
 
-output "web_url" {
-  value = aws_cloudfront_distribution.web.domain_name
-}
