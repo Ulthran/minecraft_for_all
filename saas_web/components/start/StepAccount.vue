@@ -163,6 +163,7 @@ export default {
           const session = await this.loginUser(this.email, this.password);
           const token = session.getIdToken().getJwtToken();
           localStorage.setItem('token', token);
+          window.dispatchEvent(new Event('token-changed'));
         } catch (e) {
           console.error('Auto login failed', e);
         }

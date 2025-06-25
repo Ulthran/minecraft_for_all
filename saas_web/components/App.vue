@@ -20,20 +20,34 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 export default {
   name: 'App',
   setup() {
     const router = useRouter();
-    const authState = ref(!!localStorage.getItem('token'));
+    const loggedIn = ref(!!localStorage.getItem('token'));
+    const updateLoggedIn = () => {
+      loggedIn.value = !!localStorage.getItem('token');
+    };
+    router.beforeEach((to, from, next) => {
+      updateLoggedIn();
+      next();
+    });
+    onMounted(() => {
+      window.addEventListener('token-changed', updateLoggedIn);
+    });
+    onUnmounted(() => {
+      window.removeEventListener('token-changed', updateLoggedIn);
+    });
     const logout = () => {
       localStorage.removeItem('token');
       localStorage.removeItem('urls');
-      authState.value = false;
+      loggedIn.value = false;
+      window.dispatchEvent(new Event('token-changed'));
       router.push('/');
     };
-    return { authState, logout };
+    return { loggedIn, logout };
   },
 };
 </script>

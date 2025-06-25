@@ -59,6 +59,7 @@ export default {
 
         const token = session.getIdToken().getJwtToken();
         localStorage.setItem('token', token);
+        window.dispatchEvent(new Event('token-changed'));
         try {
           const payload = VueJwtDecode.decode(token);
           const tenantId = payload['custom:tenant_id'] || '';
