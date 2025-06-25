@@ -6,8 +6,9 @@ provisioned when a user confirms their account.
 ## Deploying the Website
 
 1. Copy `saas/terraform.tfvars.example` to `saas/terraform.tfvars` and set
-   `frontend_bucket_name` to the S3 bucket that will host the site. The bucket
-   remains private.
+   `frontend_bucket_name` to the S3 bucket that will host the site and
+   `backup_bucket_name` for the shared backup location. Both buckets remain
+   private.
 2. Run `terraform -chdir=saas init` followed by `terraform -chdir=saas apply` from
    an AWS account with access to AWS Organizations. This creates the user pool,
    a dedicated tenant account and the provisioning Lambda along with a CloudFront

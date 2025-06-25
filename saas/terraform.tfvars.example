@@ -1,3 +1,5 @@
 frontend_bucket_name = "example-landing-bucket"
 
 tenant_account_email = "tenants@example.com"
+
+backup_bucket_name = "example-backup-bucket"

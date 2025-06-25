@@ -8,7 +8,7 @@ through IAM roles rather than separate AWS accounts.
 - Use the `aws_organizations_account` resource to create a single account that hosts all tenant infrastructure.
 - Resources for each tenant are tagged with a unique identifier so usage and billing can be tracked per customer.
 - IAM roles restrict each tenant to only their tagged resources.
-- Each tenant still receives a dedicated VPC, EC2 instance and web bucket within the shared account.
+ - Each tenant still receives a dedicated VPC and EC2 instance within the shared account. World backups are stored in a shared S3 bucket managed by the SaaS layer instead of per-tenant buckets.
 
 ## Authentication
 - Central authentication can be provided by Amazon Cognito in the management account.

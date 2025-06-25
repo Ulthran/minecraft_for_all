@@ -15,6 +15,12 @@ module "tenant_account" {
   tenant_account_email = var.tenant_account_email
 }
 
+module "backup_bucket" {
+  source      = "./modules/backup_bucket"
+  bucket_name = var.backup_bucket_name
+  tenant_ids  = var.tenant_ids
+}
+
 locals {
   site_dir   = "${path.root}/../saas_web"
   site_files = fileset(local.site_dir, "**")
@@ -95,4 +101,8 @@ output "frontend_url" {
 
 output "tenant_account_id" {
   value = module.tenant_account.tenant_account_id
+}
+
+output "backup_bucket" {
+  value = module.backup_bucket.bucket_name
 }
