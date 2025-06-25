@@ -15,20 +15,20 @@
 <script>
 export default {
   name: 'Start',
-  components: {
-    StepAccount: Vue.defineAsyncComponent(() =>
-      window['vue3-sfc-loader'].loadModule('./components/start/StepAccount.vue', window.loaderOptions)
-    ),
-    StepPayment: Vue.defineAsyncComponent(() =>
-      window['vue3-sfc-loader'].loadModule('./components/start/StepPayment.vue', window.loaderOptions)
-    ),
-    StepConfig: Vue.defineAsyncComponent(() =>
-      window['vue3-sfc-loader'].loadModule('./components/start/StepConfig.vue', window.loaderOptions)
-    ),
-    StepIndicator: Vue.defineAsyncComponent(() =>
-      window['vue3-sfc-loader'].loadModule('./components/start/StepIndicator.vue', window.loaderOptions)
-    ),
-  },
+    components: {
+      StepAccount: Vue.defineAsyncComponent(() =>
+        window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/start/StepAccount.vue`, window.loaderOptions)
+      ),
+      StepPayment: Vue.defineAsyncComponent(() =>
+        window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/start/StepPayment.vue`, window.loaderOptions)
+      ),
+      StepConfig: Vue.defineAsyncComponent(() =>
+        window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/start/StepConfig.vue`, window.loaderOptions)
+      ),
+      StepIndicator: Vue.defineAsyncComponent(() =>
+        window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/start/StepIndicator.vue`, window.loaderOptions)
+      ),
+    },
   data() {
     return { step: 1 };
   },
