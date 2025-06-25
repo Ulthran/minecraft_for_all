@@ -29,3 +29,8 @@ variable "tenant_account_email" {
   description = "Email used for the shared tenant AWS account"
   type        = string
 }
+
+variable "init_server_api_url" {
+  description = "API Gateway URL for initiating tenant infrastructure"
+  type        = string
+}
