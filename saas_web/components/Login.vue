@@ -19,7 +19,6 @@
 </template>
 
 <script>
-
 const poolData = {
   UserPoolId: 'USER_POOL_ID',
   ClientId: 'USER_POOL_CLIENT_ID',

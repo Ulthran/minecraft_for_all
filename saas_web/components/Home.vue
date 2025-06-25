@@ -23,9 +23,12 @@
 </template>
 
 <script>
-import CostCalculator from './CostCalculator.vue';
 export default {
   name: 'Home',
-  components: { CostCalculator },
+  components: {
+    CostCalculator: Vue.defineAsyncComponent(() =>
+      window['vue3-sfc-loader'].loadModule('./CostCalculator.vue', window.loaderOptions)
+    ),
+  },
 };
 </script>

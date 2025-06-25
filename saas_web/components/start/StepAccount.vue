@@ -25,6 +25,7 @@
 </template>
 
 <script>
+const useAuthStore = window.useAuthStore;
 const poolData = {
   UserPoolId: 'USER_POOL_ID',
   ClientId: 'USER_POOL_CLIENT_ID',
@@ -163,6 +164,7 @@ export default {
           const session = await this.loginUser(this.email, this.password);
           const token = session.getIdToken().getJwtToken();
           localStorage.setItem('token', token);
+          useAuthStore().updateLoggedIn();
         } catch (e) {
           console.error('Auto login failed', e);
         }

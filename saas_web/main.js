@@ -3,6 +3,7 @@ const options = {
     vue: Vue,
     'vue-router': VueRouter,
     'vue-jwt-decode': window['vue-jwt-decode'],
+    pinia: Pinia,
   },
   async getFile(url) {
     const res = await fetch(url);
@@ -17,6 +18,7 @@ const options = {
     document.head.insertBefore(style, ref);
   },
 };
+window.loaderOptions = options;
 
 (async () => {
   const [App] = await Promise.all([
@@ -54,5 +56,13 @@ const options = {
     },
   });
 
-  Vue.createApp(App).use(router).use(vuetify).mount('#app');
+  const pinia = Pinia.createPinia();
+  const auth = window.useAuthStore(pinia);
+
+  router.beforeEach((to, from, next) => {
+    auth.updateLoggedIn();
+    next();
+  });
+
+  Vue.createApp(App).use(router).use(vuetify).use(pinia).mount('#app');
 })();

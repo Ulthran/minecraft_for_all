@@ -86,10 +86,14 @@ resource "aws_instance" "minecraft" {
   root_block_device {
     volume_size = 30
     volume_type = "gp3"
+    tags = merge({
+      CostCenter = var.tenant_id
+    }, var.tags)
   }
 
   user_data = templatefile("${path.module}/user_data.sh", {
     BACKUP_BUCKET    = var.backup_bucket_name,
+    TENANT_ID        = var.tenant_id,
     SERVER_TYPE      = var.server_type,
     OVERWORLD_RADIUS = var.overworld_border_radius,
     NETHER_RADIUS    = var.nether_border_radius
