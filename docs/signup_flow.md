@@ -38,13 +38,12 @@ Storing the configuration in DynamoDB avoids Cognito's 2048 character limit for 
 
 ## 2. Post‑Verification Hook
 
-`saas/lambda/create_tenant.py` runs when the user confirms their account. The function generates a tenant identifier by combining a short UUID with the current timestamp and includes it in the Lambda response. It can also read the custom attributes or look up the pending configuration in DynamoDB. The values are included when triggering the CodeBuild provisioning project:
+`saas/lambda/post_user_creation_hook.py` runs when the user confirms their account. The function assigns a new UUID to the `custom:uuid` attribute so later provisioning steps can reliably reference the user:
 
 ```python
 codebuild.start_build(
     projectName='tenant-terraform',
     environmentVariablesOverride=[
-        { 'name': 'TENANT_ID', 'value': tenant_id, 'type': 'PLAINTEXT' },
         { 'name': 'PLAYER_COUNT', 'value': players, 'type': 'PLAINTEXT' },
         { 'name': 'WHITELISTED_PLAYERS', 'value': ','.join(whitelisted_players), 'type': 'PLAINTEXT' },
     ],
