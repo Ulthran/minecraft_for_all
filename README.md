@@ -56,8 +56,8 @@ during `terraform apply`. The website files also receive the Cognito user pool
 ID and client ID which are inserted into a small helper module. The signup,
  verification and login components use the Amazon Cognito JavaScript SDK instead
  of raw API requests. After logging in the console decodes the ID token with
- `vue-jwt-decode`, reads the `tenant_id` custom attribute and constructs the
- cost, start and status URLs using this identifier. No manual placeholder
+ `vue-jwt-decode` and constructs the cost, start and status URLs using the
+ tenant identifier returned during provisioning. No manual placeholder
  replacement is required.
 
 Example `terraform.tfvars` entries:
