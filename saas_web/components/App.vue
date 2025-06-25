@@ -30,10 +30,6 @@ export default {
     const updateLoggedIn = () => {
       loggedIn.value = !!localStorage.getItem('token');
     };
-    router.beforeEach((to, from, next) => {
-      updateLoggedIn();
-      next();
-    });
     onMounted(() => {
       window.addEventListener('token-changed', updateLoggedIn);
     });

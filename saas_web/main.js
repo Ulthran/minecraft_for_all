@@ -38,6 +38,11 @@ const options = {
     ],
   });
 
+  router.beforeEach((to, from, next) => {
+    window.dispatchEvent(new Event('token-changed'));
+    next();
+  });
+
   const vuetify = Vuetify.createVuetify({
     theme: {
       defaultTheme: 'dark',
