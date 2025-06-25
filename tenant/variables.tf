@@ -23,10 +23,6 @@ variable "subnet_id" {
   type        = string
 }
 
-variable "web_bucket_name" {
-  description = "Unique S3 bucket name for the web interface"
-  type        = string
-}
 
 variable "tenant_id" {
   description = "Unique identifier for the tenant"

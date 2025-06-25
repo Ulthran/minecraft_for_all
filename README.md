@@ -64,6 +64,7 @@ Example `terraform.tfvars` entries:
 
 ```hcl
 frontend_bucket_name = "example-landing-bucket"
+backup_bucket_name  = "example-backup-bucket"
 ```
 
 
