@@ -43,7 +43,8 @@ export default {
   },
   methods: {
     // No initialization needed; the backend uses the JWT to determine the tenant
-  authHeader() {
+  async authHeader() {
+      await window.refreshTokenIfNeeded();
       const token = localStorage.getItem('token');
       return token ? { Authorization: `Bearer ${token}` } : {};
     },
@@ -54,7 +55,7 @@ export default {
     async fetchStatus() {
       try {
         const res = await fetch(this.endpoint('status'), {
-          headers: this.authHeader(),
+          headers: await this.authHeader(),
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
@@ -75,7 +76,7 @@ export default {
       this.showStart = false;
       this.status = 'Starting...';
       try {
-        const res = await fetch(this.endpoint('start'), { method: 'POST', headers: this.authHeader() });
+        const res = await fetch(this.endpoint('start'), { method: 'POST', headers: await this.authHeader() });
         if (!res.ok) throw new Error('Failed');
       } catch (err) {
         console.error(err);
@@ -86,7 +87,7 @@ export default {
     async fetchCost() {
       try {
         const res = await fetch(this.endpoint('cost'), {
-          headers: this.authHeader(),
+          headers: await this.authHeader(),
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();

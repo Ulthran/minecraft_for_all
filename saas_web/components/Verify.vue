@@ -90,7 +90,9 @@ export default {
               });
             });
             const token = session.getIdToken().getJwtToken();
+            const refreshToken = session.getRefreshToken().getToken();
             localStorage.setItem('token', token);
+            localStorage.setItem('refreshToken', refreshToken);
             sessionStorage.removeItem('pendingCreds');
             loggedIn = true;
           } catch (e) {

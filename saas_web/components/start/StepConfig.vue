@@ -39,6 +39,7 @@ export default {
     },
     async initTenantServer() {
       this.message = 'Provisioning your server...';
+      await window.refreshTokenIfNeeded();
       const token = localStorage.getItem('token');
       let tenantId = '';
       if (token) {
