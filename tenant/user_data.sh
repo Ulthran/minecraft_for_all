@@ -3,6 +3,9 @@ set -euo pipefail
 # This variable is replaced by Terraform at deploy time
 # shellcheck disable=SC2269
 BACKUP_BUCKET="${BACKUP_BUCKET}"
+SERVER_TYPE="${SERVER_TYPE}"
+OVERWORLD_RADIUS="${OVERWORLD_RADIUS}"
+NETHER_RADIUS="${NETHER_RADIUS}"
 
 LOG_FILE=/var/log/minecraft-setup.log
 exec > >(tee -a "$LOG_FILE") 2>&1
@@ -31,12 +34,14 @@ mkdir -p /home/ec2-user/minecraft
 sudo chmod -R 777 /home/ec2-user/minecraft
 cd /home/ec2-user/minecraft || exit
 
-# Download Minecraft server
-#wget https://piston-data.mojang.com/v1/objects/e6ec2f64e6080b9b5d9b471b291c33cc7f509733/server.jar -O server.jar
-#echo "eula=true" > eula.txt
-
-# Dowload PaperMC server
-wget https://api.papermc.io/v2/projects/paper/versions/1.21.4/builds/225/downloads/paper-1.21.4-225.jar -O paper.jar
+# Download server jar based on type
+if [ "$SERVER_TYPE" = "vanilla" ]; then
+  wget https://piston-data.mojang.com/v1/objects/e6ec2f64e6080b9b5d9b471b291c33cc7f509733/server.jar -O server.jar
+  JAR_NAME="server.jar"
+else
+  wget https://api.papermc.io/v2/projects/paper/versions/1.21.4/builds/225/downloads/paper-1.21.4-225.jar -O paper.jar
+  JAR_NAME="paper.jar"
+fi
 echo "eula=true" > eula.txt
 
 # Configure server.properties for RCON
@@ -55,7 +60,7 @@ After=network.target
 
 [Service]
 WorkingDirectory=/home/ec2-user/minecraft
-ExecStart=java -Xms2G -Xmx2G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -jar paper.jar --nogui
+ExecStart=java -Xms2G -Xmx2G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -jar $${JAR_NAME} --nogui
 
 StandardOutput=null
 StandardError=null
@@ -77,34 +82,36 @@ cd mcrcon || exit
 make
 sudo install mcrcon /usr/local/bin
 
-# Install plugins
-cd /home/ec2-user/minecraft/plugins || exit
-wget https://cdn.modrinth.com/data/fALzjamp/versions/SmZRkQyR/Chunky-Bukkit-1.4.36.jar
-wget https://cdn.modrinth.com/data/s86X568j/versions/asaBBItO/ChunkyBorder-Bukkit-1.2.23.jar
-wget https://github.com/ViaVersion/ViaVersion/releases/download/5.3.2/ViaVersion-5.3.2.jar
-wget https://cdn.modrinth.com/data/p1ewR5kV/versions/Ypqt7eH1/unifiedmetrics-platform-bukkit-0.3.8.jar
-wget https://github.com/EssentialsX/Essentials/releases/download/2.21.0/EssentialsX-2.21.0.jar
 
-# Wait up to 60s for port 25575 to be ready
-for _ in {1..30}; do
-nc -z 127.0.0.1 25575 && break
-echo "Waiting for Minecraft server to start..."
-sleep 2
-done
+if [ "$SERVER_TYPE" = "papermc" ]; then
+  # Install plugins
+  cd /home/ec2-user/minecraft/plugins || exit
+  wget https://cdn.modrinth.com/data/fALzjamp/versions/SmZRkQyR/Chunky-Bukkit-1.4.36.jar
+  wget https://cdn.modrinth.com/data/s86X568j/versions/asaBBItO/ChunkyBorder-Bukkit-1.2.23.jar
+  wget https://github.com/ViaVersion/ViaVersion/releases/download/5.3.2/ViaVersion-5.3.2.jar
+  wget https://cdn.modrinth.com/data/p1ewR5kV/versions/Ypqt7eH1/unifiedmetrics-platform-bukkit-0.3.8.jar
+  wget https://github.com/EssentialsX/Essentials/releases/download/2.21.0/EssentialsX-2.21.0.jar
 
-# Configure plugins
-mcrcon -H 127.0.0.1 -P 25575 -p minecraft "chunky radius 3000"
-mcrcon -H 127.0.0.1 -P 25575 -p minecraft "chunky border add"
-mcrcon -H 127.0.0.1 -P 25575 -p minecraft "chunky world the_nether"
-mcrcon -H 127.0.0.1 -P 25575 -p minecraft "chunky shape circle"
-mcrcon -H 127.0.0.1 -P 25575 -p minecraft "chunky spawn"
-mcrcon -H 127.0.0.1 -P 25575 -p minecraft "chunky radius 1000"
-mcrcon -H 127.0.0.1 -P 25575 -p minecraft "chunky border add"
-mcrcon -H 127.0.0.1 -P 25575 -p minecraft "chunky world the_end"
-mcrcon -H 127.0.0.1 -P 25575 -p minecraft "chunky border remove"
+  # Wait up to 60s for port 25575 to be ready
+  for _ in {1..30}; do
+    nc -z 127.0.0.1 25575 && break
+    echo "Waiting for Minecraft server to start..."
+    sleep 2
+  done
 
-mcrcon -H 127.0.0.1 -P 25575 -p minecraft "chunky world the_overworld"
-mcrcon -H 127.0.0.1 -P 25575 -p minecraft "chunky start"
+  # Configure plugins
+  mcrcon -H 127.0.0.1 -P 25575 -p minecraft "chunky radius ${OVERWORLD_RADIUS}"
+  mcrcon -H 127.0.0.1 -P 25575 -p minecraft "chunky border add"
+  mcrcon -H 127.0.0.1 -P 25575 -p minecraft "chunky world the_nether"
+  mcrcon -H 127.0.0.1 -P 25575 -p minecraft "chunky shape circle"
+  mcrcon -H 127.0.0.1 -P 25575 -p minecraft "chunky spawn"
+  mcrcon -H 127.0.0.1 -P 25575 -p minecraft "chunky radius ${NETHER_RADIUS}"
+  mcrcon -H 127.0.0.1 -P 25575 -p minecraft "chunky border add"
+  mcrcon -H 127.0.0.1 -P 25575 -p minecraft "chunky world the_end"
+  mcrcon -H 127.0.0.1 -P 25575 -p minecraft "chunky border remove"
+
+  mcrcon -H 127.0.0.1 -P 25575 -p minecraft "chunky world the_overworld"
+fi
 
 # Create backup script
 cat << 'EOB' > /home/ec2-user/minecraft/backup.sh

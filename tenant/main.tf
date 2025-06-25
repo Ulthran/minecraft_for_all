@@ -159,7 +159,7 @@ data "aws_ami" "amazon_linux" {
 
 resource "aws_instance" "minecraft" {
   ami                    = data.aws_ami.amazon_linux.id
-  instance_type          = "t4g.medium"
+  instance_type          = var.instance_type
   subnet_id              = var.subnet_id
   vpc_security_group_ids = [aws_security_group.minecraft.id]
   key_name               = var.key_pair_name
@@ -172,7 +172,10 @@ resource "aws_instance" "minecraft" {
   }
 
   user_data = templatefile("${path.module}/user_data.sh", {
-    BACKUP_BUCKET = var.backup_bucket_name
+    BACKUP_BUCKET    = var.backup_bucket_name,
+    SERVER_TYPE      = var.server_type,
+    OVERWORLD_RADIUS = var.overworld_border_radius,
+    NETHER_RADIUS    = var.nether_border_radius
   })
 }
 

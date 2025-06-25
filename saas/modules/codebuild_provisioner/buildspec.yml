@@ -14,4 +14,9 @@ phases:
       - git clone $REPOSITORY_URL repo
       - cd repo/tenant
       - terraform init -input=false
-      - terraform apply -auto-approve -input=false -var "tenant_id=$TENANT_ID"
+      - terraform apply -auto-approve -input=false \
+          -var "tenant_id=$TENANT_ID" \
+          -var "server_type=$SERVER_TYPE" \
+          -var "instance_type=$INSTANCE_TYPE" \
+          -var "overworld_border_radius=$OVERWORLD_BORDER" \
+          -var "nether_border_radius=$NETHER_BORDER"

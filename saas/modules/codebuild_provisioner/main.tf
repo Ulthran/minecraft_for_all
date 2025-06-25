@@ -54,6 +54,26 @@ resource "aws_codebuild_project" "this" {
       name  = "REPOSITORY_URL"
       value = var.repository_url
     }
+    environment_variable {
+      name  = "TENANT_ID"
+      value = ""
+    }
+    environment_variable {
+      name  = "SERVER_TYPE"
+      value = "papermc"
+    }
+    environment_variable {
+      name  = "INSTANCE_TYPE"
+      value = "t4g.medium"
+    }
+    environment_variable {
+      name  = "OVERWORLD_BORDER"
+      value = "3000"
+    }
+    environment_variable {
+      name  = "NETHER_BORDER"
+      value = "3000"
+    }
     privileged_mode = false
   }
 }

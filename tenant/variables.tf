@@ -33,6 +33,30 @@ variable "tenant_id" {
   type        = string
 }
 
+variable "server_type" {
+  description = "Minecraft server type"
+  type        = string
+  default     = "papermc"
+}
+
+variable "instance_type" {
+  description = "EC2 instance type"
+  type        = string
+  default     = "t4g.medium"
+}
+
+variable "overworld_border_radius" {
+  description = "Overworld border radius"
+  type        = number
+  default     = 3000
+}
+
+variable "nether_border_radius" {
+  description = "Nether border radius"
+  type        = number
+  default     = 3000
+}
+
 variable "tags" {
   description = "Tags to apply to all resources"
   type        = map(string)
