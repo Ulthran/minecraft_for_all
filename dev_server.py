@@ -6,6 +6,7 @@ import http.server
 import json
 import os
 import logging
+import re
 from functools import partial
 
 PORT = 8000
@@ -20,8 +21,16 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")
         super().end_headers()
 
+    def _normalized_path(self, path):
+        """Collapse tenant-specific API paths to generic ones."""
+        m = re.match(r"^/MC_API/[^/]+/(.*)$", path)
+        if m:
+            return f"/MC_API/{m.group(1)}"
+        return path
+
     def do_GET(self):
-        resp = MOCK_RESPONSES.get(("GET", self.path))
+        path = self._normalized_path(self.path)
+        resp = MOCK_RESPONSES.get(("GET", path))
         if resp:
             status, body = resp
             self.send_response(status)
@@ -34,7 +43,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         super().do_GET()
 
     def do_POST(self):
-        resp = MOCK_RESPONSES.get(("POST", self.path))
+        path = self._normalized_path(self.path)
+        resp = MOCK_RESPONSES.get(("POST", path))
         if resp:
             status, body = resp
             self.send_response(status)

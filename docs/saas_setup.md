@@ -30,8 +30,8 @@ python3 dev_server.py --site saas_web
 ```
 
 This serves the site at <http://localhost:8000> and mocks all API endpoints so
-signup, login and the console work offline, including a fake cost API used on
-the console page.
+signup, login and the console work offline. It simulates the tenant API paths
+such as `/MC_API/<tenant_id>/cost` for the console page.
 
 ## Post Confirmation Hook
 

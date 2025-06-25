@@ -76,5 +76,6 @@ python3 dev_server.py
 ```
 
 This serves the files from `saas_web` and mocks the various API endpoints so the
-forms and console can be tested without deploying any backend, including a dummy
-`/MC_API/cost` used on the console page.
+forms and console can be tested without deploying any backend. The development
+server also simulates the tenant API paths like `/MC_API/<tenant_id>/cost` used
+on the console page.
