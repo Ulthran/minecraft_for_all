@@ -25,13 +25,6 @@ Happy crafting!
 EOF
   }
 
-  # Custom attribute for the tenant API base URL
-  schema {
-    attribute_data_type = "String"
-    name                = "mc_api_url"
-    mutable             = true
-  }
-
   # Custom attribute storing the tenant identifier assigned during signup
   schema {
     attribute_data_type = "String"
