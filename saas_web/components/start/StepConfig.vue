@@ -4,9 +4,9 @@
       <v-select v-model="serverType" :items="serverTypeOptions" label="Server Type" required></v-select>
       <v-select v-model="instanceType" :items="instanceTypeOptions" label="Instance Type" required></v-select>
       <v-select v-model="players" :items="playerOptions" label="Players" required></v-select>
-      <v-text-field v-model.number="overworld" label="Overworld Border Radius" type="number" required></v-text-field>
-      <v-text-field v-model.number="nether" label="Nether Border Radius" type="number" required></v-text-field>
-      <v-checkbox v-model="pregen" label="Pregenerate world"></v-checkbox>
+      <v-text-field v-model="whitelist" label="Whitelisted Players (comma separated)"></v-text-field>
+      <v-text-field v-if="serverType === 'papermc'" v-model.number="overworld" label="Overworld Border Radius" type="number" required></v-text-field>
+      <v-text-field v-if="serverType === 'papermc'" v-model.number="nether" label="Nether Border Radius" type="number" required></v-text-field>
       <v-btn type="submit" color="secondary" class="mt-2">Launch</v-btn>
     </v-form>
     <div class="mt-2">{{ message }}</div>
@@ -19,14 +19,14 @@ export default {
   name: 'StepConfig',
   data() {
     return {
-      serverType: 'papermc',
+      serverType: 'vanilla',
       instanceType: 't4g.medium',
       players: 4,
+      whitelist: '',
       overworld: 3000,
       nether: 3000,
-      pregen: false,
       message: '',
-      serverTypeOptions: ['papermc', 'vanilla'],
+      serverTypeOptions: ['vanilla', 'papermc'],
       instanceTypeOptions: ['t4g.small', 't4g.medium', 't4g.large'],
       playerOptions: Array.from({ length: 20 }, (_, i) => i + 1),
     };
@@ -56,9 +56,16 @@ export default {
             server_type: this.serverType,
             instance_type: this.instanceType,
             players: this.players,
-            pregen: this.pregen,
-            overworld_border: this.overworld,
-            nether_border: this.nether,
+            whitelisted_players: this.whitelist
+              .split(',')
+              .map((p) => p.trim())
+              .filter((p) => p.length > 0),
+            ...(this.serverType === 'papermc'
+              ? {
+                  overworld_border: this.overworld,
+                  nether_border: this.nether,
+                }
+              : {}),
           }),
         });
         if (!res.ok) throw new Error('failed');
