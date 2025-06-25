@@ -91,6 +91,7 @@ module "tenant_api" {
   user_pool_id        = module.auth.user_pool_id
   user_pool_client_id = module.auth.user_pool_client_id
   region              = var.region
+  allowed_origins     = ["https://${module.frontend_site.cloudfront_domain}"]
 }
 
 

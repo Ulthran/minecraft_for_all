@@ -12,3 +12,8 @@ variable "region" {
   description = "AWS region"
   type        = string
 }
+
+variable "allowed_origins" {
+  description = "Origins allowed to call this API"
+  type        = list(string)
+}
