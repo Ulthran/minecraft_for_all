@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
+# shellcheck disable=SC2269,SC2034
 # This variable is replaced by Terraform at deploy time
-# shellcheck disable=SC2269
 BACKUP_BUCKET="${BACKUP_BUCKET}"
 SERVER_TYPE="${SERVER_TYPE}"
 OVERWORLD_RADIUS="${OVERWORLD_RADIUS}"
@@ -37,9 +37,11 @@ cd /home/ec2-user/minecraft || exit
 # Download server jar based on type
 if [ "$SERVER_TYPE" = "vanilla" ]; then
   wget https://piston-data.mojang.com/v1/objects/e6ec2f64e6080b9b5d9b471b291c33cc7f509733/server.jar -O server.jar
+  # shellcheck disable=SC2034
   JAR_NAME="server.jar"
 else
   wget https://api.papermc.io/v2/projects/paper/versions/1.21.4/builds/225/downloads/paper-1.21.4-225.jar -O paper.jar
+  # shellcheck disable=SC2034
   JAR_NAME="paper.jar"
 fi
 echo "eula=true" > eula.txt

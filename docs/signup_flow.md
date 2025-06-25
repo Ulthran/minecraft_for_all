@@ -4,7 +4,7 @@ This document outlines how account creation data and server configuration flow t
 
 ## 1. Collecting Signup Data
 
-The landing page uses `saas_web/components/Start.vue` for new user registration. Besides the email and password fields, additional configuration such as player count or whether to pregenerate the world is collected. These values can be stored in a DynamoDB table keyed by the user name. Initially we considered passing them through Cognito custom attributes, but those have strict size limits. The SaaS layer now provisions a table named `minecraft-configs` with the following fields:
+The landing page uses `saas_web/components/Start.vue` for new user registration. Besides the email and password fields, additional configuration such as player count and optional whitelisted players is collected. These values can be stored in a DynamoDB table keyed by the user name. Initially we considered passing them through Cognito custom attributes, but those have strict size limits. The SaaS layer now provisions a table named `minecraft-configs` with the following fields:
 
 - **server_type** - vanilla or papermc
 - **instance_type** - EC2 instance type
@@ -46,7 +46,7 @@ codebuild.start_build(
     environmentVariablesOverride=[
         { 'name': 'TENANT_ID', 'value': tenant_id, 'type': 'PLAINTEXT' },
         { 'name': 'PLAYER_COUNT', 'value': players, 'type': 'PLAINTEXT' },
-        { 'name': 'PREGEN_WORLD', 'value': pregen, 'type': 'PLAINTEXT' },
+        { 'name': 'WHITELISTED_PLAYERS', 'value': ','.join(whitelisted_players), 'type': 'PLAINTEXT' },
     ],
 )
 ```
