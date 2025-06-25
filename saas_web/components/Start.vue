@@ -13,14 +13,22 @@
 </template>
 
 <script>
-import StepAccount from './start/StepAccount.vue';
-import StepPayment from './start/StepPayment.vue';
-import StepConfig from './start/StepConfig.vue';
-import StepIndicator from './start/StepIndicator.vue';
-
 export default {
   name: 'Start',
-  components: { StepAccount, StepPayment, StepConfig, StepIndicator },
+  components: {
+    StepAccount: Vue.defineAsyncComponent(() =>
+      window['vue3-sfc-loader'].loadModule('./start/StepAccount.vue', window.loaderOptions)
+    ),
+    StepPayment: Vue.defineAsyncComponent(() =>
+      window['vue3-sfc-loader'].loadModule('./start/StepPayment.vue', window.loaderOptions)
+    ),
+    StepConfig: Vue.defineAsyncComponent(() =>
+      window['vue3-sfc-loader'].loadModule('./start/StepConfig.vue', window.loaderOptions)
+    ),
+    StepIndicator: Vue.defineAsyncComponent(() =>
+      window['vue3-sfc-loader'].loadModule('./start/StepIndicator.vue', window.loaderOptions)
+    ),
+  },
   data() {
     return { step: 1 };
   },

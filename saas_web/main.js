@@ -18,6 +18,7 @@ const options = {
     document.head.insertBefore(style, ref);
   },
 };
+window.loaderOptions = options;
 
 (async () => {
   const [App] = await Promise.all([
