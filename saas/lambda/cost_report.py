@@ -8,6 +8,7 @@ logger.setLevel(logging.INFO)
 
 ce = boto3.client("ce")
 
+
 def handler(event, context):
     """Return this month's accumulated cost for the account."""
     today = date.today()
@@ -22,7 +23,10 @@ def handler(event, context):
         )
     except Exception:
         logger.exception("Failed to query cost explorer")
-        return {"statusCode": 500, "body": json.dumps({"error": "Could not retrieve cost"})}
+        return {
+            "statusCode": 500,
+            "body": json.dumps({"error": "Could not retrieve cost"}),
+        }
 
     result = resp["ResultsByTime"][0]
     total = float(result["Total"]["UnblendedCost"]["Amount"])
@@ -30,4 +34,7 @@ def handler(event, context):
         g["Keys"][0]: float(g["Metrics"]["UnblendedCost"]["Amount"])
         for g in result.get("Groups", [])
     }
-    return {"statusCode": 200, "body": json.dumps({"total": total, "breakdown": breakdown})}
+    return {
+        "statusCode": 200,
+        "body": json.dumps({"total": total, "breakdown": breakdown}),
+    }

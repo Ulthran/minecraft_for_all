@@ -32,13 +32,6 @@ EOF
     mutable             = true
   }
 
-  # Custom attribute storing a unique user identifier
-  schema {
-    attribute_data_type = "String"
-    name                = "uuid"
-    mutable             = true
-  }
-
   # Once a schema attribute is created it cannot be modified in place.
   # Terraform occasionally tries to update this block when provider
   # defaults change, which results in a failure.  Ignore any changes

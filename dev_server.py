@@ -49,10 +49,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    dummy_token = (
-        "eyJhbGciOiAibm9uZSJ9."
-        "eyJjdXN0b206dGVuYW50X2lkIjogImRlbW8ifQ==."
-    )
+    dummy_token = "eyJhbGciOiAibm9uZSJ9." "eyJjdXN0b206dGVuYW50X2lkIjogImRlbW8ifQ==."
 
     MOCK_RESPONSES.update(
         {
