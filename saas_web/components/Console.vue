@@ -12,13 +12,6 @@
 </template>
 
 <script>
-import VueJwtDecode from 'vue-jwt-decode'
-
-const poolData = {
-  UserPoolId: 'USER_POOL_ID',
-  ClientId: 'USER_POOL_CLIENT_ID',
-};
-const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 export default {
   name: 'Console',
   data() {
@@ -27,45 +20,20 @@ export default {
       showStart: false,
       cost: 'Fetching cost...',
       interval: null,
-      tenant_id: localStorage.getItem('tenant_id') || '',
       api_url: '/MC_API',
-    };
-  },
+      };
+    },
   mounted() {
-    this.initApi();
+    this.fetchStatus();
+    this.fetchCost();
+    this.interval = setInterval(this.fetchStatus, 30000);
   },
   beforeUnmount() {
     clearInterval(this.interval);
   },
   methods: {
-    async initApi() {
-
-      const token = localStorage.getItem('token');
-      if (!token) {
-        this.status = 'Please log in.';
-        return;
-      }
-
-      try {
-        const payload = VueJwtDecode.decode(token);
-        const tenantId = payload['custom:tenant_id'] || '';
-        if (tenantId) {
-          localStorage.setItem('tenant_id', tenantId);
-          this.tenant_id = tenantId;
-          this.fetchStatus();
-          this.fetchCost();
-          this.interval = setInterval(this.fetchStatus, 30000);
-        } else {
-          this.status = 'Provisioning your server...';
-          setTimeout(this.initApi, 15000);
-        }
-      } catch (err) {
-        console.error(err);
-        this.status = 'Error checking server setup.';
-        setTimeout(this.initApi, 30000);
-      }
-    },
-    authHeader() {
+    // No initialization needed; the backend uses the JWT to determine the tenant
+  authHeader() {
       const token = localStorage.getItem('token');
       return token ? { Authorization: `Bearer ${token}` } : {};
     },

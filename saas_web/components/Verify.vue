@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import VueJwtDecode from 'vue-jwt-decode'
 
 const poolData = {
   UserPoolId: 'USER_POOL_ID',
@@ -93,14 +92,6 @@ export default {
             });
             const token = session.getIdToken().getJwtToken();
             localStorage.setItem('token', token);
-            try {
-              const payload = VueJwtDecode.decode(token);
-              const tenantId = payload['custom:tenant_id'] || '';
-              if (tenantId) localStorage.setItem('tenant_id', tenantId);
-              localStorage.setItem('api_url', '/MC_API');
-            } catch (e) {
-              console.error('Failed to parse token', e);
-            }
             sessionStorage.removeItem('pendingCreds');
             loggedIn = true;
           } catch (e) {
