@@ -20,9 +20,9 @@
 </template>
 
 <script>
-import { computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { useAuthStore } from '../store.js';
+const { computed } = Vue;
+const { useRouter } = VueRouter;
+const useAuthStore = window.useAuthStore;
 export default {
   name: 'App',
   setup() {

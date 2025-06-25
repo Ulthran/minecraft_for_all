@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import VueJwtDecode from 'vue-jwt-decode'
+const VueJwtDecode = window['vue-jwt-decode'];
 
 const poolData = {
   UserPoolId: 'USER_POOL_ID',

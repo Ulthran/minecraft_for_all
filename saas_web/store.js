@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+const { defineStore } = Pinia;
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -10,3 +10,4 @@ export const useAuthStore = defineStore('auth', {
     },
   },
 });
+window.useAuthStore = useAuthStore;

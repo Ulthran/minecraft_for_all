@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import VueJwtDecode from 'vue-jwt-decode'
+const VueJwtDecode = window['vue-jwt-decode'];
 export default {
   name: 'StepConfig',
   data() {
