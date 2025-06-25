@@ -17,6 +17,9 @@ def handler(event, context):
         .get("claims", {})
     )
     tenant_id = claims.get("custom:tenant_id")
+    if not tenant_id:
+        logger.error("Missing tenant_id in claims")
+        return {"statusCode": 400, "body": json.dumps({"error": "Missing tenant_id"})}
     today = date.today()
     start = today.replace(day=1).strftime("%Y-%m-%d")
     end = today.strftime("%Y-%m-%d")
