@@ -29,7 +29,7 @@ export default {
       serverTypeOptions: ['vanilla', 'papermc'],
       instanceTypeOptions: ['t4g.small', 't4g.medium', 't4g.large'],
       playerOptions: Array.from({ length: 20 }, (_, i) => i + 1),
-      api_url: '/MC_API',
+      api_url: 'MC_API_URL',
     };
   },
   methods: {

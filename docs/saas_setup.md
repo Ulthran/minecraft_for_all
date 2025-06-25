@@ -18,8 +18,8 @@ provisioned when a user confirms their account.
    `saas_web` to the created S3 bucket. The Cognito user pool ID and client ID
    are injected directly into the Vue components so the frontend can use the
   Amazon Cognito JavaScript SDK. After login the console simply sends the ID
-  token with requests to `/MC_API` and the backend determines the tenant from
-  the JWT claims.
+  token to the API endpoint injected during deployment and the backend
+  determines the tenant from the JWT claims.
 
 ## Local Development
 

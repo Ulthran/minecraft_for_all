@@ -56,8 +56,9 @@ during `terraform apply`. The website files also receive the Cognito user pool
 ID and client ID which are inserted into a small helper module. The signup,
 verification and login components use the Amazon Cognito JavaScript SDK instead
 of raw API requests. After logging in the console simply includes the ID token
-in requests to the fixed `/MC_API` endpoints. The backend derives the tenant
-identifier from the token so no manual placeholder replacement is required.
+in requests to the API endpoint injected during deployment. The backend derives
+the tenant identifier from the token so no manual placeholder replacement is
+required.
 
 Example `terraform.tfvars` entries:
 
