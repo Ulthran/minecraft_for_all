@@ -56,7 +56,7 @@ if __name__ == "__main__":
             ("POST", "/SIGNUP_API_URL"): (200, None),
             ("POST", "/CONFIRM_API_URL"): (200, None),
             ("POST", "/LOGIN_API_URL"): (200, {"token": dummy_token}),
-            ("POST", "/INIT_SERVER_API_URL"): (200, None),
+            ("POST", "/MC_API/init"): (200, None),
             ("GET", "/MC_API/status"): (200, {"state": "offline"}),
             ("POST", "/MC_API/start"): (200, None),
             ("GET", "/MC_API/cost"): (200, {"total": 0}),

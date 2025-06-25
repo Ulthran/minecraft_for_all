@@ -62,7 +62,11 @@ window.componentsPath = './components';
 
   router.beforeEach((to, from, next) => {
     auth.updateLoggedIn();
-    next();
+    if (to.path === '/start' && auth.loggedIn) {
+      next('/console');
+    } else {
+      next();
+    }
   });
 
   Vue.createApp(App).use(router).use(vuetify).use(pinia).mount('#app');
