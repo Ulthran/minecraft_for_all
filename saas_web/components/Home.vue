@@ -27,7 +27,7 @@ export default {
   name: 'Home',
   components: {
     CostCalculator: Vue.defineAsyncComponent(() =>
-      window['vue3-sfc-loader'].loadModule('./CostCalculator.vue', window.loaderOptions)
+      window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/CostCalculator.vue`, window.loaderOptions)
     ),
   },
 };

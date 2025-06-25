@@ -19,24 +19,25 @@ const options = {
   },
 };
 window.loaderOptions = options;
+window.componentsPath = './components';
 
 (async () => {
   const [App] = await Promise.all([
-    window['vue3-sfc-loader'].loadModule('./components/App.vue', options),
+    window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/App.vue`, options),
   ]);
 
   const router = VueRouter.createRouter({
     history: VueRouter.createWebHistory(),
     routes: [
-      { path: '/', component: () => window['vue3-sfc-loader'].loadModule('./components/Home.vue', options) },
-      { path: '/pricing', component: () => window['vue3-sfc-loader'].loadModule('./components/Pricing.vue', options) },
-      { path: '/support', component: () => window['vue3-sfc-loader'].loadModule('./components/Support.vue', options) },
-      { path: '/about', component: () => window['vue3-sfc-loader'].loadModule('./components/About.vue', options) },
-      { path: '/login', component: () => window['vue3-sfc-loader'].loadModule('./components/Login.vue', options) },
-      { path: '/console', component: () => window['vue3-sfc-loader'].loadModule('./components/Console.vue', options) },
-      { path: '/start', component: () => window['vue3-sfc-loader'].loadModule('./components/Start.vue', options) },
-      { path: '/verify', component: () => window['vue3-sfc-loader'].loadModule('./components/Verify.vue', options) },
-      { path: '/:pathMatch(.*)*', component: () => window['vue3-sfc-loader'].loadModule('./components/NotFound.vue', options) },
+      { path: '/', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/Home.vue`, options) },
+      { path: '/pricing', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/Pricing.vue`, options) },
+      { path: '/support', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/Support.vue`, options) },
+      { path: '/about', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/About.vue`, options) },
+      { path: '/login', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/Login.vue`, options) },
+      { path: '/console', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/Console.vue`, options) },
+      { path: '/start', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/Start.vue`, options) },
+      { path: '/verify', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/Verify.vue`, options) },
+      { path: '/:pathMatch(.*)*', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/NotFound.vue`, options) },
     ],
   });
 
