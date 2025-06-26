@@ -120,8 +120,6 @@ export default {
         await this.confirmUser(this.email, this.code);
         try {
           await this.loginUser(this.email, this.password);
-          const session = await Auth.currentSession();
-          localStorage.setItem('token', session.getIdToken().getJwtToken());
           useAuthStore().updateLoggedIn();
         } catch (e) {
           console.error('Auto login failed', e);

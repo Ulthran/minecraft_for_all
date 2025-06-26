@@ -43,7 +43,6 @@ export default {
       try {
         const session = await Auth.currentSession();
         token = session.getIdToken().getJwtToken();
-        localStorage.setItem('token', token);
       } catch (err) {
         console.error('Failed to get token', err);
       }

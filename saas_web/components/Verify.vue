@@ -61,8 +61,6 @@ export default {
         if (creds.email === this.email && creds.password) {
           try {
             await Auth.signIn(creds.email, creds.password);
-            const session = await Auth.currentSession();
-            localStorage.setItem('token', session.getIdToken().getJwtToken());
             sessionStorage.removeItem('pendingCreds');
           } catch (e) {
             console.error('Auto login failed', e);

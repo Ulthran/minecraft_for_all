@@ -35,8 +35,6 @@ export default {
       this.message = 'Logging in...';
       try {
         await Auth.signIn(this.email, this.password);
-        const session = await Auth.currentSession();
-        localStorage.setItem('token', session.getIdToken().getJwtToken());
         window.useAuthStore().updateLoggedIn();
         this.message = 'Logged in!';
         this.$router.push('/console');

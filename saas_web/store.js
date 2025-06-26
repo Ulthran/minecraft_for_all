@@ -11,17 +11,21 @@ Amplify.configure({
     userPoolId,
     userPoolWebClientId: clientId,
     authenticationFlowType: 'USER_PASSWORD_AUTH',
-    storage: window.localStorage,
   },
 });
 
 const useAuthStore = defineStore('auth', {
   state: () => ({
-    loggedIn: !!localStorage.getItem('token'),
+    loggedIn: false,
   }),
   actions: {
-    updateLoggedIn() {
-      this.loggedIn = !!localStorage.getItem('token');
+    async updateLoggedIn() {
+      try {
+        await Auth.currentAuthenticatedUser();
+        this.loggedIn = true;
+      } catch (_) {
+        this.loggedIn = false;
+      }
     },
   },
 });

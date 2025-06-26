@@ -30,7 +30,6 @@ export default {
     const router = useRouter();
     const auth = useAuthStore();
     const logout = async () => {
-      localStorage.removeItem('token');
       localStorage.removeItem('urls');
       try {
         await Auth.signOut();

@@ -48,7 +48,6 @@ export default {
       try {
         const session = await Auth.currentSession();
         const token = session.getIdToken().getJwtToken();
-        localStorage.setItem('token', token);
         return { Authorization: `Bearer ${token}` };
       } catch (err) {
         console.error('No auth token', err);
