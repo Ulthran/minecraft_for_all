@@ -3,6 +3,7 @@ const options = {
     vue: Vue,
     'vue-router': VueRouter,
     pinia: Pinia,
+    'aws-amplify': aws_amplify,
   },
   async getFile(url) {
     const res = await fetch(url);

@@ -19,11 +19,7 @@
 </template>
 
 <script>
-const poolData = {
-  UserPoolId: 'USER_POOL_ID',
-  ClientId: 'USER_POOL_CLIENT_ID',
-};
-const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+const { Auth } = aws_amplify;
 
 export default {
   name: 'Login',
@@ -38,27 +34,10 @@ export default {
     async submit() {
       this.message = 'Logging in...';
       try {
-        const authDetails = new AmazonCognitoIdentity.AuthenticationDetails({
-          Username: this.email,
-          Password: this.password,
-        });
-
-        const cognitoUser = new AmazonCognitoIdentity.CognitoUser({
-          Username: this.email,
-          Pool: userPool,
-        });
-
-        const session = await new Promise((resolve, reject) => {
-          cognitoUser.authenticateUser(authDetails, {
-            onSuccess: resolve,
-            onFailure: reject,
-          });
-        });
-
-        const token = session.getIdToken().getJwtToken();
-        const refreshToken = session.getRefreshToken().getToken();
-        localStorage.setItem('token', token);
-        localStorage.setItem('refreshToken', refreshToken);
+        await Auth.signIn(this.email, this.password);
+        const session = await Auth.currentSession();
+        localStorage.setItem('token', session.getIdToken().getJwtToken());
+        window.useAuthStore().updateLoggedIn();
         this.message = 'Logged in!';
         this.$router.push('/console');
       } catch (err) {

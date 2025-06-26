@@ -1,24 +1,19 @@
 const { defineStore } = Pinia;
+const { Amplify, Auth } = aws_amplify;
 
-function decodeJwt(token) {
-  if (typeof token !== 'string') return null;
-  const parts = token.split('.');
-  if (parts.length < 2) return null;
-  try {
-    const header = JSON.parse(atob(parts[0]));
-    const payload = JSON.parse(atob(parts[1]));
-    return Object.assign({}, header, payload);
-  } catch (e) {
-    console.error('Token decode failed', e);
-    return null;
-  }
-}
+const userPoolId = 'USER_POOL_ID';
+const clientId = 'USER_POOL_CLIENT_ID';
+const region = userPoolId.split('_')[0];
 
-const poolData = {
-  UserPoolId: 'USER_POOL_ID',
-  ClientId: 'USER_POOL_CLIENT_ID',
-};
-const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+Amplify.configure({
+  Auth: {
+    region,
+    userPoolId,
+    userPoolWebClientId: clientId,
+    authenticationFlowType: 'USER_PASSWORD_AUTH',
+    storage: window.localStorage,
+  },
+});
 
 const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -32,36 +27,16 @@ const useAuthStore = defineStore('auth', {
 });
 
 async function refreshTokenIfNeeded() {
-  const token = localStorage.getItem('token');
-  const refreshTokenStr = localStorage.getItem('refreshToken');
-  if (!token || !refreshTokenStr) return;
-  const payload = decodeJwt(token);
-  if (!payload) return;
-  const exp = payload.exp || 0;
-  const now = Date.now() / 1000;
-  if (exp - now > 60) return; // still valid
-  const username = payload['cognito:username'] || payload.email || '';
-  const cognitoUser = new AmazonCognitoIdentity.CognitoUser({
-    Username: username,
-    Pool: userPool,
-  });
-  const refreshToken = new AmazonCognitoIdentity.CognitoRefreshToken({
-    RefreshToken: refreshTokenStr,
-  });
   try {
-    const session = await new Promise((resolve, reject) => {
-      cognitoUser.refreshSession(refreshToken, (err, session) => {
-        if (err) return reject(err);
-        resolve(session);
-      });
-    });
+    const session = await Auth.currentSession();
     localStorage.setItem('token', session.getIdToken().getJwtToken());
-    localStorage.setItem('refreshToken', session.getRefreshToken().getToken());
     useAuthStore().updateLoggedIn();
   } catch (err) {
     console.error('Token refresh failed', err);
     localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
+    try {
+      await Auth.signOut();
+    } catch (_) {}
     useAuthStore().updateLoggedIn();
   }
 }
