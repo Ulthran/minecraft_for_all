@@ -35,7 +35,8 @@ def handler(event, context):
         resp = conn.getresponse()
         data = json.loads(resp.read().decode())
         if resp.status >= 400:
-            return {"statusCode": 502, "body": json.dumps({"error": "stripe_error"})}
+            error_details = data.get("error", {}).get("message", "stripe_error")
+            return {"statusCode": 502, "body": json.dumps({"error": error_details})}
         customer_id = data.get("id")
 
         sub_params = urllib.parse.urlencode(
