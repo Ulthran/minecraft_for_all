@@ -52,6 +52,11 @@ variable "stripe_price_id" {
   type        = string
 }
 
+variable "stripe_publishable_key" {
+  description = "Publishable key for Stripe"
+  type        = string
+}
+
 variable "domain" {
   description = "Public domain for payment redirects"
   type        = string
