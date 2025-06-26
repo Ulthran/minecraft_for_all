@@ -23,14 +23,17 @@
 const { computed } = Vue;
 const { useRouter } = VueRouter;
 const useAuthStore = window.useAuthStore;
+const { Auth } = aws_amplify;
 export default {
   name: 'App',
   setup() {
     const router = useRouter();
     const auth = useAuthStore();
-    const logout = () => {
-      localStorage.removeItem('token');
+    const logout = async () => {
       localStorage.removeItem('urls');
+      try {
+        await Auth.signOut();
+      } catch (_) {}
       auth.updateLoggedIn();
       router.push('/');
     };

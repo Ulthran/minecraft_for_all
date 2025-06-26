@@ -22,11 +22,7 @@
 </template>
 
 <script>
-const poolData = {
-  UserPoolId: 'USER_POOL_ID',
-  ClientId: 'USER_POOL_CLIENT_ID',
-};
-const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+const { Auth } = aws_amplify;
 export default {
   name: 'Verify',
   data() {
@@ -58,43 +54,14 @@ export default {
     async submit() {
       this.message = 'Verifying...';
       try {
-        const cognitoUser = new AmazonCognitoIdentity.CognitoUser({
-          Username: this.email,
-          Pool: userPool,
-        });
-
-        await new Promise((resolve, reject) => {
-          cognitoUser.confirmRegistration(this.code, true, (err, result) => {
-            if (err) return reject(err);
-            return resolve(result);
-          });
-        });
+        await Auth.confirmSignUp(this.email, this.code);
         this.message = 'Email verified! Logging in...';
 
         const creds = JSON.parse(sessionStorage.getItem('pendingCreds') || '{}');
-        let loggedIn = false;
         if (creds.email === this.email && creds.password) {
           try {
-            const authDetails = new AmazonCognitoIdentity.AuthenticationDetails({
-              Username: creds.email,
-              Password: creds.password,
-            });
-            const loginUser = new AmazonCognitoIdentity.CognitoUser({
-              Username: creds.email,
-              Pool: userPool,
-            });
-            const session = await new Promise((resolve, reject) => {
-              loginUser.authenticateUser(authDetails, {
-                onSuccess: resolve,
-                onFailure: reject,
-              });
-            });
-            const token = session.getIdToken().getJwtToken();
-            const refreshToken = session.getRefreshToken().getToken();
-            localStorage.setItem('token', token);
-            localStorage.setItem('refreshToken', refreshToken);
+            await Auth.signIn(creds.email, creds.password);
             sessionStorage.removeItem('pendingCreds');
-            loggedIn = true;
           } catch (e) {
             console.error('Auto login failed', e);
           }
@@ -112,18 +79,7 @@ export default {
     async resend() {
       this.message = 'Resending code...';
       try {
-        const cognitoUser = new AmazonCognitoIdentity.CognitoUser({
-          Username: this.email,
-          Pool: userPool,
-        });
-
-        await new Promise((resolve, reject) => {
-          cognitoUser.resendConfirmationCode((err, result) => {
-            if (err) return reject(err);
-            return resolve(result);
-          });
-        });
-
+        await Auth.resendSignUp(this.email);
         this.message = 'Verification code resent.';
         this.startTimer();
       } catch (err) {

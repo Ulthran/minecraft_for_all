@@ -2,8 +2,8 @@ const options = {
   moduleCache: {
     vue: Vue,
     'vue-router': VueRouter,
-    'vue-jwt-decode': window['vue-jwt-decode'],
     pinia: Pinia,
+    'aws-amplify': aws_amplify,
   },
   async getFile(url) {
     const res = await fetch(url);
