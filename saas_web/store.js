@@ -26,20 +26,5 @@ const useAuthStore = defineStore('auth', {
   },
 });
 
-async function refreshTokenIfNeeded() {
-  try {
-    const session = await Auth.currentSession();
-    localStorage.setItem('token', session.getIdToken().getJwtToken());
-    useAuthStore().updateLoggedIn();
-  } catch (err) {
-    console.error('Token refresh failed', err);
-    localStorage.removeItem('token');
-    try {
-      await Auth.signOut();
-    } catch (_) {}
-    useAuthStore().updateLoggedIn();
-  }
-}
-
 window.useAuthStore = useAuthStore;
-window.refreshTokenIfNeeded = refreshTokenIfNeeded;
+window.Auth = Auth;

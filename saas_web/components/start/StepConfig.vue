@@ -14,19 +14,7 @@
 </template>
 
 <script>
-function decodeJwt(token) {
-  if (typeof token !== 'string') return null;
-  const parts = token.split('.');
-  if (parts.length < 2) return null;
-  try {
-    const header = JSON.parse(atob(parts[0]));
-    const payload = JSON.parse(atob(parts[1]));
-    return Object.assign({}, header, payload);
-  } catch (e) {
-    console.error('Failed to decode token', e);
-    return null;
-  }
-}
+const { Auth } = aws_amplify;
 export default {
   name: 'StepConfig',
   data() {
@@ -51,14 +39,13 @@ export default {
     },
     async initTenantServer() {
       this.message = 'Provisioning your server...';
-      await window.refreshTokenIfNeeded();
-      const token = localStorage.getItem('token');
-      let tenantId = '';
-      if (token) {
-        const payload = decodeJwt(token);
-        if (payload) {
-          tenantId = payload['custom:tenant_id'] || '';
-        }
+      let token = '';
+      try {
+        const session = await Auth.currentSession();
+        token = session.getIdToken().getJwtToken();
+        localStorage.setItem('token', token);
+      } catch (err) {
+        console.error('Failed to get token', err);
       }
       try {
         const res = await fetch(this.endpoint('init'), {
@@ -68,7 +55,6 @@ export default {
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
           body: JSON.stringify({
-            tenant_id: tenantId,
             server_type: this.serverType,
             instance_type: this.instanceType,
             players: this.players,
