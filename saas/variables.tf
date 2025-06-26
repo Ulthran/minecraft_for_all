@@ -41,3 +41,18 @@ variable "tenant_ids" {
   type        = list(string)
   default     = []
 }
+
+variable "stripe_secret_key" {
+  description = "Secret key for Stripe"
+  type        = string
+}
+
+variable "stripe_price_id" {
+  description = "Stripe price ID"
+  type        = string
+}
+
+variable "domain" {
+  description = "Public domain for payment redirects"
+  type        = string
+}
