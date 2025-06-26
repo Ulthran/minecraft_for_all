@@ -2,7 +2,6 @@ const options = {
   moduleCache: {
     vue: Vue,
     'vue-router': VueRouter,
-    'vue-jwt-decode': window['vue-jwt-decode'],
     pinia: Pinia,
   },
   async getFile(url) {

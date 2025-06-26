@@ -1,5 +1,18 @@
 const { defineStore } = Pinia;
-const VueJwtDecode = window['vue-jwt-decode'];
+
+function decodeJwt(token) {
+  if (typeof token !== 'string') return null;
+  const parts = token.split('.');
+  if (parts.length < 2) return null;
+  try {
+    const header = JSON.parse(atob(parts[0]));
+    const payload = JSON.parse(atob(parts[1]));
+    return Object.assign({}, header, payload);
+  } catch (e) {
+    console.error('Token decode failed', e);
+    return null;
+  }
+}
 
 const poolData = {
   UserPoolId: 'USER_POOL_ID',
@@ -22,13 +35,8 @@ async function refreshTokenIfNeeded() {
   const token = localStorage.getItem('token');
   const refreshTokenStr = localStorage.getItem('refreshToken');
   if (!token || !refreshTokenStr) return;
-  let payload;
-  try {
-    payload = VueJwtDecode.decode(token);
-  } catch (e) {
-    console.error('Token decode failed', e);
-    return;
-  }
+  const payload = decodeJwt(token);
+  if (!payload) return;
   const exp = payload.exp || 0;
   const now = Date.now() / 1000;
   if (exp - now > 60) return; // still valid

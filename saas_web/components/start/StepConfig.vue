@@ -14,7 +14,19 @@
 </template>
 
 <script>
-const VueJwtDecode = window['vue-jwt-decode'];
+function decodeJwt(token) {
+  if (typeof token !== 'string') return null;
+  const parts = token.split('.');
+  if (parts.length < 2) return null;
+  try {
+    const header = JSON.parse(atob(parts[0]));
+    const payload = JSON.parse(atob(parts[1]));
+    return Object.assign({}, header, payload);
+  } catch (e) {
+    console.error('Failed to decode token', e);
+    return null;
+  }
+}
 export default {
   name: 'StepConfig',
   data() {
@@ -43,11 +55,9 @@ export default {
       const token = localStorage.getItem('token');
       let tenantId = '';
       if (token) {
-        try {
-          const payload = VueJwtDecode.decode(token);
+        const payload = decodeJwt(token);
+        if (payload) {
           tenantId = payload['custom:tenant_id'] || '';
-        } catch (e) {
-          console.error('Failed to decode token', e);
         }
       }
       try {
