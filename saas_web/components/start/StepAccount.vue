@@ -26,11 +26,7 @@
 
 <script>
 const useAuthStore = window.useAuthStore;
-const poolData = {
-  UserPoolId: 'USER_POOL_ID',
-  ClientId: 'USER_POOL_CLIENT_ID',
-};
-const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+const { Auth } = aws_amplify;
 
 export default {
   name: 'StepAccount',
@@ -78,58 +74,20 @@ export default {
       }, 1000);
     },
     signUpUser(email, password) {
-      const attributeList = [
-        new AmazonCognitoIdentity.CognitoUserAttribute({
-          Name: 'email',
-          Value: email,
-        }),
-      ];
-      return new Promise((resolve, reject) => {
-        userPool.signUp(email, password, attributeList, null, (err, result) => {
-          if (err) return reject(err);
-          resolve(result);
-        });
+      return Auth.signUp({
+        username: email,
+        password,
+        attributes: { email },
       });
     },
     confirmUser(email, code) {
-      const user = new AmazonCognitoIdentity.CognitoUser({
-        Username: email,
-        Pool: userPool,
-      });
-      return new Promise((resolve, reject) => {
-        user.confirmRegistration(code, true, (err, result) => {
-          if (err) return reject(err);
-          resolve(result);
-        });
-      });
+      return Auth.confirmSignUp(email, code);
     },
     resendConfirmation(email) {
-      const user = new AmazonCognitoIdentity.CognitoUser({
-        Username: email,
-        Pool: userPool,
-      });
-      return new Promise((resolve, reject) => {
-        user.resendConfirmationCode((err, result) => {
-          if (err) return reject(err);
-          resolve(result);
-        });
-      });
+      return Auth.resendSignUp(email);
     },
     loginUser(email, password) {
-      const authDetails = new AmazonCognitoIdentity.AuthenticationDetails({
-        Username: email,
-        Password: password,
-      });
-      const user = new AmazonCognitoIdentity.CognitoUser({
-        Username: email,
-        Pool: userPool,
-      });
-      return new Promise((resolve, reject) => {
-        user.authenticateUser(authDetails, {
-          onSuccess: resolve,
-          onFailure: reject,
-        });
-      });
+      return Auth.signIn(email, password);
     },
     async signUp() {
       this.message = 'Submitting...';
@@ -161,11 +119,7 @@ export default {
       try {
         await this.confirmUser(this.email, this.code);
         try {
-          const session = await this.loginUser(this.email, this.password);
-          const token = session.getIdToken().getJwtToken();
-          const refreshToken = session.getRefreshToken().getToken();
-          localStorage.setItem('token', token);
-          localStorage.setItem('refreshToken', refreshToken);
+          await this.loginUser(this.email, this.password);
           useAuthStore().updateLoggedIn();
         } catch (e) {
           console.error('Auto login failed', e);

@@ -14,7 +14,7 @@
 </template>
 
 <script>
-const VueJwtDecode = window['vue-jwt-decode'];
+const { Auth } = aws_amplify;
 export default {
   name: 'StepConfig',
   data() {
@@ -39,16 +39,12 @@ export default {
     },
     async initTenantServer() {
       this.message = 'Provisioning your server...';
-      await window.refreshTokenIfNeeded();
-      const token = localStorage.getItem('token');
-      let tenantId = '';
-      if (token) {
-        try {
-          const payload = VueJwtDecode.decode(token);
-          tenantId = payload['custom:tenant_id'] || '';
-        } catch (e) {
-          console.error('Failed to decode token', e);
-        }
+      let token = '';
+      try {
+        const session = await Auth.currentSession();
+        token = session.getIdToken().getJwtToken();
+      } catch (err) {
+        console.error('Failed to get token', err);
       }
       try {
         const res = await fetch(this.endpoint('init'), {
@@ -58,7 +54,6 @@ export default {
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
           body: JSON.stringify({
-            tenant_id: tenantId,
             server_type: this.serverType,
             instance_type: this.instanceType,
             players: this.players,

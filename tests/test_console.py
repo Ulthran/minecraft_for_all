@@ -13,7 +13,6 @@ ROUTES = [
     "/login",
     "/console",
     "/start",
-    "/verify",
 ]
 
 

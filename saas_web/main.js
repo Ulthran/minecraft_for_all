@@ -2,8 +2,8 @@ const options = {
   moduleCache: {
     vue: Vue,
     'vue-router': VueRouter,
-    'vue-jwt-decode': window['vue-jwt-decode'],
     pinia: Pinia,
+    'aws-amplify': aws_amplify,
   },
   async getFile(url) {
     const res = await fetch(url);
@@ -36,7 +36,6 @@ window.componentsPath = './components';
       { path: '/login', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/Login.vue`, options) },
       { path: '/console', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/Console.vue`, options) },
       { path: '/start', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/Start.vue`, options) },
-      { path: '/verify', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/Verify.vue`, options) },
       { path: '/:pathMatch(.*)*', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/NotFound.vue`, options) },
     ],
   });

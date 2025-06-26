@@ -14,6 +14,7 @@
 </template>
 
 <script>
+const { Auth } = aws_amplify;
 export default {
   name: 'Console',
   components: {
@@ -44,9 +45,14 @@ export default {
   methods: {
     // No initialization needed; the backend uses the JWT to determine the tenant
   async authHeader() {
-      await window.refreshTokenIfNeeded();
-      const token = localStorage.getItem('token');
-      return token ? { Authorization: `Bearer ${token}` } : {};
+      try {
+        const session = await Auth.currentSession();
+        const token = session.getIdToken().getJwtToken();
+        return { Authorization: `Bearer ${token}` };
+      } catch (err) {
+        console.error('No auth token', err);
+        return {};
+      }
     },
     endpoint(path) {
       const normalizedApiUrl = this.api_url.replace(/\/+$/, '');
