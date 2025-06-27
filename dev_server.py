@@ -60,6 +60,7 @@ if __name__ == "__main__":
             ("GET", "/MC_API/status"): (200, {"state": "offline"}),
             ("POST", "/MC_API/start"): (200, None),
             ("GET", "/MC_API/cost"): (200, {"total": 0}),
+            ("POST", "/MC_API/checkout"): (200, {"client_secret": "seti_dummy"}),
         }
     )
 

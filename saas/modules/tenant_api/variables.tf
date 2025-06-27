@@ -27,11 +27,6 @@ variable "stripe_secret_key" {
   type        = string
 }
 
-variable "stripe_price_id" {
-  description = "Stripe price ID for subscriptions"
-  type        = string
-}
-
 variable "domain" {
   description = "Public domain for success/cancel URLs"
   type        = string

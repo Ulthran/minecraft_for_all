@@ -8,7 +8,6 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "")
-PRICE_ID = os.environ.get("STRIPE_PRICE_ID", "")
 
 
 def handler(event, context):
@@ -39,24 +38,19 @@ def handler(event, context):
             return {"statusCode": 502, "body": json.dumps({"error": error_details})}
         customer_id = data.get("id")
 
-        sub_params = urllib.parse.urlencode(
+        intent_params = urllib.parse.urlencode(
             {
                 "customer": customer_id,
-                "items[0][price]": PRICE_ID,
-                "payment_behavior": "default_incomplete",
-                "expand[]": "latest_invoice.payment_intent",
+                "usage": "off_session",
             }
         )
-        conn.request("POST", "/v1/subscriptions", sub_params, headers)
-        sub_resp = conn.getresponse()
-        sub_data = json.loads(sub_resp.read().decode())
-        if sub_resp.status >= 400:
-            return {"statusCode": 502, "body": json.dumps({"error": "stripe_error"})}
-        client_secret = (
-            sub_data.get("latest_invoice", {})
-            .get("payment_intent", {})
-            .get("client_secret")
-        )
+        conn.request("POST", "/v1/setup_intents", intent_params, headers)
+        intent_resp = conn.getresponse()
+        intent_data = json.loads(intent_resp.read().decode())
+        if intent_resp.status >= 400:
+            error_details = intent_data.get("error", {}).get("message", "stripe_error")
+            return {"statusCode": 502, "body": json.dumps({"error": error_details})}
+        client_secret = intent_data.get("client_secret")
         return {"statusCode": 200, "body": json.dumps({"client_secret": client_secret})}
     except Exception:
         logger.exception("Stripe request failed")
