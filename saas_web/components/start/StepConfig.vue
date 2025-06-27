@@ -69,8 +69,9 @@ export default {
               : {}),
           }),
         });
+        const data = await res.json();
         if (!res.ok) throw new Error('failed');
-        this.$emit('complete');
+        this.$emit('complete', data.build_id);
       } catch (err) {
         console.error(err);
         this.message = 'Provisioning failed.';

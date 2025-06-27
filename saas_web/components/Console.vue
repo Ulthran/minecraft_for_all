@@ -5,9 +5,10 @@
       <h2 class="text-h5 mb-4">Server Console</h2>
       <div>{{ status }}</div>
       <div class="mt-2">{{ cost }}</div>
+      <div v-if="progress" class="mt-2">{{ progress }}</div>
       <v-btn v-if="showStart" @click="start" class="mt-2">Start Server</v-btn>
       <h3 class="text-h6 mt-8 mb-2">Start a New Server</h3>
-      <StepConfig @complete="fetchStatus" />
+      <StepConfig @complete="handleInitComplete" />
       </v-col>
     </v-row>
   </v-container>
@@ -31,6 +32,9 @@ export default {
       showStart: false,
       cost: 'Fetching cost...',
       interval: null,
+      progressInterval: null,
+      progress: '',
+      buildId: '',
       api_url: 'MC_API_URL',
       };
     },
@@ -41,6 +45,7 @@ export default {
   },
   beforeUnmount() {
     clearInterval(this.interval);
+    if (this.progressInterval) clearInterval(this.progressInterval);
   },
   methods: {
     // No initialization needed; the backend uses the JWT to determine the tenant
@@ -106,6 +111,42 @@ export default {
       } catch (err) {
         console.error(err);
         this.cost = 'Error fetching cost.';
+      }
+    },
+
+    handleInitComplete(buildId) {
+      this.fetchStatus();
+      if (buildId) {
+        this.buildId = buildId;
+        this.progress = 'Provisioning...';
+        this.pollBuildStatus();
+      }
+    },
+
+    async pollBuildStatus() {
+      await this.fetchBuildStatus();
+      if (this.progressInterval) clearInterval(this.progressInterval);
+      this.progressInterval = setInterval(() => this.fetchBuildStatus(), 5000);
+    },
+
+    async fetchBuildStatus() {
+      if (!this.buildId) return;
+      try {
+        const res = await fetch(this.endpoint(`build/${this.buildId}`), {
+          headers: await this.authHeader(),
+        });
+        if (!res.ok) throw new Error('failed');
+        const data = await res.json();
+        if (data.build) {
+          this.progress = `${data.build.current_phase} - ${data.build.status}`;
+          if (['SUCCEEDED', 'FAILED', 'FAULT', 'STOPPED', 'TIMED_OUT'].includes(data.build.status)) {
+            clearInterval(this.progressInterval);
+            this.progressInterval = null;
+          }
+        }
+      } catch (err) {
+        console.error(err);
+        this.progress = 'Error fetching build status.';
       }
     },
   },
