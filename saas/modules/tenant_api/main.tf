@@ -31,6 +31,11 @@ resource "aws_iam_role_policy" "tenant_permissions" {
         Effect   = "Allow",
         Action   = ["ce:GetCostAndUsage"],
         Resource = "*"
+      },
+      {
+        Effect   = "Allow",
+        Action   = ["codebuild:StartBuild"],
+        Resource = "*"
       }
     ]
   })
