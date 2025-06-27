@@ -47,11 +47,6 @@ variable "stripe_secret_key" {
   type        = string
 }
 
-variable "stripe_price_id" {
-  description = "Stripe price ID"
-  type        = string
-}
-
 variable "stripe_publishable_key" {
   description = "Publishable key for Stripe"
   type        = string

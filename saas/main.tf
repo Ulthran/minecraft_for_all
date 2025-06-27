@@ -97,7 +97,6 @@ module "tenant_api" {
   region              = var.region
   allowed_origins     = ["https://${module.frontend_site.cloudfront_domain}"]
   stripe_secret_key   = var.stripe_secret_key
-  stripe_price_id     = var.stripe_price_id
   domain              = var.domain
 }
 

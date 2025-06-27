@@ -103,7 +103,6 @@ resource "aws_lambda_function" "create_checkout_session" {
   environment {
     variables = {
       STRIPE_SECRET_KEY = var.stripe_secret_key
-      STRIPE_PRICE_ID   = var.stripe_price_id
       DOMAIN            = var.domain
     }
   }
