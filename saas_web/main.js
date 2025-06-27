@@ -36,6 +36,9 @@ window.componentsPath = './components';
       { path: '/login', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/Login.vue`, options) },
       { path: '/console', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/Console.vue`, options) },
       { path: '/start', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/Start.vue`, options) },
+      // Debug routes to view individual steps without the wizard
+      { path: '/debug-payment', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/start/StepPayment.vue`, options) },
+      { path: '/debug-config', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/start/StepConfig.vue`, options) },
       { path: '/:pathMatch(.*)*', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/NotFound.vue`, options) },
     ],
   });

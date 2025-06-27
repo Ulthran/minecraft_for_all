@@ -78,3 +78,13 @@ python3 dev_server.py
 This serves the files from `saas_web` and mocks the various API endpoints so the
 forms and console can be tested without deploying any backend, including a dummy
 `/MC_API/cost` used on the console page.
+
+Debugging UI components is easier with dedicated routes:
+
+```
+http://localhost:8000/#/debug-payment
+http://localhost:8000/#/debug-config
+```
+
+These load the payment and configuration steps in isolation so layout or API
+issues can be inspected without navigating through the full wizard.
