@@ -3,3 +3,8 @@ frontend_bucket_name = "example-landing-bucket"
 tenant_account_email = "tenants@example.com"
 
 backup_bucket_name = "example-backup-bucket"
+
+stripe_secret_key = "sk_test_yourkey"
+stripe_price_id   = "price_12345"
+domain            = "example.com"
+stripe_publishable_key = "pk_test_yourkey"

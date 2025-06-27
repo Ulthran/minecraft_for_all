@@ -86,6 +86,29 @@ resource "aws_lambda_function" "init_server" {
   timeout          = 60
 }
 
+data "archive_file" "create_checkout_session" {
+  type        = "zip"
+  source_file = "${path.module}/../../lambda/create_checkout_session.py"
+  output_path = "${path.module}/lambda_create_checkout_session.zip"
+}
+
+resource "aws_lambda_function" "create_checkout_session" {
+  filename         = data.archive_file.create_checkout_session.output_path
+  source_code_hash = data.archive_file.create_checkout_session.output_base64sha256
+  function_name    = "create-checkout-session"
+  role             = aws_iam_role.lambda.arn
+  handler          = "create_checkout_session.handler"
+  runtime          = "python3.11"
+  timeout          = 10
+  environment {
+    variables = {
+      STRIPE_SECRET_KEY = var.stripe_secret_key
+      STRIPE_PRICE_ID   = var.stripe_price_id
+      DOMAIN            = var.domain
+    }
+  }
+}
+
 resource "aws_lambda_permission" "apigw_status" {
   statement_id  = "AllowAPIGatewayInvokeStatus"
   action        = "lambda:InvokeFunction"
@@ -106,6 +129,14 @@ resource "aws_lambda_permission" "apigw_init" {
   statement_id  = "AllowAPIGatewayInvokeInit"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.init_server.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.this.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "apigw_checkout" {
+  statement_id  = "AllowAPIGatewayInvokeCheckout"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.create_checkout_session.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.this.execution_arn}/*/*"
 }
@@ -158,6 +189,14 @@ resource "aws_apigatewayv2_integration" "init" {
   payload_format_version = "2.0"
 }
 
+resource "aws_apigatewayv2_integration" "checkout" {
+  api_id                 = aws_apigatewayv2_api.this.id
+  integration_uri        = aws_lambda_function.create_checkout_session.invoke_arn
+  integration_type       = "AWS_PROXY"
+  integration_method     = "POST"
+  payload_format_version = "2.0"
+}
+
 resource "aws_apigatewayv2_route" "status" {
   api_id             = aws_apigatewayv2_api.this.id
   route_key          = "GET /status"
@@ -178,6 +217,14 @@ resource "aws_apigatewayv2_route" "init" {
   api_id             = aws_apigatewayv2_api.this.id
   route_key          = "POST /init"
   target             = "integrations/${aws_apigatewayv2_integration.init.id}"
+  authorizer_id      = aws_apigatewayv2_authorizer.jwt.id
+  authorization_type = "JWT"
+}
+
+resource "aws_apigatewayv2_route" "checkout" {
+  api_id             = aws_apigatewayv2_api.this.id
+  route_key          = "POST /checkout"
+  target             = "integrations/${aws_apigatewayv2_integration.checkout.id}"
   authorizer_id      = aws_apigatewayv2_authorizer.jwt.id
   authorization_type = "JWT"
 }
