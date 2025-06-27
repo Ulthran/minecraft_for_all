@@ -126,7 +126,7 @@ export default {
     async pollBuildStatus() {
       await this.fetchBuildStatus();
       if (this.progressInterval) clearInterval(this.progressInterval);
-      this.progressInterval = setInterval(this.fetchBuildStatus, 5000);
+      this.progressInterval = setInterval(() => this.fetchBuildStatus(), 5000);
     },
 
     async fetchBuildStatus() {
