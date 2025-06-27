@@ -33,8 +33,11 @@ resource "aws_iam_role_policy" "tenant_permissions" {
         Resource = "*"
       },
       {
-        Effect   = "Allow",
-        Action   = ["codebuild:StartBuild"],
+        Effect = "Allow",
+        Action = [
+          "codebuild:StartBuild",
+          "codebuild:BatchGetBuilds",
+        ],
         Resource = "*"
       }
     ]
@@ -91,6 +94,22 @@ resource "aws_lambda_function" "init_server" {
   timeout          = 60
 }
 
+data "archive_file" "build_status" {
+  type        = "zip"
+  source_file = "${path.module}/../../lambda/build_status.py"
+  output_path = "${path.module}/lambda_build_status.zip"
+}
+
+resource "aws_lambda_function" "build_status" {
+  filename         = data.archive_file.build_status.output_path
+  source_code_hash = data.archive_file.build_status.output_base64sha256
+  function_name    = "build-status"
+  role             = aws_iam_role.lambda.arn
+  handler          = "build_status.handler"
+  runtime          = "python3.11"
+  timeout          = 10
+}
+
 data "archive_file" "create_checkout_session" {
   type        = "zip"
   source_file = "${path.module}/../../lambda/create_checkout_session.py"
@@ -133,6 +152,14 @@ resource "aws_lambda_permission" "apigw_init" {
   statement_id  = "AllowAPIGatewayInvokeInit"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.init_server.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.this.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "apigw_build_status" {
+  statement_id  = "AllowAPIGatewayInvokeBuildStatus"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.build_status.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.this.execution_arn}/*/*"
 }
@@ -193,6 +220,14 @@ resource "aws_apigatewayv2_integration" "init" {
   payload_format_version = "2.0"
 }
 
+resource "aws_apigatewayv2_integration" "build_status" {
+  api_id                 = aws_apigatewayv2_api.this.id
+  integration_uri        = aws_lambda_function.build_status.invoke_arn
+  integration_type       = "AWS_PROXY"
+  integration_method     = "POST"
+  payload_format_version = "2.0"
+}
+
 resource "aws_apigatewayv2_integration" "checkout" {
   api_id                 = aws_apigatewayv2_api.this.id
   integration_uri        = aws_lambda_function.create_checkout_session.invoke_arn
@@ -221,6 +256,14 @@ resource "aws_apigatewayv2_route" "init" {
   api_id             = aws_apigatewayv2_api.this.id
   route_key          = "POST /init"
   target             = "integrations/${aws_apigatewayv2_integration.init.id}"
+  authorizer_id      = aws_apigatewayv2_authorizer.jwt.id
+  authorization_type = "JWT"
+}
+
+resource "aws_apigatewayv2_route" "build_status" {
+  api_id             = aws_apigatewayv2_api.this.id
+  route_key          = "GET /build/{id}"
+  target             = "integrations/${aws_apigatewayv2_integration.build_status.id}"
   authorizer_id      = aws_apigatewayv2_authorizer.jwt.id
   authorization_type = "JWT"
 }

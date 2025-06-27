@@ -33,7 +33,7 @@ export default {
     return { step: 1 };
   },
   methods: {
-    goConsole() {
+    goConsole(buildId) {
       this.$router.push('/console');
     },
   },

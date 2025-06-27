@@ -21,6 +21,20 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         super().end_headers()
 
     def do_GET(self):
+        if self.path.startswith("/MC_API/build/"):
+            build_id = self.path.rsplit("/", 1)[-1]
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            body = {
+                "build": {
+                    "id": build_id,
+                    "status": "SUCCEEDED",
+                    "current_phase": "COMPLETED",
+                }
+            }
+            self.wfile.write(json.dumps(body).encode())
+            return
         resp = MOCK_RESPONSES.get(("GET", self.path))
         if resp:
             status, body = resp
@@ -56,7 +70,7 @@ if __name__ == "__main__":
             ("POST", "/SIGNUP_API_URL"): (200, None),
             ("POST", "/CONFIRM_API_URL"): (200, None),
             ("POST", "/LOGIN_API_URL"): (200, {"token": dummy_token}),
-            ("POST", "/MC_API/init"): (200, None),
+            ("POST", "/MC_API/init"): (200, {"build_id": "demo-build"}),
             ("GET", "/MC_API/status"): (200, {"state": "offline"}),
             ("POST", "/MC_API/start"): (200, None),
             ("GET", "/MC_API/cost"): (200, {"total": 0}),

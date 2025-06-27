@@ -75,7 +75,7 @@ def handler(event, context):
     ]
 
     try:
-        codebuild.start_build(
+        build_resp = codebuild.start_build(
             projectName=PROJECT_NAME, environmentVariablesOverride=params
         )
     except Exception as e:
@@ -85,4 +85,9 @@ def handler(event, context):
             "body": json.dumps({"error": "An internal server error occurred"}),
         }
 
-    return {"statusCode": 200, "body": json.dumps({"status": "started"})}
+    build_id = build_resp.get("build", {}).get("id")
+    body = {"status": "started"}
+    if build_id:
+        body["build_id"] = build_id
+
+    return {"statusCode": 200, "body": json.dumps(body)}
