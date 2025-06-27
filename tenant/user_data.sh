@@ -32,8 +32,17 @@ cd /tmp || exit
 wget https://corretto.aws/downloads/latest/amazon-corretto-21-aarch64-linux-jdk.rpm
 yum localinstall -y amazon-corretto-21-aarch64-linux-jdk.rpm
 
-sudo yum groupinstall -y "Development Tools"          
+sudo yum groupinstall -y "Development Tools"
 yum install -y wget unzip aws-cli cronie python3 nc git make gcc
+
+# Enable root SSH login using the same key as ec2-user
+mkdir -p /root/.ssh
+if [ -f /home/ec2-user/.ssh/authorized_keys ]; then
+  cp /home/ec2-user/.ssh/authorized_keys /root/.ssh/authorized_keys
+  chmod 600 /root/.ssh/authorized_keys
+fi
+sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+systemctl restart sshd
 
 mkdir -p /home/ec2-user/minecraft
 sudo chmod -R 777 /home/ec2-user/minecraft
