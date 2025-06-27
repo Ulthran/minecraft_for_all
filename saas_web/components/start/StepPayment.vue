@@ -3,6 +3,14 @@
     <h3 class="text-h6 mb-2">Payment Setup</h3>
     <p class="mb-2">Enter your payment information to start your subscription.</p>
     <form @submit.prevent="submitPayment">
+      <div v-show="paymentRequestSupported" id="payment-request-button" class="mb-3"></div>
+      <v-text-field v-model="billing.name" label="Name" required class="mb-2"></v-text-field>
+      <v-text-field v-model="billing.email" label="Email" type="email" required class="mb-2"></v-text-field>
+      <v-text-field v-model="billing.line1" label="Address Line 1" required class="mb-2"></v-text-field>
+      <v-text-field v-model="billing.city" label="City" required class="mb-2"></v-text-field>
+      <v-text-field v-model="billing.state" label="State" required class="mb-2"></v-text-field>
+      <v-text-field v-model="billing.postal" label="Postal Code" required class="mb-2"></v-text-field>
+      <v-text-field v-model="billing.country" label="Country" required class="mb-2"></v-text-field>
       <div id="card-element" class="mb-2"></div>
       <v-btn
         type="submit"
@@ -27,6 +35,18 @@ export default {
       stripe_pk: 'STRIPE_PUBLISHABLE_KEY',
       stripe: null,
       card: null,
+      paymentRequest: null,
+      paymentRequestSupported: false,
+      prButton: null,
+      billing: {
+        name: '',
+        email: '',
+        line1: '',
+        city: '',
+        state: '',
+        postal: '',
+        country: '',
+      },
       loading: false,
     };
   },
@@ -51,6 +71,25 @@ export default {
       this.card.on('change', (e) => {
         this.message = e.error ? e.error.message : '';
       });
+
+      this.paymentRequest = this.stripe.paymentRequest({
+        country: 'US',
+        currency: 'usd',
+        total: { label: 'Subscription', amount: 500 },
+        requestPayerName: true,
+        requestPayerEmail: true,
+      });
+      this.paymentRequest.canMakePayment().then((result) => {
+        if (result) {
+          this.paymentRequestSupported = true;
+          this.prButton = elements.create('paymentRequestButton', {
+            paymentRequest: this.paymentRequest,
+          });
+          this.prButton.mount('#payment-request-button');
+        }
+      });
+
+      this.paymentRequest?.on('paymentmethod', this.handlePaymentRequest);
     }
   },
   methods: {
@@ -58,23 +97,71 @@ export default {
       const base = this.api_url.replace(/\/+$/, '');
       return `${base}/${path}`;
     },
+    async fetchClientSecret() {
+      await window.refreshTokenIfNeeded();
+      const token = localStorage.getItem('token');
+      const res = await fetch(this.endpoint('checkout'), {
+        method: 'POST',
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error('failed');
+      return data.client_secret;
+    },
+    async handlePaymentRequest(ev) {
+      this.loading = true;
+      try {
+        const clientSecret = await this.fetchClientSecret();
+        const { error } = await this.stripe.confirmCardPayment(
+          clientSecret,
+          {
+            payment_method: ev.paymentMethod.id,
+          },
+          { handleActions: false }
+        );
+        if (error) {
+          ev.complete('fail');
+          this.message = error.message || 'Payment failed.';
+          return;
+        }
+        ev.complete('success');
+        const finalResult = await this.stripe.confirmCardPayment(clientSecret);
+        if (finalResult.error) {
+          this.message = finalResult.error.message || 'Payment failed.';
+        } else {
+          this.$emit('complete');
+        }
+      } catch (err) {
+        console.error(err);
+        ev.complete && ev.complete('fail');
+        this.message = err.message || 'Payment failed.';
+      } finally {
+        this.loading = false;
+      }
+    },
     async submitPayment() {
       if (!this.stripe) return;
       this.loading = true;
       this.message = '';
-      await window.refreshTokenIfNeeded();
-      const token = localStorage.getItem('token');
       try {
-        const res = await fetch(this.endpoint('checkout'), {
-          method: 'POST',
-          headers: {
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        const clientSecret = await this.fetchClientSecret();
+        const result = await this.stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: this.card,
+            billing_details: {
+              name: this.billing.name,
+              email: this.billing.email,
+              address: {
+                line1: this.billing.line1,
+                city: this.billing.city,
+                state: this.billing.state,
+                postal_code: this.billing.postal,
+                country: this.billing.country,
+              },
+            },
           },
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error('failed');
-        const result = await this.stripe.confirmCardPayment(data.client_secret, {
-          payment_method: { card: this.card },
         });
         if (result.error) throw result.error;
         this.$emit('complete');
