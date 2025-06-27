@@ -8,7 +8,7 @@
         type="submit"
         color="secondary"
         :loading="loading"
-        :disabled="loading || !stripe || !elements"
+        :disabled="loading || !stripe || !elements || !initializationComplete"
       >
         Save Card
       </v-btn>
