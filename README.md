@@ -88,3 +88,15 @@ http://localhost:8000/#/debug-config
 
 These load the payment and configuration steps in isolation so layout or API
 issues can be inspected without navigating through the full wizard.
+
+## Server Access
+
+The EC2 instance allows SSH login directly as `root` using the same key
+configured for the `ec2-user` account. Remote connections should use the
+server's IPv6 address which remains constant while the instance exists. The
+Minecraft server exposes its RCON port (25575) so tools like `mcrcon` can be
+used from your local machine:
+
+```bash
+mcrcon -H <server IPv6> -P 25575 -p minecraft "list"
+```
