@@ -32,6 +32,7 @@ window.componentsPath = './components';
       { path: '/', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/Home.vue`, options) },
       { path: '/pricing', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/Pricing.vue`, options) },
       { path: '/support', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/Support.vue`, options) },
+      { path: '/privacy', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/DataPrivacy.vue`, options) },
       { path: '/about', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/About.vue`, options) },
       { path: '/login', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/Login.vue`, options) },
       { path: '/console', component: () => window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/Console.vue`, options) },
