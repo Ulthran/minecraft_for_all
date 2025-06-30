@@ -7,6 +7,7 @@
       <v-spacer></v-spacer>
       <v-btn to="/pricing" variant="text" router>Pricing</v-btn>
       <v-btn to="/support" variant="text" router>Support</v-btn>
+      <v-btn to="/privacy" variant="text" router>Privacy</v-btn>
       <v-btn to="/about" variant="text" router>About Us</v-btn>
       <v-btn v-if="!loggedIn" to="/login" variant="text" router>Login</v-btn>
       <v-btn v-if="loggedIn" @click="logout" variant="text">Logout</v-btn>
