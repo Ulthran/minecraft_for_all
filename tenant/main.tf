@@ -3,15 +3,20 @@ data "aws_vpc" "default" {
   default = true
 }
 
-data "aws_subnets" "default" {
+data "aws_subnets" "public" {
   filter {
     name   = "vpc-id"
     values = [data.aws_vpc.default.id]
   }
+
+  filter {
+    name   = "default-for-az"
+    values = ["true"]
+  }
 }
 
-data "aws_subnet" "default" {
-  id = data.aws_subnets.default.ids[0]
+data "aws_subnet" "public" {
+  id = data.aws_subnets.public.ids[0]
 }
 
 resource "tls_private_key" "tenant" {
@@ -102,7 +107,7 @@ data "aws_ami" "amazon_linux" {
 resource "aws_instance" "minecraft" {
   ami                    = data.aws_ami.amazon_linux.id
   instance_type          = var.instance_type
-  subnet_id              = data.aws_subnet.default.id
+  subnet_id              = data.aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.minecraft.id]
   key_name               = aws_key_pair.tenant.key_name
   iam_instance_profile   = aws_iam_instance_profile.minecraft.name
