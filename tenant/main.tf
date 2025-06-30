@@ -1,8 +1,38 @@
 
+data "aws_vpc" "default" {
+  default = true
+}
+
+data "aws_subnets" "public" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+
+  filter {
+    name   = "default-for-az"
+    values = ["true"]
+  }
+}
+
+data "aws_subnet" "public" {
+  id = data.aws_subnets.public.ids[0]
+}
+
+resource "tls_private_key" "tenant" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "tenant" {
+  key_name   = "${var.tenant_id}-key"
+  public_key = tls_private_key.tenant.public_key_openssh
+}
+
 resource "aws_security_group" "minecraft" {
   name        = "minecraft_sg"
   description = "Allow SSH and Minecraft"
-  vpc_id      = var.vpc_id
+  vpc_id      = data.aws_vpc.default.id
 
   ingress {
     from_port        = 22
@@ -77,9 +107,9 @@ data "aws_ami" "amazon_linux" {
 resource "aws_instance" "minecraft" {
   ami                    = data.aws_ami.amazon_linux.id
   instance_type          = var.instance_type
-  subnet_id              = var.subnet_id
+  subnet_id              = data.aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.minecraft.id]
-  key_name               = var.key_pair_name
+  key_name               = aws_key_pair.tenant.key_name
   iam_instance_profile   = aws_iam_instance_profile.minecraft.name
   ipv6_address_count     = 1
 
@@ -274,5 +304,10 @@ output "start_minecraft_api_url" {
 
 output "status_minecraft_api_url" {
   value = aws_api_gateway_stage.status.invoke_url
+}
+
+output "key_pair_private_key" {
+  value     = tls_private_key.tenant.private_key_pem
+  sensitive = true
 }
 
