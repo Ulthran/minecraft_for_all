@@ -11,6 +11,7 @@ variable "key_pair_name" {
 variable "backup_bucket_name" {
   description = "Unique S3 bucket name for world backups"
   type        = string
+  default     = "minecraft-saas-backups"
 }
 
 variable "vpc_id" {
