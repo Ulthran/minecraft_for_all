@@ -1,6 +1,6 @@
 import boto3
 import json
-from datetime import date
+from datetime import date, timedelta
 import logging
 
 logger = logging.getLogger()
@@ -23,7 +23,10 @@ def handler(event, context):
         return {"statusCode": 400, "body": json.dumps({"error": "Missing tenant_id"})}
     today = date.today()
     start = today.replace(day=1).strftime("%Y-%m-%d")
-    end = today.strftime("%Y-%m-%d")
+    # Cost Explorer requires the end date to be strictly after the start date.
+    # The end date is exclusive, so use tomorrow's date to include today's cost
+    # when the function runs on the first day of the month.
+    end = (today + timedelta(days=1)).strftime("%Y-%m-%d")
     try:
         params = {
             "TimePeriod": {"Start": start, "End": end},
