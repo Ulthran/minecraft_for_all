@@ -26,7 +26,7 @@ resource "aws_vpc_ipv6_cidr_block_association" "default" {
 }
 
 locals {
-  vpc_ipv6_cidr_block = data.aws_vpc.default.ipv6_cidr_block != "" ? data.aws_vpc.default.ipv6_cidr_block : aws_vpc_ipv6_cidr_block_association.default[0].ipv6_cidr_block
+  vpc_ipv6_cidr_block = data.aws_vpc.default.ipv6_cidr_block != "" ? data.aws_vpc.default.ipv6_cidr_block : (length(aws_vpc_ipv6_cidr_block_association.default) > 0 ? aws_vpc_ipv6_cidr_block_association.default[0].ipv6_cidr_block : null)
 }
 
 resource "null_resource" "associate_subnet_ipv6" {
