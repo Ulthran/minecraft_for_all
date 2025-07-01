@@ -14,7 +14,11 @@ phases:
     commands:
       - git clone $REPOSITORY_URL repo
       - cd repo/tenant
-      - terraform init -input=false
+      - |
+          terraform init -input=false \
+            -backend-config="bucket=$STATE_BUCKET" \
+            -backend-config="key=$TENANT_ID/terraform.tfstate" \
+            -backend-config="dynamodb_table=$LOCK_TABLE"
       - |
           terraform apply -auto-approve -input=false \
             -var "tenant_id=$TENANT_ID" \

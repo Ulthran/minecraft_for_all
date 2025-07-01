@@ -21,6 +21,12 @@ module "backup_bucket" {
   tenant_ids  = var.tenant_ids
 }
 
+module "terraform_backend" {
+  source      = "./modules/state_backend"
+  bucket_name = var.state_bucket_name
+  table_name  = var.lock_table_name
+}
+
 locals {
   site_dir   = "${path.root}/../saas_web"
   site_files = fileset(local.site_dir, "**")
@@ -85,9 +91,11 @@ resource "aws_s3_object" "site" {
   etag = md5(each.value)
 }
 module "tenant_codebuild" {
-  source         = "./modules/codebuild_provisioner"
-  project_name   = "minecraft-tenant-terraform"
-  repository_url = var.repository_url
+  source            = "./modules/codebuild_provisioner"
+  project_name      = "minecraft-tenant-terraform"
+  repository_url    = var.repository_url
+  state_bucket_name = module.terraform_backend.bucket_name
+  lock_table_name   = module.terraform_backend.table_name
 }
 
 module "tenant_api" {
@@ -127,4 +135,12 @@ output "tenant_api_url" {
 
 output "backup_bucket" {
   value = module.backup_bucket.bucket_name
+}
+
+output "state_bucket" {
+  value = module.terraform_backend.bucket_name
+}
+
+output "lock_table" {
+  value = module.terraform_backend.table_name
 }
