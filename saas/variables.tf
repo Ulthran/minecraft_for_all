@@ -56,3 +56,15 @@ variable "domain" {
   description = "Public domain for payment redirects"
   type        = string
 }
+
+variable "state_bucket_name" {
+  description = "S3 bucket name for tenant Terraform state"
+  type        = string
+  default     = "minecraft-tenant-state"
+}
+
+variable "lock_table_name" {
+  description = "DynamoDB table name for Terraform state locking"
+  type        = string
+  default     = "terraform-locks"
+}

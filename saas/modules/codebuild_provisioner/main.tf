@@ -74,6 +74,14 @@ resource "aws_codebuild_project" "this" {
       name  = "NETHER_BORDER"
       value = "3000"
     }
+    environment_variable {
+      name  = "STATE_BUCKET"
+      value = var.state_bucket_name
+    }
+    environment_variable {
+      name  = "LOCK_TABLE"
+      value = var.lock_table_name
+    }
     privileged_mode = false
   }
 }
