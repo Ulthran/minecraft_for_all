@@ -31,7 +31,6 @@ terraform fmt -check -recursive
 terraform -chdir=tenant init
 terraform -chdir=tenant validate
 shellcheck tenant/user_data.sh
-python3 -m py_compile tenant/lambda/start_minecraft.py
 ```
 
 `terraform validate` may fail if provider plugins cannot be downloaded due to
