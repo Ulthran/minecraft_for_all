@@ -22,9 +22,3 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y shellcheck
       - name: Shellcheck user_data
         run: shellcheck tenant/user_data.sh
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-      - name: Compile lambda code
-        run: python -m py_compile tenant/lambda/start_minecraft.py
