@@ -19,6 +19,26 @@ data "aws_subnet" "public" {
   id = data.aws_subnets.public.ids[0]
 }
 
+resource "aws_vpc_ipv6_cidr_block_association" "default" {
+  count                            = data.aws_vpc.default.ipv6_association_id == "" ? 1 : 0
+  vpc_id                           = data.aws_vpc.default.id
+  assign_generated_ipv6_cidr_block = true
+}
+
+locals {
+  vpc_ipv6_cidr_block = data.aws_vpc.default.ipv6_cidr_block != "" ? data.aws_vpc.default.ipv6_cidr_block : aws_vpc_ipv6_cidr_block_association.default[0].ipv6_cidr_block
+}
+
+resource "null_resource" "associate_subnet_ipv6" {
+  count = data.aws_subnet.public.ipv6_cidr_block == "" ? 1 : 0
+
+  provisioner "local-exec" {
+    command = "aws ec2 associate-subnet-cidr-block --subnet-id ${data.aws_subnet.public.id} --ipv6-cidr-block ${cidrsubnet(local.vpc_ipv6_cidr_block, 8, 0)}"
+  }
+
+  depends_on = [aws_vpc_ipv6_cidr_block_association.default]
+}
+
 resource "tls_private_key" "tenant" {
   algorithm = "RSA"
   rsa_bits  = 4096
@@ -76,18 +96,19 @@ resource "aws_iam_role" "minecraft" {
       Principal = { Service = "ec2.amazonaws.com" }
     }]
   })
+}
 
-  inline_policy {
-    name = "minecraft-s3-backup"
-    policy = jsonencode({
-      Version = "2012-10-17"
-      Statement = [{
-        Effect   = "Allow"
-        Action   = ["s3:PutObject"]
-        Resource = "arn:aws:s3:::${var.backup_bucket_name}/*"
-      }]
-    })
-  }
+resource "aws_iam_role_policy" "minecraft_backup" {
+  name = "minecraft-s3-backup"
+  role = aws_iam_role.minecraft.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = ["s3:PutObject"]
+      Resource = "arn:aws:s3:::${var.backup_bucket_name}/*"
+    }]
+  })
 }
 
 resource "aws_iam_instance_profile" "minecraft" {
@@ -141,18 +162,19 @@ resource "aws_iam_role" "lambda" {
       Principal = { Service = "lambda.amazonaws.com" }
     }]
   })
+}
 
-  inline_policy {
-    name = "minecraft-control"
-    policy = jsonencode({
-      Version = "2012-10-17",
-      Statement = [{
-        Effect   = "Allow",
-        Action   = ["ec2:StartInstances", "ec2:DescribeInstances"],
-        Resource = aws_instance.minecraft.arn
-      }]
-    })
-  }
+resource "aws_iam_role_policy" "lambda_control" {
+  name = "minecraft-control"
+  role = aws_iam_role.lambda.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = ["ec2:StartInstances", "ec2:DescribeInstances"]
+      Resource = aws_instance.minecraft.arn
+    }]
+  })
 }
 
 resource "aws_lambda_function" "start_minecraft" {
