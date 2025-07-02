@@ -7,7 +7,10 @@
       <div class="mt-2">{{ cost }}</div>
       <div v-if="progress" class="mt-2">{{ progress }}</div>
       <v-btn v-if="showStart" @click="start" class="mt-2">Start Server</v-btn>
-      <v-btn v-if="serverExists" @click="deleteStack" class="mt-2" color="error">Delete Server</v-btn>
+      <v-btn v-if="serverExists" :disabled="deleting" @click="deleteStack" class="mt-2" color="error">
+        <span v-if="!deleting">Delete Server</span>
+        <span v-else>Deleting...</span>
+      </v-btn>
       <h3 v-if="!serverExists" class="text-h6 mt-8 mb-2">Start a New Server</h3>
       <StepConfig v-if="!serverExists" @complete="handleInitComplete" />
       </v-col>
