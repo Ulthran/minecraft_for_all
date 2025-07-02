@@ -6,9 +6,14 @@ Minecraft server SaaS with AWS.
 
 ### Terraform
 
+
 ```
 cd tenant
-terraform init    # downloads providers
+# initialize with the remote state bucket and lock table created by the SaaS layer
+terraform init \
+  -backend-config="bucket=YOUR_STATE_BUCKET" \
+  -backend-config="key=YOUR_TENANT/terraform.tfstate" \
+  -backend-config="dynamodb_table=YOUR_LOCK_TABLE"
 terraform apply   # creates resources (requires AWS credentials)
 ```
 
