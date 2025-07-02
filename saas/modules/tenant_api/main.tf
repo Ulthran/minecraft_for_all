@@ -110,6 +110,22 @@ resource "aws_lambda_function" "build_status" {
   timeout          = 10
 }
 
+data "archive_file" "delete_stack" {
+  type        = "zip"
+  source_file = "${path.module}/../../lambda/delete_stack.py"
+  output_path = "${path.module}/lambda_delete_stack.zip"
+}
+
+resource "aws_lambda_function" "delete_stack" {
+  filename         = data.archive_file.delete_stack.output_path
+  source_code_hash = data.archive_file.delete_stack.output_base64sha256
+  function_name    = "delete-stack"
+  role             = aws_iam_role.lambda.arn
+  handler          = "delete_stack.handler"
+  runtime          = "python3.11"
+  timeout          = 60
+}
+
 data "archive_file" "create_checkout_session" {
   type        = "zip"
   source_file = "${path.module}/../../lambda/create_checkout_session.py"
@@ -168,6 +184,14 @@ resource "aws_lambda_permission" "apigw_checkout" {
   statement_id  = "AllowAPIGatewayInvokeCheckout"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.create_checkout_session.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.this.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "apigw_delete" {
+  statement_id  = "AllowAPIGatewayInvokeDelete"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.delete_stack.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.this.execution_arn}/*/*"
 }
@@ -236,6 +260,14 @@ resource "aws_apigatewayv2_integration" "checkout" {
   payload_format_version = "2.0"
 }
 
+resource "aws_apigatewayv2_integration" "delete" {
+  api_id                 = aws_apigatewayv2_api.this.id
+  integration_uri        = aws_lambda_function.delete_stack.invoke_arn
+  integration_type       = "AWS_PROXY"
+  integration_method     = "POST"
+  payload_format_version = "2.0"
+}
+
 resource "aws_apigatewayv2_route" "status" {
   api_id             = aws_apigatewayv2_api.this.id
   route_key          = "GET /status"
@@ -272,6 +304,14 @@ resource "aws_apigatewayv2_route" "checkout" {
   api_id             = aws_apigatewayv2_api.this.id
   route_key          = "POST /checkout"
   target             = "integrations/${aws_apigatewayv2_integration.checkout.id}"
+  authorizer_id      = aws_apigatewayv2_authorizer.jwt.id
+  authorization_type = "JWT"
+}
+
+resource "aws_apigatewayv2_route" "delete" {
+  api_id             = aws_apigatewayv2_api.this.id
+  route_key          = "POST /delete"
+  target             = "integrations/${aws_apigatewayv2_integration.delete.id}"
   authorizer_id      = aws_apigatewayv2_authorizer.jwt.id
   authorization_type = "JWT"
 }

@@ -71,10 +71,11 @@ if __name__ == "__main__":
             ("POST", "/CONFIRM_API_URL"): (200, None),
             ("POST", "/LOGIN_API_URL"): (200, {"token": dummy_token}),
             ("POST", "/MC_API/init"): (200, {"build_id": "demo-build"}),
-            ("GET", "/MC_API/status"): (200, {"state": "offline"}),
+            ("GET", "/MC_API/status"): (200, {"state": "offline", "exists": False}),
             ("POST", "/MC_API/start"): (200, None),
             ("GET", "/MC_API/cost"): (200, {"total": 0}),
             ("POST", "/MC_API/checkout"): (200, {"client_secret": "seti_dummy"}),
+            ("POST", "/MC_API/delete"): (200, None),
         }
     )
 

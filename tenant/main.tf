@@ -134,12 +134,12 @@ resource "aws_instance" "minecraft" {
   iam_instance_profile   = aws_iam_instance_profile.minecraft.name
   ipv6_address_count     = 1
 
+  tags = local.common_tags
+
   root_block_device {
     volume_size = 30
     volume_type = "gp3"
-    tags = merge({
-      CostCenter = var.tenant_id
-    }, var.tags)
+    tags        = local.common_tags
   }
 
   user_data = templatefile("${path.module}/user_data.sh", {

@@ -7,8 +7,12 @@
       <div class="mt-2">{{ cost }}</div>
       <div v-if="progress" class="mt-2">{{ progress }}</div>
       <v-btn v-if="showStart" @click="start" class="mt-2">Start Server</v-btn>
-      <h3 class="text-h6 mt-8 mb-2">Start a New Server</h3>
-      <StepConfig @complete="handleInitComplete" />
+      <v-btn v-if="serverExists" :disabled="deleting" @click="deleteStack" class="mt-2" color="error">
+        <span v-if="!deleting">Delete Server</span>
+        <span v-else>Deleting...</span>
+      </v-btn>
+      <h3 v-if="!serverExists" class="text-h6 mt-8 mb-2">Start a New Server</h3>
+      <StepConfig v-if="!serverExists" @complete="handleInitComplete" />
       </v-col>
     </v-row>
   </v-container>
@@ -35,6 +39,7 @@ export default {
       progressInterval: null,
       progress: '',
       buildId: '',
+      serverExists: false,
       api_url: 'MC_API_URL',
       };
     },
@@ -70,13 +75,14 @@ export default {
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
+        this.serverExists = data.exists ?? false;
         if (data.state === 'running') {
           const players = data.players ?? 0;
           this.status = `Server is running with ${players} player${players === 1 ? '' : 's'} online.`;
           this.showStart = false;
         } else {
-          this.status = 'Server is offline.';
-          this.showStart = true;
+          this.status = this.serverExists ? 'Server is offline.' : 'No server found.';
+          this.showStart = this.serverExists;
         }
       } catch (err) {
         console.error(err);
@@ -149,9 +155,26 @@ export default {
         this.progress = 'Error fetching build status.';
       }
     },
+
+    async deleteStack() {
+      try {
+        const res = await fetch(this.endpoint('delete'), {
+          method: 'POST',
+          headers: await this.authHeader(),
+        });
+        if (!res.ok) throw new Error('failed');
+        this.serverExists = false;
+        this.showStart = false;
+        this.status = 'Deletion started.';
+      } catch (err) {
+        console.error(err);
+        this.status = 'Failed to delete server.';
+      }
+    },
   },
 };
 </script>
 
 <style scoped>
 </style>
+

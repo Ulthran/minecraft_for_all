@@ -20,9 +20,15 @@ phases:
             -backend-config="key=$TENANT_ID/terraform.tfstate" \
             -backend-config="dynamodb_table=$LOCK_TABLE"
       - |
-          terraform apply -auto-approve -input=false \
-            -var "tenant_id=$TENANT_ID" \
-            -var "server_type=$SERVER_TYPE" \
-            -var "instance_type=$INSTANCE_TYPE" \
-            -var "overworld_border_radius=$OVERWORLD_BORDER" \
-            -var "nether_border_radius=$NETHER_BORDER"
+          if [ "$ACTION" = "destroy" ]; then
+            terraform destroy -auto-approve -input=false \
+              -var "tenant_id=$TENANT_ID"
+          else
+            terraform apply -auto-approve -input=false \
+              -var "tenant_id=$TENANT_ID" \
+              -var "server_type=$SERVER_TYPE" \
+              -var "instance_type=$INSTANCE_TYPE" \
+              -var "overworld_border_radius=$OVERWORLD_BORDER" \
+              -var "nether_border_radius=$NETHER_BORDER"
+          fi
+
