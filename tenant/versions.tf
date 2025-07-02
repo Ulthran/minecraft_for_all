@@ -9,11 +9,20 @@ terraform {
   }
 }
 
+locals {
+  # Common tags applied to all AWS resources for this tenant
+  common_tags = merge(
+    var.tags,
+    {
+      tenant_id  = var.tenant_id
+      CostCenter = var.tenant_id
+    }
+  )
+}
+
 provider "aws" {
   region = var.region
   default_tags {
-    tags = merge({
-      CostCenter = var.tenant_id
-    }, var.tags)
+    tags = local.common_tags
   }
 }
