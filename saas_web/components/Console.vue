@@ -1,18 +1,21 @@
 <template>
-  <v-container>
+  <v-container v-if="loading" class="d-flex justify-center">
+    <v-progress-circular indeterminate></v-progress-circular>
+  </v-container>
+  <v-container v-else>
     <v-row>
       <v-col>
-      <h2 class="text-h5 mb-4">Server Console</h2>
-      <div>{{ status }}</div>
-      <div class="mt-2">{{ cost }}</div>
-      <div v-if="progress" class="mt-2">{{ progress }}</div>
-      <v-btn v-if="showStart" @click="start" class="mt-2">Start Server</v-btn>
-      <v-btn v-if="serverExists" :disabled="deleting" @click="deleteStack" class="mt-2" color="error">
-        <span v-if="!deleting">Delete Server</span>
-        <span v-else>Deleting...</span>
-      </v-btn>
-      <h3 v-if="!serverExists" class="text-h6 mt-8 mb-2">Start a New Server</h3>
-      <StepConfig v-if="!serverExists" @complete="handleInitComplete" />
+        <h2 class="text-h5 mb-4">Server Console</h2>
+        <div>{{ status }}</div>
+        <div class="mt-2">{{ cost }}</div>
+        <div v-if="progress" class="mt-2">{{ progress }}</div>
+        <v-btn v-if="showStart" @click="start" class="mt-2">Start Server</v-btn>
+        <v-btn v-if="serverExists" :disabled="deleting" @click="deleteStack" class="mt-2" color="error">
+          <span v-if="!deleting">Delete Server</span>
+          <span v-else>Deleting...</span>
+        </v-btn>
+        <h3 v-if="!serverExists" class="text-h6 mt-8 mb-2">Start a New Server</h3>
+        <StepConfig v-if="!serverExists" @complete="handleInitComplete" />
       </v-col>
     </v-row>
   </v-container>
@@ -32,7 +35,7 @@ export default {
   },
   data() {
     return {
-      status: 'Checking status...',
+      status: '',
       showStart: false,
       cost: 'Fetching cost...',
       interval: null,
@@ -40,9 +43,10 @@ export default {
       progress: '',
       buildId: '',
       serverExists: false,
+      loading: true,
       api_url: 'MC_API_URL',
-      };
-    },
+    };
+  },
   mounted() {
     this.fetchStatus();
     this.fetchCost();
@@ -84,9 +88,11 @@ export default {
           this.status = this.serverExists ? 'Server is offline.' : 'No server found.';
           this.showStart = this.serverExists;
         }
+        this.loading = false;
       } catch (err) {
         console.error(err);
         this.status = 'Error fetching status.';
+        this.loading = false;
       }
     },
     async start() {
