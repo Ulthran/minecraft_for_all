@@ -137,7 +137,7 @@ resource "aws_instance" "minecraft" {
   tags = local.common_tags
 
   root_block_device {
-    volume_size = 30
+    volume_size = 5
     volume_type = "gp3"
     tags        = local.common_tags
   }
