@@ -30,8 +30,13 @@ def handler(event, context):
 
     state = "offline"
     reservations = resp.get("Reservations", [])
+    exists = bool(reservations)
     if reservations:
         instance = reservations[0]["Instances"][0]
         state = instance.get("State", {}).get("Name", "unknown")
 
-    return {"statusCode": 200, "body": json.dumps({"state": state})}
+    return {
+        "statusCode": 200,
+        "body": json.dumps({"state": state, "exists": exists}),
+    }
+
