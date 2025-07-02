@@ -10,7 +10,7 @@ data "aws_subnets" "public" {
   }
 
   filter {
-    name   = "default-for-az"
+    name   = "map-public-ip-on-launch"
     values = ["true"]
   }
 }
