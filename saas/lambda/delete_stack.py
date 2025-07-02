@@ -29,8 +29,11 @@ def handler(event, context):
 
     try:
         codebuild.start_build(projectName=PROJECT_NAME, environmentVariablesOverride=params)
-    except Exception:
-        logger.exception("Failed to start destroy build")
+    except botocore.exceptions.ClientError as e:
+        logger.exception(f"ClientError while starting destroy build: {e}")
+        return {"statusCode": 500, "body": json.dumps({"error": "AWS ClientError"})}
+    except Exception as e:
+        logger.exception(f"Unexpected error while starting destroy build: {e}")
         return {"statusCode": 500, "body": json.dumps({"error": "internal"})}
 
     return {"statusCode": 200, "body": json.dumps({"status": "started"})}
