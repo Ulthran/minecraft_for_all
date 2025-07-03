@@ -14,8 +14,8 @@ jobs:
       - uses: hashicorp/setup-terraform@v3
       - name: Terraform fmt
         run: terraform -chdir=tenant fmt -check -recursive
-      - name: Terraform init
-        run: terraform -chdir=tenant init
+      - name: Terraform init (local backend)
+        run: terraform -chdir=tenant init -backend=false
       - name: Terraform validate
         run: terraform -chdir=tenant validate
       - name: Install shellcheck

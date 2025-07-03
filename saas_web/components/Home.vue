@@ -1,6 +1,9 @@
 <template>
   <div>
     <v-container>
+      <v-row class="justify-center mb-4">
+        <BlockBuddy sheet="emerald" :index="0" />
+      </v-row>
       <v-row class="mb-6">
         <v-col>
           <h2 class="text-h5"><i class="fas fa-users mr-2"></i>Small servers, big fun</h2>
@@ -28,6 +31,9 @@ export default {
   components: {
     CostCalculator: Vue.defineAsyncComponent(() =>
       window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/CostCalculator.vue`, window.loaderOptions)
+    ),
+    BlockBuddy: Vue.defineAsyncComponent(() =>
+      window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/BlockBuddy.vue`, window.loaderOptions)
     ),
   },
 };

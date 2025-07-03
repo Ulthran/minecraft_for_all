@@ -4,33 +4,55 @@
   <meta charset="utf-8" />
   <link rel="icon" type="image/png" href="/favicon.ico" />
   <title>Page Not Found - Minecraft for All</title>
+  <base href="/" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify@3.8.10/dist/vuetify.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    html, body {
+    html, body, #app {
       margin: 0;
-      height: 100%;
-      background: linear-gradient(135deg, #0d0d0d, #1a1a2e);
+      padding: 0;
+      min-height: 100%;
+    }
+    body {
+      background: linear-gradient(135deg, #2d003d, #000b63, #000000);
       color: #ffffff;
       font-family: 'Roboto', sans-serif;
     }
-    #container {
-      min-height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    a { color: #81d4fa; }
-    h1 { color: #b39ddb; }
+    a { color: #89cff0; }
+    h1 { color: #ffb6c1; }
   </style>
 </head>
 <body>
-  <div id="container">
-    <i class="fas fa-question-circle fa-3x" style="margin-bottom: 1rem;"></i>
-    <h1>404 - Page Not Found</h1>
-    <p><a href="/">Return Home</a></p>
-  </div>
+  <div id="app"></div>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3.5.17/dist/vue.global.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@3.8.10/dist/vuetify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue3-sfc-loader@0.9.5/dist/vue3-sfc-loader.js"></script>
+  <script>
+    const options = {
+      moduleCache: { vue: Vue },
+      async getFile(url) {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(res.statusText + ' ' + url);
+        return { getContentData: asBinary => asBinary ? res.arrayBuffer() : res.text() };
+      },
+      addStyle(textContent) {
+        const style = Object.assign(document.createElement('style'), { textContent });
+        const ref = document.head.getElementsByTagName('style')[0] || null;
+        document.head.insertBefore(style, ref);
+      },
+    };
+    window.loaderOptions = options;
+    window.componentsPath = './components';
+    window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/Error404.vue`, options).then((comp) => {
+      const vuetify = Vuetify.createVuetify({
+        theme: {
+          defaultTheme: 'dark',
+          themes: { dark: { colors: { background: '#000000', surface: '#1a1a2e', primary: '#89cff0', secondary: '#ffb6c1' } } },
+        },
+      });
+      Vue.createApp(comp).use(vuetify).mount('#app');
+    });
+  </script>
 </body>
 </html>
