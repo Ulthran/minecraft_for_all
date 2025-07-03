@@ -6,7 +6,7 @@
         class="mr-2"
         style="min-width: 0; display: flex; align-items: center; text-decoration: none;"
       >
-        <BlockBuddy sheet="iron" :index="0" :size="48" />
+        <BlockBuddy sheet="iron" :index="0" :size="64" />
       </router-link>
       <v-spacer></v-spacer>
       <v-btn to="/pricing" variant="text" router>Pricing</v-btn>
