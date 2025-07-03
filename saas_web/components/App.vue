@@ -4,9 +4,6 @@
       <v-btn to="/" variant="text" router class="mr-2" style="min-width: 0;">
         <BlockBuddy sheet="iron" :index="0" :size="48" />
       </v-btn>
-      <v-toolbar-title>
-        <router-link to="/" style="color: inherit; text-decoration: none;">Minecraft for All</router-link>
-      </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn to="/pricing" variant="text" router>Pricing</v-btn>
       <v-btn to="/support" variant="text" router>Support</v-btn>
