@@ -1,8 +1,8 @@
 <template>
   <v-app>
     <v-app-bar color="secondary" dark app>
-      <v-btn to="/" variant="text" router class="mr-2" style="min-width: 0;">
-        <BlockBuddy sheet="iron" :index="0" :size="48" />
+      <v-btn to="/" variant="text" router class="mr-2" style="min-width: 0; top: -16px;">
+        <BlockBuddy sheet="iron" :index="0" :size="64" />
       </v-btn>
       <v-spacer></v-spacer>
       <v-btn to="/pricing" variant="text" router>Pricing</v-btn>
