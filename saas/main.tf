@@ -112,6 +112,7 @@ module "tenant_api" {
   allowed_origins     = ["https://${module.frontend_site.cloudfront_domain}"]
   stripe_secret_key   = var.stripe_secret_key
   domain              = var.domain
+  cost_table_name     = var.cost_table_name
 }
 
 
@@ -149,4 +150,8 @@ output "state_bucket" {
 
 output "lock_table" {
   value = module.terraform_backend.table_name
+}
+
+output "cost_table" {
+  value = module.tenant_api.cost_table
 }

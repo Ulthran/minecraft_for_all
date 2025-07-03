@@ -33,6 +33,11 @@ resource "aws_iam_role_policy" "tenant_permissions" {
         Resource = "*"
       },
       {
+        Effect   = "Allow",
+        Action   = ["dynamodb:GetItem", "dynamodb:PutItem"],
+        Resource = aws_dynamodb_table.cost_cache.arn
+      },
+      {
         Effect = "Allow",
         Action = [
           "codebuild:StartBuild",
@@ -42,6 +47,33 @@ resource "aws_iam_role_policy" "tenant_permissions" {
       }
     ]
   })
+}
+
+resource "aws_dynamodb_table" "cost_cache" {
+  name         = var.cost_table_name
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "tenant_id"
+  range_key    = "month"
+
+  attribute {
+    name = "tenant_id"
+    type = "S"
+  }
+
+  attribute {
+    name = "month"
+    type = "S"
+  }
+
+  attribute {
+    name = "expires_at"
+    type = "N"
+  }
+
+  ttl {
+    attribute_name = "expires_at"
+    enabled        = true
+  }
 }
 
 # Lambda packages
@@ -76,6 +108,11 @@ resource "aws_lambda_function" "cost_report" {
   handler          = "cost_report.handler"
   runtime          = "python3.11"
   timeout          = 10
+  environment {
+    variables = {
+      COST_TABLE = aws_dynamodb_table.cost_cache.name
+    }
+  }
 }
 
 data "archive_file" "init_server" {

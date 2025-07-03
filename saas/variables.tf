@@ -68,3 +68,9 @@ variable "lock_table_name" {
   type        = string
   default     = "terraform-locks"
 }
+
+variable "cost_table_name" {
+  description = "DynamoDB table name for cached cost reports"
+  type        = string
+  default     = "minecraft-cost-cache"
+}
