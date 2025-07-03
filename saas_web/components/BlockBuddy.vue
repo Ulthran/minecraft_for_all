@@ -1,5 +1,5 @@
 <template>
-  <div class="block-buddy" :style="style"></div>
+  <div class="block-buddy" :style="style" aria-hidden="true"></div>
 </template>
 
 <script>
