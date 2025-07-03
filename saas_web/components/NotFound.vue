@@ -1,14 +1,17 @@
 <template>
-  <v-container class="text-center">
-    <i class="fas fa-question-circle fa-3x mb-4"></i>
-    <h1>404 - Page Not Found</h1>
-    <p><a href="/">Return Home</a></p>
-  </v-container>
+  <ErrorPage
+    title="404 - Page Not Found"
+    icon="fas fa-question-circle"
+    buddy-sheet="iron"
+    :buddy-index="3"
+  />
 </template>
 
 <script>
+import ErrorPage from './ErrorPage.vue';
 export default {
   name: 'NotFound',
+  components: { ErrorPage },
 };
 </script>
 
