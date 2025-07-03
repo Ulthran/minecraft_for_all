@@ -114,3 +114,75 @@ May say lines like:
 “Looking for value? I’ve got stacks!”
 
 “Need help choosing the right plan?”
+
+### Speech Bubbles
+
+
+💬 Speech Bubble System – Pixel Art Spec
+🧱 1. Style & Aesthetic
+Resolution: Designed for 8x8 or 16x16 tile scaling, so it’s modular and can grow/shrink easily.
+
+Look: Clean pixel border (1–2 pixels thick), with square corners or slightly rounded square (not smooth, no anti-aliasing).
+
+Outline: Dark gray or black (#222 or #111), depending on theme contrast.
+
+Fill:
+
+Default: Off-white or light gray (#F4F4F4 / #DDDDDD)
+
+Optional: Slightly tinted fill for roles (e.g., greenish for Emerald, orange for Iron, blue for Diamond)
+
+🟩 Stays consistent with blocky, low-res Minecraft vibe. Think NES/SNES RPG dialog boxes, but more compact.
+
+🔲 2. Scalable Structure (9-Slice Style)
+To make the bubbles expandable based on content, we design them with a 9-slice layout:
+
+css
+Copy
+Edit
+[TL][T ][TR]
+[L ][C ][R ]
+[BL][B ][BR]
+Each corner and edge is a separate tile (8x8 or 16x16), and the center tile can be repeated horizontally or vertically to scale the bubble up.
+
+Corners (TL, TR, BL, BR): Fixed L-shaped pieces.
+
+Edges (T, B, L, R): 1-tile strips that tile along sides.
+
+Center (C): Empty or lightly patterned for large text bodies.
+
+🗨️ 3. Tail Attachment (Buddy “Pointer”)
+Small triangle or rectangular pointer (5x5 or 8x8) that can be anchored on any side.
+
+Points toward the buddy's head or hand.
+
+Can be rotated or mirrored for placement on:
+
+Bottom-left (default for top pop-ups)
+
+Top-right (default for footer tips)
+
+Left/right (for side tooltips)
+
+💬 4. Text Guidelines
+Font: Pixel font or monospace, preferably 5x5 or 6x6 pixel character height.
+
+Padding: At least 1 tile (8 pixels) of space between text and borders.
+
+Max width: About 5–8 words per line for readability.
+
+🧰 Optional Variants
+🟩 Emerald Buddy (Billing): Emerald-tinted frame
+
+🧱 Iron Buddy (Help Tips): Blocky stone border
+
+💎 Diamond Buddy (Premium Notices): Sparkly/cyan border
+
+🔥 Error or Warning: Red or orange border, zigzag edge
+
+📦 Export Format
+You can export each part as:
+
+Individual 8x8 PNG tiles
+
+Or one full sprite sheet (e.g., 48x48 or 64x64) with a layout key
