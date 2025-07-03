@@ -1,6 +1,9 @@
 <template>
   <v-app>
     <v-app-bar color="secondary" dark app>
+      <v-btn to="/" variant="text" router class="mr-2" style="min-width: 0;">
+        <BlockBuddy sheet="iron" :index="0" :size="48" />
+      </v-btn>
       <v-toolbar-title>
         <router-link to="/" style="color: inherit; text-decoration: none;">Minecraft for All</router-link>
       </v-toolbar-title>
@@ -27,6 +30,11 @@ const useAuthStore = window.useAuthStore;
 const { Auth } = aws_amplify;
 export default {
   name: 'App',
+  components: {
+    BlockBuddy: Vue.defineAsyncComponent(() =>
+      window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/BlockBuddy.vue`, window.loaderOptions)
+    ),
+  },
   setup() {
     const router = useRouter();
     const auth = useAuthStore();
