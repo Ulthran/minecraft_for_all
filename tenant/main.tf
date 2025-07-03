@@ -126,13 +126,14 @@ data "aws_ami" "amazon_linux" {
 }
 
 resource "aws_instance" "minecraft" {
-  ami                    = data.aws_ami.amazon_linux.id
-  instance_type          = var.instance_type
-  subnet_id              = data.aws_subnet.public.id
-  vpc_security_group_ids = [aws_security_group.minecraft.id]
-  key_name               = aws_key_pair.tenant.key_name
-  iam_instance_profile   = aws_iam_instance_profile.minecraft.name
-  ipv6_address_count     = 1
+  ami                         = data.aws_ami.amazon_linux.id
+  instance_type               = var.instance_type
+  subnet_id                   = data.aws_subnet.public.id
+  vpc_security_group_ids      = [aws_security_group.minecraft.id]
+  key_name                    = aws_key_pair.tenant.key_name
+  iam_instance_profile        = aws_iam_instance_profile.minecraft.name
+  ipv6_address_count          = 1
+  associate_public_ip_address = false
 
   tags = local.common_tags
 
