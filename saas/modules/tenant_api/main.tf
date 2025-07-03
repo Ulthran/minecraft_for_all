@@ -65,11 +65,6 @@ resource "aws_dynamodb_table" "cost_cache" {
     type = "S"
   }
 
-  attribute {
-    name = "expires_at"
-    type = "N"
-  }
-
   ttl {
     attribute_name = "expires_at"
     enabled        = true
