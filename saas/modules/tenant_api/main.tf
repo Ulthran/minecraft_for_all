@@ -64,6 +64,16 @@ resource "aws_dynamodb_table" "cost_cache" {
     name = "month"
     type = "S"
   }
+
+  attribute {
+    name = "expires_at"
+    type = "N"
+  }
+
+  ttl {
+    attribute_name = "expires_at"
+    enabled        = true
+  }
 }
 
 # Lambda packages

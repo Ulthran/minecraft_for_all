@@ -56,10 +56,11 @@ stores any tenant-specific API configuration.
 
 Each tenant account also includes a `cost_report` Lambda function exposed
 through an API Gateway endpoint. To keep Cost Explorer API calls to a minimum,
-the function stores the latest results in a DynamoDB table. The Lambda checks
-the cache first and only queries Cost Explorer once per day for each tenant.
-The console reads this endpoint after authenticating the user, so no manual
-placeholder replacement is required.
+the function stores the latest results in a DynamoDB table with a 48 hour TTL.
+The Lambda checks the cache first and only queries Cost Explorer once per day
+for each tenant. Cached items expire automatically so the table doesn't grow
+indefinitely. The console reads this endpoint after authenticating the user, so
+no manual placeholder replacement is required.
 
 ## Provisioning Pipeline
 

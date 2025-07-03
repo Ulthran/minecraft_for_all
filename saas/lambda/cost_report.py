@@ -88,11 +88,13 @@ def handler(event, context):
 
     if cost_table:
         try:
+            ttl = int((datetime.utcnow() + timedelta(days=2)).timestamp())
             cost_table.put_item(
                 Item={
                     "tenant_id": tenant_id,
                     "month": month_key,
                     "last_updated": today.isoformat(),
+                    "expires_at": ttl,
                     "total": Decimal(str(total)),
                     "breakdown": {k: Decimal(str(v)) for k, v in breakdown.items()},
                 }
