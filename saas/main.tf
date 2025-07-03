@@ -94,7 +94,7 @@ resource "aws_s3_object" "site" {
     lower(element(reverse(split(".", each.key)), 0)),
     "text/plain",
   )
-  etag = each.value.binary ? md5(base64decode(each.value.content)) : md5(each.value.content)
+  etag = each.value.binary ? filemd5("${local.site_dir}/${each.key}") : md5(each.value.content)
 }
 module "tenant_codebuild" {
   source            = "./modules/codebuild_provisioner"
