@@ -16,6 +16,7 @@ locals {
     {
       tenant_id  = var.tenant_id
       CostCenter = var.tenant_id
+      Project    = "Minecraft SaaS"
     }
   )
 }
