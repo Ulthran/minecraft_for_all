@@ -31,3 +31,8 @@ variable "domain" {
   description = "Public domain for success/cancel URLs"
   type        = string
 }
+
+variable "cost_table_name" {
+  description = "DynamoDB table name for cached cost data"
+  type        = string
+}

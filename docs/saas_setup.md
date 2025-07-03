@@ -54,11 +54,12 @@ stores any tenant-specific API configuration.
 
 ## Cost Reporting Lambda
 
-Each tenant account also includes a simple `cost_report` Lambda function that is
-exposed through an API Gateway endpoint. This function queries the AWS Cost
-Explorer API for the current month's charges and returns the total along with a
-breakdown by service. The console calls this endpoint after authenticating the
-user; no manual placeholder replacement is required.
+Each tenant account also includes a `cost_report` Lambda function exposed
+through an API Gateway endpoint. To keep Cost Explorer API calls to a minimum,
+the function stores the latest results in a DynamoDB table. The Lambda checks
+the cache first and only queries Cost Explorer once per day for each tenant.
+The console reads this endpoint after authenticating the user, so no manual
+placeholder replacement is required.
 
 ## Provisioning Pipeline
 
