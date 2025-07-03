@@ -8,6 +8,7 @@ export default {
   props: {
     sheet: { type: String, default: 'emerald' },
     index: { type: Number, default: 0 },
+    size: { type: Number, default: 128 },
   },
   computed: {
     style() {
@@ -15,18 +16,20 @@ export default {
         emerald: 'assets/emerald_block_buddies.png',
         iron: 'assets/iron_ore_buddies.png',
       };
-      const pos = [
+      const size = this.size;
+      const sheetSize = size * 2;
+      const positions = [
         '0px 0px',
-        '-128px 0px',
-        '0px -128px',
-        '-128px -128px',
+        `-${size}px 0px`,
+        `0px -${size}px`,
+        `-${size}px -${size}px`,
       ];
       return {
-        width: '128px',
-        height: '128px',
+        width: `${size}px`,
+        height: `${size}px`,
         'background-image': `url(${sheets[this.sheet] || sheets.emerald})`,
-        'background-size': '256px 256px',
-        'background-position': pos[this.index % 4],
+        'background-size': `${sheetSize}px ${sheetSize}px`,
+        'background-position': positions[this.index % 4],
         'image-rendering': 'pixelated',
       };
     },
