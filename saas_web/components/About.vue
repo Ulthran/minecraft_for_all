@@ -1,5 +1,8 @@
 <template>
     <v-container>
+      <v-row class="justify-center mb-4">
+        <BlockBuddy sheet="emerald" :index="2" />
+      </v-row>
       <v-row class="mb-6">
         <v-col>
           <h2 class="text-h5"><i class="fas fa-info-circle mr-2"></i>About Us</h2>
@@ -26,6 +29,11 @@
   <script>
   export default {
     name: 'About',
+    components: {
+      BlockBuddy: Vue.defineAsyncComponent(() =>
+        window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/BlockBuddy.vue`, window.loaderOptions)
+      ),
+    },
   };
   </script>
   
