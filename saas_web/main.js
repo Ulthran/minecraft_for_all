@@ -53,9 +53,9 @@ window.componentsPath = './components';
           dark: {
             colors: {
               background: '#000000',
-              surface: '#1a1a2e',
-              primary: '#89cff0',
-              secondary: '#ffb6c1',
+              surface: '#262626',
+              primary: '#4caf50',
+              secondary: '#ffa500',
             },
           },
       },

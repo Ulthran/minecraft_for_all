@@ -35,25 +35,26 @@ export default {
   align-items: center;
 }
 .step-circle {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  border-radius: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 500;
-  color: white;
-  background-color: #603652;
+  font-weight: 700;
+  font-family: 'Press Start 2P', cursive;
+  color: #fff;
+  background-color: #4caf50;
 }
 
 .step-circle.active {
-  border: 2px solid white;
-  background-color: transparent;
+  border: 2px solid #ffa500;
+  background-color: #262626;
 }
 
 .step-line {
   width: 40px;
-  height: 2px;
-  background-color: #603652;
+  height: 4px;
+  background-color: #4caf50;
 }
 </style>
