@@ -6,7 +6,7 @@ from decimal import Decimal
 import logging
 
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 ce = boto3.client("ce")
 dynamodb = boto3.resource("dynamodb")

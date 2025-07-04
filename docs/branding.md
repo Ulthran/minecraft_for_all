@@ -186,3 +186,66 @@ You can export each part as:
 Individual 8x8 PNG tiles
 
 Or one full sprite sheet (e.g., 48x48 or 64x64) with a layout key
+
+### Village Background
+
+ Minecraft Village Background – Pixel Art Spec
+🧱 1. Purpose
+A backdrop for your block buddies (like the Iron or Emerald helper) to stand in front of, especially when:
+
+Giving tips
+
+Appearing in pop-ups
+
+Standing near buttons or floating UI cards
+
+It should not be a full scene but rather a partial diorama-style background, enough to give depth and context.
+
+🎨 2. Dimensions
+Default size: 128x64 or 128x96 pixels (scalable to fit buddy + bubble)
+
+Tile Style: Still built on a 16x16 tile grid for visual consistency
+
+Resolution: True pixel art, with block textures matching Minecraft (stone, wood, grass, etc.)
+
+🏘️ 3. Visual Elements
+🧱 Foreground (bottom half)
+Path: Dirt or gravel with pixel shading (like Minecraft paths)
+
+Foliage: A couple tufts of pixelated grass or a flower
+
+Fence: Wooden fence posts (2–3 tiles wide) for framing
+
+Villager House Wall: Cobblestone base with oak wood planks and window; maybe 1 door
+
+🌳 Background (middle to top)
+Sky: Flat blue with optional clouds (no dithering)
+
+Tree Tops: Oak tree pixel canopy peeking in from the edge
+
+Roof: One thatched/stair-stepped roof (partial, 3–4 tiles wide) behind the buddy
+
+🎨 4. Pixelated Border (Edge Fade Effect)
+Rough, irregular outline
+
+~4–8 pixels of "fuzzy" edge blending into transparency
+
+Uses scattered filler pixels (like blurred grass, sky speckles, etc.)
+
+Maintains sharp pixel style, no gradients or anti-aliasing
+
+Imagine it as a “cut-out” sticker feel — the background has been roughly popped out from a Minecraft world, and plopped behind your buddy.
+
+🧩 5. Export/Usage Format
+PNG with transparent background outside the faded edge
+
+Works with both light and dark mode (dark site backdrop assumed)
+
+Can be placed behind buddy + speech bubble or layered under popup panels
+
+💡 Use Cases
+Iron Buddy appears here when giving new user tips
+
+Emerald Buddy stands in front of a villager house when explaining pricing
+
+Future buddies (like a Slime Moderator) could get swamp or plains-themed variants
