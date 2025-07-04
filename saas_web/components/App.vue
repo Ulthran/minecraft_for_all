@@ -1,10 +1,16 @@
 <template>
   <v-app>
+    <BackgroundLayer />
     <v-app-bar color="secondary" dark app>
       <router-link
         to="/"
         class="mr-2"
-        style="min-width: 0; display: flex; align-items: center; text-decoration: none;"
+        style="
+          min-width: 0;
+          display: flex;
+          align-items: center;
+          text-decoration: none;
+        "
       >
         <BlockBuddy sheet="iron" :index="0" :size="64" />
       </router-link>
@@ -16,7 +22,9 @@
         <v-btn to="/about" variant="text" router>About Us</v-btn>
         <v-btn v-if="!loggedIn" to="/login" variant="text" router>Login</v-btn>
         <v-btn v-if="loggedIn" @click="logout" variant="text">Logout</v-btn>
-        <v-btn v-if="loggedIn" to="/console" variant="text" router>Console</v-btn>
+        <v-btn v-if="loggedIn" to="/console" variant="text" router
+          >Console</v-btn
+        >
         <v-btn to="/start" color="primary" router>Start</v-btn>
       </div>
       <div class="d-md-none">
@@ -27,14 +35,30 @@
             </v-btn>
           </template>
           <v-list>
-          <v-list-item to="/pricing" link><v-list-item-title>Pricing</v-list-item-title></v-list-item>
-          <v-list-item to="/support" link><v-list-item-title>Support</v-list-item-title></v-list-item>
-          <v-list-item to="/privacy" link><v-list-item-title>Privacy</v-list-item-title></v-list-item>
-          <v-list-item to="/about" link><v-list-item-title>About Us</v-list-item-title></v-list-item>
-          <v-list-item v-if="!loggedIn" to="/login" link><v-list-item-title>Login</v-list-item-title></v-list-item>
-          <v-list-item v-if="loggedIn" @click="logout"><v-list-item-title>Logout</v-list-item-title></v-list-item>
-          <v-list-item v-if="loggedIn" to="/console" link><v-list-item-title>Console</v-list-item-title></v-list-item>
-          <v-list-item to="/start" link><v-list-item-title>Start</v-list-item-title></v-list-item>
+            <v-list-item to="/pricing" link
+              ><v-list-item-title>Pricing</v-list-item-title></v-list-item
+            >
+            <v-list-item to="/support" link
+              ><v-list-item-title>Support</v-list-item-title></v-list-item
+            >
+            <v-list-item to="/privacy" link
+              ><v-list-item-title>Privacy</v-list-item-title></v-list-item
+            >
+            <v-list-item to="/about" link
+              ><v-list-item-title>About Us</v-list-item-title></v-list-item
+            >
+            <v-list-item v-if="!loggedIn" to="/login" link
+              ><v-list-item-title>Login</v-list-item-title></v-list-item
+            >
+            <v-list-item v-if="loggedIn" @click="logout"
+              ><v-list-item-title>Logout</v-list-item-title></v-list-item
+            >
+            <v-list-item v-if="loggedIn" to="/console" link
+              ><v-list-item-title>Console</v-list-item-title></v-list-item
+            >
+            <v-list-item to="/start" link
+              ><v-list-item-title>Start</v-list-item-title></v-list-item
+            >
           </v-list>
         </v-menu>
       </div>
@@ -51,22 +75,31 @@ const { useRouter } = VueRouter;
 const useAuthStore = window.useAuthStore;
 const { Auth } = aws_amplify;
 export default {
-  name: 'App',
+  name: "App",
   components: {
     BlockBuddy: Vue.defineAsyncComponent(() =>
-      window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/BlockBuddy.vue`, window.loaderOptions)
+      window["vue3-sfc-loader"].loadModule(
+        `${window.componentsPath}/BlockBuddy.vue`,
+        window.loaderOptions,
+      ),
+    ),
+    BackgroundLayer: Vue.defineAsyncComponent(() =>
+      window["vue3-sfc-loader"].loadModule(
+        `${window.componentsPath}/BackgroundLayer.vue`,
+        window.loaderOptions,
+      ),
     ),
   },
   setup() {
     const router = useRouter();
     const auth = useAuthStore();
     const logout = async () => {
-      localStorage.removeItem('urls');
+      localStorage.removeItem("urls");
       try {
         await Auth.signOut();
       } catch (_) {}
       auth.updateLoggedIn();
-      router.push('/');
+      router.push("/");
     };
     return { loggedIn: computed(() => auth.loggedIn), logout };
   },
