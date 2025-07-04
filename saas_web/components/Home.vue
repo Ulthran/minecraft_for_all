@@ -1,24 +1,34 @@
 <template>
   <div>
-    <v-container>
-      <v-row class="justify-center mb-4">
-        <BlockBuddy sheet="emerald" :index="0" />
-      </v-row>
-      <v-row class="mb-6">
-        <v-col>
-          <h2 class="text-h5"><i class="fas fa-users mr-2"></i>Small servers, big fun</h2>
-          <p>Launch a customizable Minecraft server with just a few clicks. Our simple web interface makes it easy to manage your world.</p>
+    <v-container fluid>
+      <!-- Segment 1 -->
+      <v-row class="py-16 segment" align="center">
+        <v-col cols="12" md="6">
+          <h2 class="text-h4 mb-4">Only pay for what you use</h2>
+          <p>We are the only pure-usage based pricing for Minecraft hosting available.</p>
+        </v-col>
+        <v-col cols="12" md="6" class="text-center">
+          <BlockBuddy sheet="iron" :index="0" :size="192" />
         </v-col>
       </v-row>
-      <v-row class="mb-6">
-        <v-col>
-          <h2 class="text-h5"><i class="fas fa-clock mr-2"></i>Only pay for uptime</h2>
-          <p>No monthly commitments. Keep costs low by paying only while your server is running.</p>
+
+      <!-- Segment 2 -->
+      <v-row class="py-16 segment" align="center">
+        <v-col cols="12" md="6" class="text-center order-md-first order-last">
+          <BlockBuddy sheet="emerald" :index="1" :size="192" />
+        </v-col>
+        <v-col cols="12" md="6">
+          <h2 class="text-h4 mb-4">Transparent pricing</h2>
+          <p>You pay only for compute, network and storage.</p>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col cols="12" md="6" lg="5">
-          <CostCalculator />
+
+      <!-- Segment 3 -->
+      <v-row class="py-16 segment" align="center" justify="center">
+        <v-col cols="12" class="text-center">
+          <v-btn color="primary" size="x-large" to="/start">
+            Start
+          </v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -29,12 +39,15 @@
 export default {
   name: 'Home',
   components: {
-    CostCalculator: Vue.defineAsyncComponent(() =>
-      window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/CostCalculator.vue`, window.loaderOptions)
-    ),
     BlockBuddy: Vue.defineAsyncComponent(() =>
       window['vue3-sfc-loader'].loadModule(`${window.componentsPath}/BlockBuddy.vue`, window.loaderOptions)
     ),
   },
 };
 </script>
+
+<style scoped>
+.segment {
+  min-height: 50vh;
+}
+</style>
