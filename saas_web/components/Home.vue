@@ -18,7 +18,7 @@
             sheet="iron"
             :index="0"
             :size="192"
-            message="No monthly rates!"
+            message="No minimums!"
           />
         </v-col>
       </v-row>
@@ -30,7 +30,6 @@
             sheet="emerald"
             :index="1"
             :size="192"
-            message="Transparent usage!"
           />
         </v-col>
         <v-col cols="12" md="6">
