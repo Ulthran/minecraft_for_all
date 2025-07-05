@@ -113,6 +113,14 @@
                 </div>
               </v-list-item-content>
             </v-list-item>
+            <v-list-item prepend-icon="fas fa-check">
+              <v-list-item-content>
+                <div>
+                  <h3>Global availability</h3>
+                  <p>We provide servers across 100+ availability zones, offering near global single-digit millisecond ping times.</p>
+                </div>
+              </v-list-item-content>
+            </v-list-item>
           </v-list>
         </v-col>
       </v-row>
