@@ -1,7 +1,7 @@
 <template>
   <v-container class="text-center">
     <i :class="`${icon} fa-3x mb-4`"></i>
-    <BlockBuddy :sheet="buddySheet" :index="buddyIndex" />
+    <BlockBuddy :sheet="buddySheet" :index="buddyIndex" with-background />
     <h1>{{ title }}</h1>
     <slot>
       <p><a href="/">Return Home</a></p>
@@ -11,15 +11,14 @@
 
 <script>
 export default {
-  name: 'ErrorPage',
+  name: "ErrorPage",
   props: {
-    title: { type: String, default: 'Error' },
-    icon: { type: String, default: 'fas fa-exclamation-triangle' },
-    buddySheet: { type: String, default: 'emerald' },
+    title: { type: String, default: "Error" },
+    icon: { type: String, default: "fas fa-exclamation-triangle" },
+    buddySheet: { type: String, default: "emerald" },
     buddyIndex: { type: Number, default: 0 },
   },
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

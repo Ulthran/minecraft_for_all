@@ -17,6 +17,7 @@ export default {
     size: { type: Number, default: 128 },
     background: { type: Boolean, default: false },
     message: { type: String, default: "" },
+    withBackground: { type: Boolean, default: false },
   },
   computed: {
     style() {

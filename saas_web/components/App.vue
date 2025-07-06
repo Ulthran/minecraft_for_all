@@ -1,6 +1,5 @@
 <template>
   <v-app>
-    <BlockBuddy background />
     <v-app-bar color="secondary" dark app>
       <router-link
         to="/"
@@ -12,7 +11,7 @@
           text-decoration: none;
         "
       >
-        <BlockBuddy sheet="iron" :index="0" :size="64" />
+        <BlockBuddy sheet="iron" :index="0" :size="64" with-background />
       </router-link>
       <v-spacer></v-spacer>
       <div class="d-none d-md-flex align-center">
