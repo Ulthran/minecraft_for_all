@@ -19,7 +19,7 @@
             :index="3"
             :size="192"
             message="No minimums!"
-            background="gradient"
+            background="grassland"
           />
         </v-col>
       </v-row>
