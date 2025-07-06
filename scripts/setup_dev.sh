@@ -33,5 +33,5 @@ Development tools installed:
   - npm $(npm --version)
   - prettier $(prettier --version)
   - eslint $(eslint --version)
-  - html5validator $(python3 -m pip show html5validator | grep Version)
+  - html5validator $(python3 -m pip show html5validator | grep Version | awk '{print $2}')
 MSG
