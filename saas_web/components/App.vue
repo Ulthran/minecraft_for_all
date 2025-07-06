@@ -1,6 +1,5 @@
 <template>
   <v-app>
-    <BlockBuddy background />
     <v-app-bar color="secondary" dark app>
       <router-link
         to="/"
