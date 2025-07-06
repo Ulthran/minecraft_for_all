@@ -26,11 +26,7 @@
       <!-- Segment 2 -->
       <v-row class="py-16 segment" align="center">
         <v-col cols="12" md="6" class="text-center order-md-first order-last">
-          <BlockBuddy
-            sheet="emerald"
-            :index="1"
-            :size="192"
-          />
+          <BlockBuddy sheet="emerald" :index="1" :size="192" />
         </v-col>
         <v-col cols="12" md="6">
           <h2 class="text-h4 mb-4">Transparent pricing</h2>
@@ -116,7 +112,10 @@
               <v-list-item-content>
                 <div>
                   <h3>Global availability</h3>
-                  <p>We provide servers across 100+ availability zones, offering near global single-digit millisecond ping times.</p>
+                  <p>
+                    We provide servers across 100+ availability zones, offering
+                    near global single-digit millisecond ping times.
+                  </p>
                 </div>
               </v-list-item-content>
             </v-list-item>

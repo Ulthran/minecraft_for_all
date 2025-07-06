@@ -11,15 +11,14 @@
 
 <script>
 export default {
-  name: 'ErrorPage',
+  name: "ErrorPage",
   props: {
-    title: { type: String, default: 'Error' },
-    icon: { type: String, default: 'fas fa-exclamation-triangle' },
-    buddySheet: { type: String, default: 'emerald' },
+    title: { type: String, default: "Error" },
+    icon: { type: String, default: "fas fa-exclamation-triangle" },
+    buddySheet: { type: String, default: "emerald" },
     buddyIndex: { type: Number, default: 0 },
   },
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
