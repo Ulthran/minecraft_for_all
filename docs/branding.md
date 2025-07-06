@@ -115,77 +115,79 @@ May say lines like:
 
 “Need help choosing the right plan?”
 
-### Speech Bubbles
+### Redstone Block Buddy
 
+🧱🔴 Redstone Block Buddy – “Technical Helper”
+🧩 Block Body
+Base Shape: 16x16 block, in the style of Minecraft's redstone block
 
-💬 Speech Bubble System – Pixel Art Spec
-🧱 1. Style & Aesthetic
-Resolution: Designed for 8x8 or 16x16 tile scaling, so it’s modular and can grow/shrink easily.
+Texture:
 
-Look: Clean pixel border (1–2 pixels thick), with square corners or slightly rounded square (not smooth, no anti-aliasing).
+Deep crimson/red (#B00000 to #FF4040 range)
 
-Outline: Dark gray or black (#222 or #111), depending on theme contrast.
+Subtle pulsing glow effect around the center using animated flicker or shifting red pixels
 
-Fill:
+Optional circuit-pattern overlay (suggesting wiring, tech)
 
-Default: Off-white or light gray (#F4F4F4 / #DDDDDD)
+💡 You could add a single pixel "spark" drifting up every few frames for flair.
 
-Optional: Slightly tinted fill for roles (e.g., greenish for Emerald, orange for Iron, blue for Diamond)
+😊 Face
+Eyes: Square pixel eyes with red irises or white pupils, suggesting focus/intensity
 
-🟩 Stays consistent with blocky, low-res Minecraft vibe. Think NES/SNES RPG dialog boxes, but more compact.
+Expression: Confident grin or smirk — like someone who’s already solved the problem you’re about to have
 
-🔲 2. Scalable Structure (9-Slice Style)
-To make the bubbles expandable based on content, we design them with a 9-slice layout:
+Extra Detail: Maybe a pixel “visor” or one lens (like a monocle but futuristic)
 
-css
-Copy
-Edit
-[TL][T ][TR]
-[L ][C ][R ]
-[BL][B ][BR]
-Each corner and edge is a separate tile (8x8 or 16x16), and the center tile can be repeated horizontally or vertically to scale the bubble up.
+🦾 Stick-Figure Limbs
+Arms:
 
-Corners (TL, TR, BL, BR): Fixed L-shaped pieces.
+Stick-like (1 pixel wide), black or dark red
 
-Edges (T, B, L, R): 1-tile strips that tile along sides.
+One arm raised with a gear or lever, the other holding a “tech scroll” or pointing to a toggle
 
-Center (C): Empty or lightly patterned for large text bodies.
+Legs:
 
-🗨️ 3. Tail Attachment (Buddy “Pointer”)
-Small triangle or rectangular pointer (5x5 or 8x8) that can be anchored on any side.
+Slightly angled stance, like ready for action
 
-Points toward the buddy's head or hand.
+Optional small red boots for fun
 
-Can be rotated or mirrored for placement on:
+🔌 Speech Bubble Content Examples
+“Want to auto-restart your server? I’ve got you.”
 
-Bottom-left (default for top pop-ups)
+“Redstone logic isn’t scary. Let’s wire this up.”
 
-Top-right (default for footer tips)
+“Toggle this setting for smoother performance.”
 
-Left/right (for side tooltips)
+“This config file? Easy as a piston repeater!”
 
-💬 4. Text Guidelines
-Font: Pixel font or monospace, preferably 5x5 or 6x6 pixel character height.
+🔥 Personality
+💡 The tech-savvy engineer of your crew
 
-Padding: At least 1 tile (8 pixels) of space between text and borders.
+Talks like a mix between a coder and a Minecraft tinkerer
 
-Max width: About 5–8 words per line for readability.
+Friendly but precise — makes complex info digestible
 
-🧰 Optional Variants
-🟩 Emerald Buddy (Billing): Emerald-tinted frame
+Cute Fact: He once tried to wire your entire website with repeaters and comparators. It... almost worked.
 
-🧱 Iron Buddy (Help Tips): Blocky stone border
+🛠️ Website Role Ideas
+Appears next to:
 
-💎 Diamond Buddy (Premium Notices): Sparkly/cyan border
+Configuration pages
 
-🔥 Error or Warning: Red or orange border, zigzag edge
+Advanced server tools
 
-📦 Export Format
-You can export each part as:
+Plugin toggles or scheduled tasks
 
-Individual 8x8 PNG tiles
+Could animate slightly (glow flickers, blinking, holding a switch)
 
-Or one full sprite sheet (e.g., 48x48 or 64x64) with a layout key
+Background Suggestion (Optional Companion Scene)
+Pixel-art Redstone lab backdrop:
+
+Wires running on the ground
+
+Pistons, levers, a redstone torch glowing
+
+A repeater table in the corner
 
 ### Village Background
 
