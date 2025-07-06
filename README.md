@@ -22,6 +22,16 @@ to `terraform.tfvars` and fill in your values before running `terraform apply`.
 The `tenant_id` variable is required but normally passed in automatically by
 the provisioning pipeline.
 
+### Development Setup
+
+Run the `scripts/setup_dev.sh` script to install the tools used for
+linting and validation. It installs Terraform, Prettier, ESLint and the
+Python utilities required by the test suite.
+
+```bash
+./scripts/setup_dev.sh
+```
+
 ## Testing
 
 Basic checks run automatically via GitHub Actions whenever you push changes.
