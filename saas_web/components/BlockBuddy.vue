@@ -1,5 +1,6 @@
 <template>
-  <div class="block-buddy-wrapper">
+  <div :class="wrapperClass">
+    <div v-if="background" class="bg-image" aria-hidden="true"></div>
     <div v-if="message" class="speech-bubble" role="status" aria-live="polite">
       {{ message }}
     </div>
@@ -14,6 +15,7 @@ export default {
     sheet: { type: String, default: "emerald" },
     index: { type: Number, default: 0 },
     size: { type: Number, default: 128 },
+    background: { type: Boolean, default: false },
     message: { type: String, default: "" },
   },
   computed: {
@@ -39,6 +41,12 @@ export default {
         "image-rendering": "pixelated",
       };
     },
+    wrapperClass() {
+      return {
+        "block-buddy-wrapper": true,
+        background: this.background,
+      };
+    },
   },
 };
 </script>
@@ -47,6 +55,34 @@ export default {
 .block-buddy-wrapper {
   position: relative;
   display: inline-block;
+}
+
+.block-buddy-wrapper.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.bg-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("assets/background.png");
+  background-size: cover;
+}
+
+.block-buddy-wrapper.background .block-buddy {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .block-buddy {
