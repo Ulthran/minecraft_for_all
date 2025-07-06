@@ -19,7 +19,7 @@
             :index="0"
             :size="192"
             message="No minimums!"
-            with-background
+            background="gradient"
           />
         </v-col>
       </v-row>
@@ -53,7 +53,7 @@
             :index="2"
             :size="192"
             message="Control your server!"
-            with-background
+            background="gradient"
           />
         </v-col>
         <v-col cols="12" md="6">

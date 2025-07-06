@@ -11,7 +11,7 @@
           text-decoration: none;
         "
       >
-        <BlockBuddy sheet="iron" :index="0" :size="64" with-background />
+        <BlockBuddy sheet="iron" :index="0" :size="64" background="gradient" />
       </router-link>
       <v-spacer></v-spacer>
       <div class="d-none d-md-flex align-center">
