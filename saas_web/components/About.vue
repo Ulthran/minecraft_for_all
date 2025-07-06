@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row class="justify-center mb-4">
-      <BlockBuddy sheet="emerald" :index="2" with-background />
+      <BlockBuddy sheet="emerald" :index="2" />
     </v-row>
     <v-row class="mb-6">
       <v-col>

@@ -27,7 +27,7 @@
       <!-- Segment 2 -->
       <v-row class="py-16 segment" align="center">
         <v-col cols="12" md="6" class="text-center order-md-first order-last">
-          <BlockBuddy sheet="emerald" :index="1" :size="192" with-background />
+          <BlockBuddy sheet="emerald" :index="1" :size="192" />
         </v-col>
         <v-col cols="12" md="6">
           <h2 class="text-h4 mb-4">Transparent pricing</h2>
