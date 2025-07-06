@@ -16,7 +16,7 @@
         <v-col cols="12" md="6" class="text-center">
           <BlockBuddy
             sheet="iron"
-            :index="0"
+            :index="3"
             :size="192"
             message="No minimums!"
             background="gradient"

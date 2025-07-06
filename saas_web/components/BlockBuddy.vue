@@ -22,6 +22,7 @@ export default {
       const sheets = {
         emerald: "assets/emerald_block_buddies.png",
         iron: "assets/iron_ore_buddies.png",
+        grassland: "assets/grassland_background.png",
       };
       const size = this.size;
       const sheetSize = size * 2;
@@ -34,7 +35,7 @@ export default {
       return {
         width: `${size}px`,
         height: `${size}px`,
-        "background-image": `url(${sheets[this.sheet] || sheets.emerald})`,
+        "background-image": `url(${sheets[this.sheet] || sheets.grassland})`,
         "background-size": `${sheetSize}px ${sheetSize}px`,
         "background-position": positions[this.index % 4],
         "image-rendering": "pixelated",
