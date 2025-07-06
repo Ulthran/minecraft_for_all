@@ -1,6 +1,5 @@
 <template>
-  <div :class="wrapperClass">
-    <div v-if="background" class="bg-image" aria-hidden="true"></div>
+  <div class="block-buddy-wrapper" :style="wrapperStyle">
     <div v-if="message" class="speech-bubble" role="status" aria-live="polite">
       {{ message }}
     </div>
@@ -15,9 +14,8 @@ export default {
     sheet: { type: String, default: "emerald" },
     index: { type: Number, default: 0 },
     size: { type: Number, default: 128 },
-    background: { type: Boolean, default: false },
+    background: { type: String, default: "" },
     message: { type: String, default: "" },
-    withBackground: { type: Boolean, default: false },
   },
   computed: {
     style() {
@@ -42,10 +40,26 @@ export default {
         "image-rendering": "pixelated",
       };
     },
-    wrapperClass() {
+    wrapperStyle() {
+      if (!this.background) return {};
+      const size = `${this.size}px`;
+      if (this.background === "gradient") {
+        return {
+          width: size,
+          height: size,
+          background:
+            "radial-gradient(circle, rgba(240,229,196,0.8), rgba(240,229,196,0) 70%)",
+          "border-radius": "50%",
+        };
+      }
+      let path = this.background;
+      if (!path.startsWith("assets/")) path = `assets/${path}`;
       return {
-        "block-buddy-wrapper": true,
-        background: this.background,
+        width: size,
+        height: size,
+        "background-image": `url(${path})`,
+        "background-size": "cover",
+        "border-radius": "50%",
       };
     },
   },
@@ -56,34 +70,6 @@ export default {
 .block-buddy-wrapper {
   position: relative;
   display: inline-block;
-}
-
-.block-buddy-wrapper.background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 0;
-}
-
-.bg-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url("assets/background.png");
-  background-size: cover;
-}
-
-.block-buddy-wrapper.background .block-buddy {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 .block-buddy {

@@ -1,7 +1,7 @@
 <template>
   <v-container class="text-center">
     <i :class="`${icon} fa-3x mb-4`"></i>
-    <BlockBuddy :sheet="buddySheet" :index="buddyIndex" with-background />
+    <BlockBuddy :sheet="buddySheet" :index="buddyIndex" background="gradient" />
     <h1>{{ title }}</h1>
     <slot>
       <p><a href="/">Return Home</a></p>
