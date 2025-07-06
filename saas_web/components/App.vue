@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <BackgroundLayer />
+    <BlockBuddy background />
     <v-app-bar color="secondary" dark app>
       <router-link
         to="/"
@@ -80,12 +80,6 @@ export default {
     BlockBuddy: Vue.defineAsyncComponent(() =>
       window["vue3-sfc-loader"].loadModule(
         `${window.componentsPath}/BlockBuddy.vue`,
-        window.loaderOptions,
-      ),
-    ),
-    BackgroundLayer: Vue.defineAsyncComponent(() =>
-      window["vue3-sfc-loader"].loadModule(
-        `${window.componentsPath}/BackgroundLayer.vue`,
         window.loaderOptions,
       ),
     ),
