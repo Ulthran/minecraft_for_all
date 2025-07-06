@@ -1,7 +1,13 @@
 <template>
   <div class="background-layer" aria-hidden="true">
     <div class="bg-image"></div>
-    <BlockBuddy class="buddy" :sheet="sheet" :index="index" :size="size" />
+    <BlockBuddy
+      class="buddy"
+      :sheet="sheet"
+      :index="index"
+      :size="size"
+      with-background
+    />
   </div>
 </template>
 

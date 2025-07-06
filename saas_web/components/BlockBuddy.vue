@@ -1,5 +1,5 @@
 <template>
-  <div class="block-buddy-wrapper">
+  <div class="block-buddy-wrapper" :style="wrapperStyle">
     <div v-if="message" class="speech-bubble" role="status" aria-live="polite">
       {{ message }}
     </div>
@@ -15,6 +15,7 @@ export default {
     index: { type: Number, default: 0 },
     size: { type: Number, default: 128 },
     message: { type: String, default: "" },
+    withBackground: { type: Boolean, default: false },
   },
   computed: {
     style() {
@@ -37,6 +38,16 @@ export default {
         "background-size": `${sheetSize}px ${sheetSize}px`,
         "background-position": positions[this.index % 4],
         "image-rendering": "pixelated",
+      };
+    },
+    wrapperStyle() {
+      if (!this.withBackground) return {};
+      return {
+        width: `${this.size}px`,
+        height: `${this.size}px`,
+        background:
+          "radial-gradient(circle, rgba(255,255,255,0.4), rgba(255,255,255,0) 70%)",
+        "border-radius": "50%",
       };
     },
   },
