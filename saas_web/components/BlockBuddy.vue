@@ -59,6 +59,7 @@ export default {
         height: size,
         "background-image": `url(${path})`,
         "background-size": "cover",
+        "border-radius": "50%",
       };
     },
   },
