@@ -27,9 +27,13 @@ resource "aws_iam_role_policy" "terraform" {
         "apigateway:*",
         "cloudfront:*",
         "logs:*",
-        "dynamodb:*"
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:GetItem"
       ]
-      Resource = "*"
+      Resource = [
+        "arn:aws:dynamodb:${var.aws_region}:${var.aws_account_id}:table/${var.server_table_name}"
+      ]
     }]
   })
 }
