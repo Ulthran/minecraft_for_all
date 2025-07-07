@@ -10,6 +10,24 @@ phases:
       - mv terraform /usr/local/bin/terraform
       - apt-get update -y
       - apt-get install -y jq
+  pre_build:
+    commands:
+      - |
+          if [ "$ACTION" = "destroy" ]; then
+            aws dynamodb update-item --table-name "$SERVER_TABLE" \
+              --key '{"tenant_id": {"S": "'$TENANT_ID'"}, "server_id": {"N": "'$SERVER_ID'"}}' \
+              --update-expression 'SET #s = :s' \
+              --expression-attribute-names '{"#s":"status"}' \
+              --expression-attribute-values '{":s":{"S":"DELETING"}}'
+          else
+            if [ -n "$SERVER_NAME" ]; then
+              aws dynamodb put-item --table-name "$SERVER_TABLE" \
+                --item '{"tenant_id": {"S": "'$TENANT_ID'"}, "server_id": {"N": "'$SERVER_ID'"}, "status": {"S": "CREATING"}, "name": {"S": "'$SERVER_NAME'"}}'
+            else
+              aws dynamodb put-item --table-name "$SERVER_TABLE" \
+                --item '{"tenant_id": {"S": "'$TENANT_ID'"}, "server_id": {"N": "'$SERVER_ID'"}, "status": {"S": "CREATING"}}'
+            fi
+          fi
   build:
     commands:
       - git clone $REPOSITORY_URL repo
@@ -21,14 +39,32 @@ phases:
             -backend-config="dynamodb_table=$LOCK_TABLE"
       - |
           if [ "$ACTION" = "destroy" ]; then
-            terraform destroy -auto-approve -input=false \
-              -var "tenant_id=$TENANT_ID"
+          terraform destroy -auto-approve -input=false \
+              -var "tenant_id=$TENANT_ID" \
+              -var "server_id=$SERVER_ID"
           else
             terraform apply -auto-approve -input=false \
               -var "tenant_id=$TENANT_ID" \
+              -var "server_id=$SERVER_ID" \
               -var "server_type=$SERVER_TYPE" \
               -var "instance_type=$INSTANCE_TYPE" \
               -var "overworld_border_radius=$OVERWORLD_BORDER" \
               -var "nether_border_radius=$NETHER_BORDER"
+          fi
+  post_build:
+    commands:
+      - |
+          if [ "$ACTION" = "destroy" ]; then
+            aws dynamodb update-item --table-name "$SERVER_TABLE" \
+              --key '{"tenant_id": {"S": "'$TENANT_ID'"}, "server_id": {"N": "'$SERVER_ID'"}}' \
+              --update-expression 'SET #s = :s' \
+              --expression-attribute-names '{"#s":"status"}' \
+              --expression-attribute-values '{":s":{"S":"DELETED"}}'
+          else
+            aws dynamodb update-item --table-name "$SERVER_TABLE" \
+              --key '{"tenant_id": {"S": "'$TENANT_ID'"}, "server_id": {"N": "'$SERVER_ID'"}}' \
+              --update-expression 'SET #s = :s' \
+              --expression-attribute-names '{"#s":"status"}' \
+              --expression-attribute-values '{":s":{"S":"ACTIVE"}}'
           fi
 

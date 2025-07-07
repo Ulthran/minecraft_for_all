@@ -9,6 +9,8 @@ logger.setLevel(logging.INFO)
 
 codebuild = boto3.client("codebuild")
 PROJECT_NAME = os.environ.get("PROJECT_NAME", "minecraft-tenant-terraform")
+SERVER_TABLE = os.environ.get("SERVER_TABLE")
+dynamodb = boto3.client("dynamodb")
 
 ALLOWED_SERVER_TYPES = {"vanilla", "papermc"}
 ALLOWED_INSTANCE_TYPES = {"t4g.small", "t4g.medium", "t4g.large"}
@@ -33,6 +35,31 @@ def handler(event, context):
         body = json.loads(event.get("body", "{}"))
     except json.JSONDecodeError:
         return {"statusCode": 400, "body": json.dumps({"error": "invalid json"})}
+
+    server_id = body.get("server_id")
+    if server_id is None:
+        if not SERVER_TABLE:
+            return {
+                "statusCode": 500,
+                "body": json.dumps({"error": "server registry not configured"}),
+            }
+        try:
+            resp = dynamodb.query(
+                TableName=SERVER_TABLE,
+                KeyConditionExpression="tenant_id = :t",
+                ExpressionAttributeValues={":t": {"S": tenant_id}},
+                ProjectionExpression="server_id",
+                ScanIndexForward=False,
+                Limit=1,
+            )
+            items = resp.get("Items", [])
+            if items:
+                server_id = str(int(items[0]["server_id"]["N"]) + 1)
+            else:
+                server_id = "1"
+        except Exception:
+            logger.exception("Failed to derive server id")
+            return {"statusCode": 500, "body": json.dumps({"error": "internal"})}
 
     server_type = body.get("server_type", "papermc")
     if server_type not in ALLOWED_SERVER_TYPES:
@@ -66,13 +93,19 @@ def handler(event, context):
             ),
         }
 
+    server_name = body.get("name")
+
     params = [
         {"name": "TENANT_ID", "value": tenant_id, "type": "PLAINTEXT"},
+        {"name": "SERVER_ID", "value": server_id, "type": "PLAINTEXT"},
         {"name": "SERVER_TYPE", "value": server_type, "type": "PLAINTEXT"},
         {"name": "INSTANCE_TYPE", "value": instance_type, "type": "PLAINTEXT"},
         {"name": "OVERWORLD_BORDER", "value": str(overworld_border), "type": "PLAINTEXT"},
         {"name": "NETHER_BORDER", "value": str(nether_border), "type": "PLAINTEXT"},
     ]
+
+    if server_name:
+        params.append({"name": "SERVER_NAME", "value": server_name, "type": "PLAINTEXT"})
 
     try:
         build_resp = codebuild.start_build(

@@ -1,6 +1,7 @@
 region = "us-east-1"
 backup_bucket_name = "example-backup-bucket"
 tenant_id = "example"
+server_id = "1"
 server_type = "papermc"
 instance_type = "t4g.medium"
 overworld_border_radius = 3000

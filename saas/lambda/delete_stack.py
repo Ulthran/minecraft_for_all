@@ -22,8 +22,17 @@ def handler(event, context):
     if not tenant_id:
         return {"statusCode": 400, "body": json.dumps({"error": "missing tenant_id"})}
 
+    try:
+        body = json.loads(event.get("body", "{}"))
+    except json.JSONDecodeError:
+        body = {}
+    server_id = body.get("server_id")
+    if not server_id:
+        return {"statusCode": 400, "body": json.dumps({"error": "missing server_id"})}
+
     params = [
         {"name": "TENANT_ID", "value": tenant_id, "type": "PLAINTEXT"},
+        {"name": "SERVER_ID", "value": server_id, "type": "PLAINTEXT"},
         {"name": "ACTION", "value": "destroy", "type": "PLAINTEXT"},
     ]
 

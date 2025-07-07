@@ -74,3 +74,9 @@ variable "cost_table_name" {
   type        = string
   default     = "minecraft-cost-cache"
 }
+
+variable "server_table_name" {
+  description = "DynamoDB table tracking tenant servers"
+  type        = string
+  default     = "minecraft-server-registry"
+}

@@ -36,3 +36,8 @@ variable "cost_table_name" {
   description = "DynamoDB table name for cached cost data"
   type        = string
 }
+
+variable "server_table_name" {
+  description = "DynamoDB table tracking tenant servers"
+  type        = string
+}
