@@ -49,10 +49,7 @@
           </h3>
           <StepConfig v-if="!serverExists" @complete="handleInitComplete" />
         </template>
-        <DataView v-else-if="menu === 'data'" />
-        <BillingView v-else-if="menu === 'billing'" />
-        <ModsView v-else-if="menu === 'mods'" />
-        <HelpView v-else-if="menu === 'help'" />
+        <component v-else :is="currentView" />
       </v-col>
     </v-row>
   </v-container>
@@ -105,10 +102,16 @@ export default {
       buildId: "",
       serverExists: false,
       loading: true,
-      api_url: "MC_API_URL",
+      apiUrl: "MC_API_URL",
       servers: ["Server 1", "Server 2"],
       selectedServer: "Server 1",
       menu: "server",
+      views: {
+        data: "DataView",
+        billing: "BillingView",
+        mods: "ModsView",
+        help: "HelpView",
+      },
       menuItems: [
         { label: "Server", value: "server" },
         { label: "Data", value: "data" },
@@ -127,6 +130,11 @@ export default {
     clearInterval(this.interval);
     if (this.progressInterval) clearInterval(this.progressInterval);
   },
+  computed: {
+    currentView() {
+      return this.views[this.menu] || null;
+    },
+  },
   methods: {
     // No initialization needed; the backend uses the JWT to determine the tenant
     async authHeader() {
@@ -140,7 +148,7 @@ export default {
       }
     },
     endpoint(path) {
-      const normalizedApiUrl = this.api_url.replace(/\/+$/, "");
+      const normalizedApiUrl = this.apiUrl.replace(/\/+$/, "");
       return `${normalizedApiUrl}/${path}`;
     },
     async fetchStatus() {
