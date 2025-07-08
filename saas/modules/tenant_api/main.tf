@@ -23,13 +23,21 @@ resource "aws_iam_role_policy" "tenant_permissions" {
     Version = "2012-10-17",
     Statement = [
       {
-        Effect   = "Allow",
-        Action   = ["ec2:DescribeInstances"],
+        Effect = "Allow",
+        Action = [
+          "ec2:DescribeInstances",
+          "ec2:DescribeVolumes",
+        ],
         Resource = "*"
       },
       {
         Effect   = "Allow",
         Action   = ["ce:GetCostAndUsage"],
+        Resource = "*"
+      },
+      {
+        Effect   = "Allow",
+        Action   = ["cloudwatch:GetMetricStatistics"],
         Resource = "*"
       },
       {
@@ -175,6 +183,12 @@ data "archive_file" "delete_stack" {
   output_path = "${path.module}/lambda_delete_stack.zip"
 }
 
+data "archive_file" "resource_metrics" {
+  type        = "zip"
+  source_file = "${path.module}/../../lambda/resource_metrics.py"
+  output_path = "${path.module}/lambda_resource_metrics.zip"
+}
+
 resource "aws_lambda_function" "delete_stack" {
   filename         = data.archive_file.delete_stack.output_path
   source_code_hash = data.archive_file.delete_stack.output_base64sha256
@@ -183,6 +197,16 @@ resource "aws_lambda_function" "delete_stack" {
   handler          = "delete_stack.handler"
   runtime          = "python3.11"
   timeout          = 60
+}
+
+resource "aws_lambda_function" "resource_metrics" {
+  filename         = data.archive_file.resource_metrics.output_path
+  source_code_hash = data.archive_file.resource_metrics.output_base64sha256
+  function_name    = "resource-metrics"
+  role             = aws_iam_role.lambda.arn
+  handler          = "resource_metrics.handler"
+  runtime          = "python3.11"
+  timeout          = 10
 }
 
 data "archive_file" "create_checkout_session" {
@@ -251,6 +275,14 @@ resource "aws_lambda_permission" "apigw_delete" {
   statement_id  = "AllowAPIGatewayInvokeDelete"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.delete_stack.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.this.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "apigw_metrics" {
+  statement_id  = "AllowAPIGatewayInvokeMetrics"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.resource_metrics.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.this.execution_arn}/*/*"
 }
@@ -327,6 +359,14 @@ resource "aws_apigatewayv2_integration" "delete" {
   payload_format_version = "2.0"
 }
 
+resource "aws_apigatewayv2_integration" "metrics" {
+  api_id                 = aws_apigatewayv2_api.this.id
+  integration_uri        = aws_lambda_function.resource_metrics.invoke_arn
+  integration_type       = "AWS_PROXY"
+  integration_method     = "POST"
+  payload_format_version = "2.0"
+}
+
 resource "aws_apigatewayv2_route" "status" {
   api_id             = aws_apigatewayv2_api.this.id
   route_key          = "GET /status"
@@ -371,6 +411,14 @@ resource "aws_apigatewayv2_route" "delete" {
   api_id             = aws_apigatewayv2_api.this.id
   route_key          = "POST /delete"
   target             = "integrations/${aws_apigatewayv2_integration.delete.id}"
+  authorizer_id      = aws_apigatewayv2_authorizer.jwt.id
+  authorization_type = "JWT"
+}
+
+resource "aws_apigatewayv2_route" "metrics" {
+  api_id             = aws_apigatewayv2_api.this.id
+  route_key          = "GET /metrics"
+  target             = "integrations/${aws_apigatewayv2_integration.metrics.id}"
   authorizer_id      = aws_apigatewayv2_authorizer.jwt.id
   authorization_type = "JWT"
 }

@@ -74,6 +74,13 @@ if __name__ == "__main__":
             ("GET", "/MC_API/status"): (200, {"state": "offline", "exists": False}),
             ("POST", "/MC_API/start"): (200, None),
             ("GET", "/MC_API/cost"): (200, {"total": 0}),
+            (
+                "GET",
+                "/MC_API/metrics",
+            ): (
+                200,
+                {"network_in": 0, "network_out": 0, "volumes": []},
+            ),
             ("POST", "/MC_API/checkout"): (200, {"client_secret": "seti_dummy"}),
             ("POST", "/MC_API/delete"): (200, None),
         }
