@@ -28,3 +28,8 @@ variable "server_table_name" {
   description = "DynamoDB table tracking tenant servers"
   type        = string
 }
+
+variable "region" {
+  description = "AWS region"
+  type        = string
+}

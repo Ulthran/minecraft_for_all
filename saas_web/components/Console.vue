@@ -29,7 +29,7 @@
         <template v-if="menu === 'server'">
           <h2 class="text-h5 mb-4">Server Console</h2>
           <div>{{ status }}</div>
-          <div class="mt-2">{{ cost }}</div>
+          <div class="mt-2">{{ costMessage }}</div>
           <div v-if="progress" class="mt-2">{{ progress }}</div>
           <v-btn v-if="showStart" @click="start" class="mt-2"
             >Start Server</v-btn
@@ -95,7 +95,10 @@ export default {
     return {
       status: "",
       showStart: false,
-      cost: "Fetching cost...",
+      costMessage: "Fetching cost...",
+      costTotal: 0,
+      serverCosts: {},
+      costBreakdown: {},
       interval: null,
       progressInterval: null,
       progress: "",
@@ -133,6 +136,14 @@ export default {
   computed: {
     currentView() {
       return this.views[this.menu] || null;
+    },
+    selectedServerCost() {
+      return this.serverCosts[this.selectedServer] ?? 0;
+    },
+  },
+  watch: {
+    selectedServer() {
+      this.updateCostMessage();
     },
   },
   methods: {
@@ -198,18 +209,26 @@ export default {
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        let text = `Monthly cost so far: $${data.total ?? 0}`;
-        if (data.breakdown) {
-          const parts = Object.entries(data.breakdown).map(
-            ([k, v]) => `${k}: $${v}`,
-          );
-          if (parts.length) text += ` ( ${parts.join(", ")} )`;
-        }
-        this.cost = text;
+        this.costTotal = data.total ?? 0;
+        this.serverCosts = data.servers ?? {};
+        this.costBreakdown = data.breakdown ?? {};
+        this.updateCostMessage();
       } catch (err) {
         console.error(err);
-        this.cost = "Error fetching cost.";
+        this.costMessage = "Error fetching cost.";
       }
+    },
+
+    updateCostMessage() {
+      const parts = [];
+      if (this.costBreakdown.compute !== undefined)
+        parts.push(`compute: $${this.costBreakdown.compute}`);
+      if (this.costBreakdown.network !== undefined)
+        parts.push(`network: $${this.costBreakdown.network}`);
+      if (this.costBreakdown.storage !== undefined)
+        parts.push(`storage: $${this.costBreakdown.storage}`);
+      const breakdown = parts.length ? ` ( ${parts.join(", ")} )` : "";
+      this.costMessage = `Monthly cost so far: $${this.selectedServerCost} for this server, $${this.costTotal} total${breakdown}`;
     },
 
     handleInitComplete(buildId) {
