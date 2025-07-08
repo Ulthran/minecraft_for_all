@@ -73,7 +73,21 @@ if __name__ == "__main__":
             ("POST", "/MC_API/init"): (200, {"build_id": "demo-build"}),
             ("GET", "/MC_API/status"): (200, {"state": "offline", "exists": False}),
             ("POST", "/MC_API/start"): (200, None),
-            ("GET", "/MC_API/cost"): (200, {"total": 0}),
+            (
+                "GET",
+                "/MC_API/cost",
+            ): (
+                200,
+                {
+                    "total": 12.34,
+                    "servers": {"Server 1": 8.22, "Server 2": 4.12},
+                    "breakdown": {
+                        "compute": 7.0,
+                        "network": 3.5,
+                        "storage": 1.84,
+                    },
+                },
+            ),
             ("POST", "/MC_API/checkout"): (200, {"client_secret": "seti_dummy"}),
             ("POST", "/MC_API/delete"): (200, None),
         }

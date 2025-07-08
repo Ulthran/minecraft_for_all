@@ -6,7 +6,6 @@ Minecraft server SaaS with AWS.
 
 ### Terraform
 
-
 ```
 cd tenant
 # initialize with the remote state bucket and lock table created by the SaaS layer
@@ -81,7 +80,6 @@ frontend_bucket_name = "example-landing-bucket"
 backup_bucket_name  = "example-backup-bucket"
 ```
 
-
 To run the SaaS site locally,
 option:
 
@@ -90,8 +88,9 @@ python3 dev_server.py
 ```
 
 This serves the files from `saas_web` and mocks the various API endpoints so the
-forms and console can be tested without deploying any backend, including a dummy
-`/MC_API/cost` used on the console page.
+forms and console can be tested without deploying any backend. The mocked
+`/MC_API/cost` endpoint now supplies sample totals per server, the overall total
+and a simple compute/network/storage breakdown for the console.
 
 Debugging UI components is easier with dedicated routes:
 
