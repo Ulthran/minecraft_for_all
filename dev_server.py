@@ -75,6 +75,12 @@ if __name__ == "__main__":
             ("POST", "/MC_API/start"): (200, None),
             (
                 "GET",
+                "/MC_API/metrics",
+            ): (
+                200,
+                {"network_in": 0, "network_out": 0, "volumes": []},
+            (
+                "GET",
                 "/MC_API/cost",
             ): (
                 200,
