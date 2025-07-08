@@ -1,6 +1,7 @@
 <template>
   <div>
     <h3 class="text-h6 mb-2">Server Metrics</h3>
+    <div v-if="message" class="mb-2 text-error">{{ message }}</div>
     <v-container v-if="loading" class="d-flex justify-center">
       <v-progress-circular indeterminate></v-progress-circular>
     </v-container>
@@ -39,6 +40,7 @@ export default {
       loading: true,
       metrics: { network_in: 0, network_out: 0, volumes: [] },
       apiUrl: "MC_API_URL",
+      message: "",
     };
   },
   methods: {
@@ -66,6 +68,8 @@ export default {
         this.metrics = data;
       } catch (err) {
         console.error(err);
+        this.message = "Failed to fetch server metrics.";
+        this.metrics = { network_in: 0, network_out: 0, volumes: [] };
       } finally {
         this.loading = false;
       }
