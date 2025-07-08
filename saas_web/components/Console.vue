@@ -11,6 +11,9 @@
       >
         <v-btn>{{ server }}</v-btn>
       </v-slide-group-item>
+      <v-slide-group-item value="new">
+        <v-btn color="secondary">+ New Server</v-btn>
+      </v-slide-group-item>
     </v-slide-group>
     <v-row>
       <v-col cols="12" md="3">
@@ -27,27 +30,29 @@
       </v-col>
       <v-col cols="12" md="9">
         <template v-if="menu === 'server'">
-          <h2 class="text-h5 mb-4">Server Console</h2>
-          <div>{{ status }}</div>
-          <div class="mt-2">{{ costMessage }}</div>
-          <div v-if="progress" class="mt-2">{{ progress }}</div>
-          <v-btn v-if="showStart" @click="start" class="mt-2"
-            >Start Server</v-btn
-          >
-          <v-btn
-            v-if="serverExists"
-            :disabled="deleting"
-            @click="deleteStack"
-            class="mt-2"
-            color="error"
-          >
-            <span v-if="!deleting">Delete Server</span>
-            <span v-else>Deleting...</span>
-          </v-btn>
-          <h3 v-if="!serverExists" class="text-h6 mt-8 mb-2">
-            Start a New Server
-          </h3>
-          <StepConfig v-if="!serverExists" @complete="handleInitComplete" />
+          <template v-if="selectedServer === 'new'">
+            <h2 class="text-h5 mb-4">Start a New Server</h2>
+            <StepConfig @complete="handleInitComplete" />
+          </template>
+          <template v-else>
+            <h2 class="text-h5 mb-4">Server Console</h2>
+            <div>{{ status }}</div>
+            <div class="mt-2">{{ costMessage }}</div>
+            <div v-if="progress" class="mt-2">{{ progress }}</div>
+            <v-btn v-if="showStart" @click="start" class="mt-2"
+              >Start Server</v-btn
+            >
+            <v-btn
+              v-if="serverExists"
+              :disabled="deleting"
+              @click="deleteStack"
+              class="mt-2"
+              color="error"
+            >
+              <span v-if="!deleting">Delete Server</span>
+              <span v-else>Deleting...</span>
+            </v-btn>
+          </template>
         </template>
         <component v-else :is="currentView" />
       </v-col>
