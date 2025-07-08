@@ -1,9 +1,24 @@
 <template>
-  <div class="block-buddy-wrapper" :style="wrapperStyle">
+  <div
+    class="block-buddy-wrapper"
+    :class="{ 'slow-float': float }"
+    :style="wrapperStyle"
+  >
+    <img
+      v-if="backgroundImage"
+      :src="bgImageSrc"
+      alt=""
+      class="buddy-background"
+    />
     <div v-if="message" class="speech-bubble" role="status" aria-live="polite">
       {{ message }}
     </div>
-    <div class="block-buddy" :style="style" aria-hidden="true"></div>
+    <div
+      class="block-buddy"
+      :class="{ 'slow-float': float }"
+      :style="style"
+      aria-hidden="true"
+    ></div>
   </div>
 </template>
 
@@ -16,6 +31,8 @@ export default {
     size: { type: Number, default: 128 },
     background: { type: String, default: "" },
     message: { type: String, default: "" },
+    backgroundImage: { type: String, default: "" },
+    float: { type: Boolean, default: false },
   },
   computed: {
     style() {
@@ -40,6 +57,14 @@ export default {
         "background-position": positions[this.index % 4],
         "image-rendering": "pixelated",
       };
+    },
+    bgImageSrc() {
+      if (!this.backgroundImage) return "";
+      let path = this.backgroundImage;
+      if (!/^https?:\/\//.test(path) && !path.startsWith("assets/")) {
+        path = `assets/${path}`;
+      }
+      return path;
     },
     wrapperStyle() {
       if (!this.background) return {};
@@ -74,8 +99,36 @@ export default {
   display: inline-block;
 }
 
+.buddy-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  border-radius: 50%;
+}
+
 .block-buddy {
   display: inline-block;
+  position: relative;
+  z-index: 1;
+}
+
+.slow-float {
+  animation: slow-float 8s ease-in-out infinite alternate;
+}
+
+@keyframes slow-float {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate(6px, -4px) rotate(3deg);
+  }
 }
 
 .speech-bubble {
