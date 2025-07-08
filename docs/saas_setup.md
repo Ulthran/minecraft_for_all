@@ -17,9 +17,9 @@ provisioned when a user confirms their account.
 3. `terraform -chdir=saas apply` will automatically upload the contents of
    `saas_web` to the created S3 bucket. The Cognito user pool ID and client ID
    are injected directly into the Vue components so the frontend can use the
-  Amazon Cognito JavaScript SDK. After login the console simply sends the ID
-  token to the API endpoint injected during deployment and the backend
-  determines the tenant from the JWT claims.
+   Amazon Cognito JavaScript SDK. After login the console simply sends the ID
+   token to the API endpoint injected during deployment and the backend
+   determines the tenant from the JWT claims.
 
 ## Local Development
 
@@ -30,13 +30,14 @@ python3 dev_server.py --site saas_web
 ```
 
 This serves the site at <http://localhost:8000> and mocks all API endpoints so
-signup, login and the console work offline, including a fake cost API at
-`/MC_API/cost` used by the console page.
+signup, login and the console work offline. The mocked cost API at
+`/MC_API/cost` now returns example billing data including the total across all
+servers, individual server totals and a breakdown per service.
 
 ## Post Confirmation Hook
 
 The `post_user_creation_hook` Lambda function (`saas/lambda/post_user_creation_hook.py`)
-is attached as a *post confirmation* trigger on the Cognito user pool. When a new
+is attached as a _post confirmation_ trigger on the Cognito user pool. When a new
 user confirms their account the function assigns a UUID to a custom attribute so
 other services can uniquely reference the user.
 
