@@ -17,6 +17,11 @@ variable "tenant_id" {
   type        = string
 }
 
+variable "server_id" {
+  description = "Unique identifier for a server belonging to the tenant"
+  type        = string
+}
+
 variable "server_type" {
   description = "Minecraft server type"
   type        = string

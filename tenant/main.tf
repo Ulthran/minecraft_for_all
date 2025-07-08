@@ -45,12 +45,12 @@ resource "tls_private_key" "tenant" {
 }
 
 resource "aws_key_pair" "tenant" {
-  key_name   = "${var.tenant_id}-key"
+  key_name   = "${var.tenant_id}-${var.server_id}-key"
   public_key = tls_private_key.tenant.public_key_openssh
 }
 
 resource "aws_security_group" "minecraft" {
-  name        = "minecraft-${var.tenant_id}-sg"
+  name        = "minecraft-${var.tenant_id}-${var.server_id}-sg"
   description = "Allow SSH and Minecraft"
   vpc_id      = data.aws_vpc.default.id
 
@@ -87,7 +87,7 @@ resource "aws_security_group" "minecraft" {
 }
 
 resource "aws_iam_role" "minecraft" {
-  name = "minecraft-${var.tenant_id}-instance-role"
+  name = "minecraft-${var.tenant_id}-${var.server_id}-instance-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -99,7 +99,7 @@ resource "aws_iam_role" "minecraft" {
 }
 
 resource "aws_iam_role_policy" "minecraft_backup" {
-  name = "minecraft-${var.tenant_id}-s3-backup"
+  name = "minecraft-${var.tenant_id}-${var.server_id}-s3-backup"
   role = aws_iam_role.minecraft.id
   policy = jsonencode({
     Version = "2012-10-17"
@@ -112,7 +112,7 @@ resource "aws_iam_role_policy" "minecraft_backup" {
 }
 
 resource "aws_iam_instance_profile" "minecraft" {
-  name = "minecraft-${var.tenant_id}-instance-profile"
+  name = "minecraft-${var.tenant_id}-${var.server_id}-instance-profile"
   role = aws_iam_role.minecraft.name
 }
 
@@ -146,6 +146,7 @@ resource "aws_instance" "minecraft" {
   user_data = templatefile("${path.module}/user_data.sh", {
     BACKUP_BUCKET    = var.backup_bucket_name,
     TENANT_ID        = var.tenant_id,
+    SERVER_ID        = var.server_id,
     SERVER_TYPE      = var.server_type,
     OVERWORLD_RADIUS = var.overworld_border_radius,
     NETHER_RADIUS    = var.nether_border_radius
@@ -155,6 +156,7 @@ resource "aws_instance" "minecraft" {
 output "minecraft_server_ip" {
   value = aws_instance.minecraft.ipv6_addresses[0]
 }
+
 
 output "backup_bucket" {
   value = var.backup_bucket_name

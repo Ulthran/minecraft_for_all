@@ -38,6 +38,11 @@ resource "aws_iam_role_policy" "tenant_permissions" {
         Resource = aws_dynamodb_table.cost_cache.arn
       },
       {
+        Effect   = "Allow",
+        Action   = ["dynamodb:PutItem", "dynamodb:UpdateItem"],
+        Resource = aws_dynamodb_table.server_registry.arn
+      },
+      {
         Effect = "Allow",
         Action = [
           "codebuild:StartBuild",
@@ -68,6 +73,23 @@ resource "aws_dynamodb_table" "cost_cache" {
   ttl {
     attribute_name = "expires_at"
     enabled        = true
+  }
+}
+
+resource "aws_dynamodb_table" "server_registry" {
+  name         = var.server_table_name
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "tenant_id"
+  range_key    = "server_id"
+
+  attribute {
+    name = "tenant_id"
+    type = "S"
+  }
+
+  attribute {
+    name = "server_id"
+    type = "N"
   }
 }
 
@@ -124,6 +146,11 @@ resource "aws_lambda_function" "init_server" {
   handler          = "init_server.handler"
   runtime          = "python3.11"
   timeout          = 60
+  environment {
+    variables = {
+      SERVER_TABLE = aws_dynamodb_table.server_registry.name
+    }
+  }
 }
 
 data "archive_file" "build_status" {

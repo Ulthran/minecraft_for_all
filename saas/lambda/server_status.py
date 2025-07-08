@@ -20,9 +20,15 @@ def handler(event, context):
     if not tenant_id:
         return {"statusCode": 400, "body": json.dumps({"error": "missing tenant_id"})}
 
+    params = event.get("queryStringParameters") or {}
+    server_id = params.get("server_id", "1")
+
     try:
         resp = ec2.describe_instances(
-            Filters=[{"Name": "tag:tenant_id", "Values": [tenant_id]}]
+            Filters=[
+                {"Name": "tag:tenant_id", "Values": [tenant_id]},
+                {"Name": "tag:server_id", "Values": [server_id]},
+            ]
         )
     except Exception:
         logger.exception("Failed to describe instances")

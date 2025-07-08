@@ -102,6 +102,7 @@ module "tenant_codebuild" {
   repository_url    = var.repository_url
   state_bucket_name = module.terraform_backend.bucket_name
   lock_table_name   = module.terraform_backend.table_name
+  server_table_name = var.server_table_name
 }
 
 module "tenant_api" {
@@ -113,6 +114,7 @@ module "tenant_api" {
   stripe_secret_key   = var.stripe_secret_key
   domain              = var.domain
   cost_table_name     = var.cost_table_name
+  server_table_name   = var.server_table_name
 }
 
 
@@ -154,4 +156,8 @@ output "lock_table" {
 
 output "cost_table" {
   value = module.tenant_api.cost_table
+}
+
+output "server_table" {
+  value = module.tenant_api.server_table
 }

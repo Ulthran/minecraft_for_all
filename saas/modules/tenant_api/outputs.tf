@@ -5,3 +5,7 @@ output "api_url" {
 output "cost_table" {
   value = aws_dynamodb_table.cost_cache.name
 }
+
+output "server_table" {
+  value = aws_dynamodb_table.server_registry.name
+}

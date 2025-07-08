@@ -26,9 +26,14 @@ resource "aws_iam_role_policy" "terraform" {
         "lambda:*",
         "apigateway:*",
         "cloudfront:*",
-        "logs:*"
+        "logs:*",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:GetItem"
       ]
-      Resource = "*"
+      Resource = [
+        "arn:aws:dynamodb:${var.aws_region}:${var.aws_account_id}:table/${var.server_table_name}"
+      ]
     }]
   })
 }
@@ -59,6 +64,14 @@ resource "aws_codebuild_project" "this" {
       value = ""
     }
     environment_variable {
+      name  = "SERVER_ID"
+      value = ""
+    }
+    environment_variable {
+      name  = "SERVER_NAME"
+      value = ""
+    }
+    environment_variable {
       name  = "SERVER_TYPE"
       value = "papermc"
     }
@@ -81,6 +94,10 @@ resource "aws_codebuild_project" "this" {
     environment_variable {
       name  = "LOCK_TABLE"
       value = var.lock_table_name
+    }
+    environment_variable {
+      name  = "SERVER_TABLE"
+      value = var.server_table_name
     }
     privileged_mode = false
   }
