@@ -11,6 +11,8 @@ resource "aws_iam_role" "codebuild" {
   })
 }
 
+data "aws_caller_identity" "current" {}
+
 resource "aws_iam_role_policy" "terraform" {
   name = "minecraft-codebuild-terraform-policy"
   role = aws_iam_role.codebuild.id
@@ -32,7 +34,7 @@ resource "aws_iam_role_policy" "terraform" {
         "dynamodb:GetItem"
       ]
       Resource = [
-        "arn:aws:dynamodb:${var.aws_region}:${var.aws_account_id}:table/${var.server_table_name}"
+        "arn:aws:dynamodb:${var.region}:${data.aws_caller_identity.current.account_id}:table/${var.server_table_name}"
       ]
     }]
   })

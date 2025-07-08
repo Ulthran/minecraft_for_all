@@ -103,6 +103,7 @@ module "tenant_codebuild" {
   state_bucket_name = module.terraform_backend.bucket_name
   lock_table_name   = module.terraform_backend.table_name
   server_table_name = var.server_table_name
+  region            = var.region
 }
 
 module "tenant_api" {
