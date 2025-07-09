@@ -37,7 +37,9 @@
           <template v-else>
             <h2 class="text-h5 mb-4">Server Console</h2>
             <div>{{ status }}</div>
-            <div class="mt-2">{{ costMessage }}</div>
+            <div class="mt-2">
+              CPU Utilization (last hour): {{ serverMetrics.cpu }}%
+            </div>
             <div v-if="progress" class="mt-2">{{ progress }}</div>
             <v-btn v-if="showStart" @click="start" class="mt-2"
               >Start Server</v-btn
@@ -54,7 +56,7 @@
             </v-btn>
           </template>
         </template>
-        <component v-else :is="currentView" />
+        <component v-else :is="currentView" :selected-server="selectedServer" />
       </v-col>
     </v-row>
   </v-container>
@@ -100,10 +102,7 @@ export default {
     return {
       status: "",
       showStart: false,
-      costMessage: "Fetching cost...",
-      costTotal: 0,
-      serverCosts: {},
-      costBreakdown: {},
+      serverMetrics: { cpu: 0 },
       interval: null,
       progressInterval: null,
       progress: "",
@@ -131,7 +130,7 @@ export default {
   },
   mounted() {
     this.fetchStatus();
-    this.fetchCost();
+    this.fetchServerMetrics();
     this.interval = setInterval(this.fetchStatus, 30000);
   },
   beforeUnmount() {
@@ -142,13 +141,10 @@ export default {
     currentView() {
       return this.views[this.menu] || null;
     },
-    selectedServerCost() {
-      return this.serverCosts[this.selectedServer] ?? 0;
-    },
   },
   watch: {
     selectedServer() {
-      this.updateCostMessage();
+      this.fetchServerMetrics();
     },
   },
   methods: {
@@ -207,33 +203,18 @@ export default {
         this.showStart = true;
       }
     },
-    async fetchCost() {
+
+    async fetchServerMetrics() {
       try {
-        const res = await fetch(this.endpoint("cost"), {
+        const res = await fetch(this.endpoint("ec2"), {
           headers: await this.authHeader(),
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        this.costTotal = data.total ?? 0;
-        this.serverCosts = data.servers ?? {};
-        this.costBreakdown = data.breakdown ?? {};
-        this.updateCostMessage();
+        this.serverMetrics = data;
       } catch (err) {
         console.error(err);
-        this.costMessage = "Error fetching cost.";
       }
-    },
-
-    updateCostMessage() {
-      const parts = [];
-      if (this.costBreakdown.compute !== undefined)
-        parts.push(`compute: $${this.costBreakdown.compute}`);
-      if (this.costBreakdown.network !== undefined)
-        parts.push(`network: $${this.costBreakdown.network}`);
-      if (this.costBreakdown.storage !== undefined)
-        parts.push(`storage: $${this.costBreakdown.storage}`);
-      const breakdown = parts.length ? ` ( ${parts.join(", ")} )` : "";
-      this.costMessage = `Monthly cost so far: $${this.selectedServerCost} for this server, $${this.costTotal} total${breakdown}`;
     },
 
     handleInitComplete(buildId) {
