@@ -47,7 +47,8 @@ def handler(event, context):
 
     reservations = resp.get("Reservations", [])
     if not reservations:
-        return {"statusCode": 404, "body": json.dumps({"error": "instance not found"})}
+        body = {"network_in": 0.0, "network_out": 0.0, "volumes": []}
+        return {"statusCode": 200, "body": json.dumps(body)}
 
     instance = reservations[0]["Instances"][0]
     instance_id = instance["InstanceId"]
