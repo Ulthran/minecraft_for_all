@@ -21,6 +21,8 @@ def handler(event, context):
     if not tenant_id:
         return {"statusCode": 400, "body": json.dumps({"error": "missing tenant_id"})}
 
+    logger.info("Creating checkout session for tenant %s", tenant_id)
+
     params = urllib.parse.urlencode({
         "metadata[tenant_id]": tenant_id,
     })
@@ -51,6 +53,7 @@ def handler(event, context):
             error_details = intent_data.get("error", {}).get("message", "stripe_error")
             return {"statusCode": 502, "body": json.dumps({"error": error_details})}
         client_secret = intent_data.get("client_secret")
+        logger.info("Checkout session created for tenant %s", tenant_id)
         return {"statusCode": 200, "body": json.dumps({"client_secret": client_secret})}
     except Exception:
         logger.exception("Stripe request failed")

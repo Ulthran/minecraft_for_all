@@ -23,6 +23,12 @@ def handler(event, context):
     params = event.get("queryStringParameters") or {}
     server_id = params.get("server_id", "1")
 
+    logger.info(
+        "Checking server status for tenant %s server %s",
+        tenant_id,
+        server_id,
+    )
+
     try:
         resp = ec2.describe_instances(
             Filters=[
@@ -40,6 +46,14 @@ def handler(event, context):
     if reservations:
         instance = reservations[0]["Instances"][0]
         state = instance.get("State", {}).get("Name", "unknown")
+
+    logger.info(
+        "Server %s for tenant %s exists=%s state=%s",
+        server_id,
+        tenant_id,
+        exists,
+        state,
+    )
 
     return {
         "statusCode": 200,

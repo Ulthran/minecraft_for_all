@@ -69,6 +69,14 @@ def handler(event, context):
     if instance_type not in ALLOWED_INSTANCE_TYPES:
         return {"statusCode": 400, "body": json.dumps({"error": "invalid instance_type"})}
 
+    logger.info(
+        "Initializing server %s for tenant %s type=%s instance=%s",
+        server_id,
+        tenant_id,
+        server_type,
+        instance_type,
+    )
+
     try:
         overworld_border = int(body.get("overworld_border", 3000))
     except (TypeError, ValueError):
@@ -111,6 +119,7 @@ def handler(event, context):
         build_resp = codebuild.start_build(
             projectName=PROJECT_NAME, environmentVariablesOverride=params
         )
+        logger.info("Build started for tenant %s server %s", tenant_id, server_id)
     except Exception as e:
         logger.exception("Failed to start build")
         return {
@@ -122,5 +131,6 @@ def handler(event, context):
     body = {"status": "started"}
     if build_id:
         body["build_id"] = build_id
+    logger.info("Init server request queued build %s", build_id)
 
     return {"statusCode": 200, "body": json.dumps(body)}

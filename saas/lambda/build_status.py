@@ -15,6 +15,8 @@ def handler(event, context):
     if not build_id:
         return {"statusCode": 400, "body": json.dumps({"error": "missing id"})}
 
+    logger.info("Checking build status for %s", build_id)
+
     try:
         resp = codebuild.batch_get_builds(ids=[build_id])
     except Exception:
@@ -33,4 +35,9 @@ def handler(event, context):
             "current_phase": build.get("currentPhase"),
         }
     }
+    logger.info(
+        "Build %s status retrieved: %s",
+        build.get("id"),
+        build.get("buildStatus"),
+    )
     return {"statusCode": 200, "body": json.dumps(body)}

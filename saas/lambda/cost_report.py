@@ -26,6 +26,7 @@ def handler(event, context):
     if not tenant_id:
         logger.error("Missing tenant_id in claims")
         return {"statusCode": 400, "body": json.dumps({"error": "Missing tenant_id"})}
+    logger.info("Generating cost report for tenant %s", tenant_id)
     today = date.today()
     start_date = today.replace(day=1)
     start = start_date.strftime("%Y-%m-%d")
@@ -101,6 +102,11 @@ def handler(event, context):
             )
         except Exception:
             logger.exception("Failed to store cost cache")
+    logger.info(
+        "Cost report generated for tenant %s: total=%s",
+        tenant_id,
+        total,
+    )
     return {
         "statusCode": 200,
         "body": json.dumps({"total": total, "breakdown": breakdown}),

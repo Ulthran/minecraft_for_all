@@ -34,6 +34,12 @@ def handler(event, context):
     params = event.get("queryStringParameters") or {}
     server_id = params.get("server_id", "1")
 
+    logger.info(
+        "Fetching resource metrics for tenant %s server %s",
+        tenant_id,
+        server_id,
+    )
+
     try:
         resp = ec2.describe_instances(
             Filters=[
@@ -132,4 +138,12 @@ def handler(event, context):
         )
 
     body = {"network_in": network_in, "network_out": network_out, "volumes": volumes}
+    logger.info(
+        "Metrics for tenant %s server %s: net_in=%s net_out=%s volumes=%d",
+        tenant_id,
+        server_id,
+        network_in,
+        network_out,
+        len(volumes),
+    )
     return {"statusCode": 200, "body": json.dumps(body)}

@@ -30,6 +30,12 @@ def handler(event, context):
     if not server_id:
         return {"statusCode": 400, "body": json.dumps({"error": "missing server_id"})}
 
+    logger.info(
+        "Deleting stack for tenant %s server %s",
+        tenant_id,
+        server_id,
+    )
+
     params = [
         {"name": "TENANT_ID", "value": tenant_id, "type": "PLAINTEXT"},
         {"name": "SERVER_ID", "value": server_id, "type": "PLAINTEXT"},
@@ -38,6 +44,7 @@ def handler(event, context):
 
     try:
         codebuild.start_build(projectName=PROJECT_NAME, environmentVariablesOverride=params)
+        logger.info("Destroy build started: tenant %s server %s", tenant_id, server_id)
     except botocore.exceptions.ClientError as e:
         logger.exception(f"ClientError while starting destroy build: {e}")
         return {"statusCode": 500, "body": json.dumps({"error": "AWS ClientError"})}
