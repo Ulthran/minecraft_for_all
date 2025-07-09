@@ -11,6 +11,8 @@ def handler(event, context):
     user_pool_id = event["userPoolId"]
     username = event["userName"]
 
+    logger.info("Adding tenant_id attribute for user %s", username)
+
     cognito_client = boto3.client("cognito-idp")
 
     try:
@@ -19,6 +21,7 @@ def handler(event, context):
             Username=username,
             UserAttributes=[{"Name": "custom:tenant_id", "Value": str(uuid.uuid4())}],
         )
+        logger.info("Added tenant_id attribute for %s", username)
     except Exception as e:
         logger.error(
             "Failed to update user attributes for user %s in pool %s: %s",
