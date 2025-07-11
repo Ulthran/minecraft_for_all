@@ -16,13 +16,13 @@
           :value="server"
         >
           <v-btn class="server-btn" variant="outlined">
-            <v-icon start icon="mdi-server" class="mr-2" />
+            <i class="fas fa-server mr-2"></i>
             {{ server }}
           </v-btn>
         </v-slide-group-item>
         <v-slide-group-item value="new">
           <v-btn color="secondary" class="server-btn" variant="outlined">
-            <v-icon start icon="mdi-server" class="mr-2" />
+            <i class="fas fa-server mr-2"></i>
             New Server
           </v-btn>
         </v-slide-group-item>
@@ -304,5 +304,6 @@ export default {
 .server-btn {
   min-width: 140px;
   justify-content: flex-start;
+  margin-right: 8px;
 }
 </style>
