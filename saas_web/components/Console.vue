@@ -3,18 +3,31 @@
     <v-progress-circular indeterminate></v-progress-circular>
   </v-container>
   <v-container v-else>
-    <v-slide-group v-model="selectedServer" show-arrows mandatory class="mb-4">
-      <v-slide-group-item
-        v-for="server in servers"
-        :key="server"
-        :value="server"
+    <div class="server-area mb-4">
+      <v-slide-group
+        v-model="selectedServer"
+        show-arrows
+        mandatory
+        class="server-group"
       >
-        <v-btn>{{ server }}</v-btn>
-      </v-slide-group-item>
-      <v-slide-group-item value="new">
-        <v-btn color="secondary">+ New Server</v-btn>
-      </v-slide-group-item>
-    </v-slide-group>
+        <v-slide-group-item
+          v-for="server in servers"
+          :key="server"
+          :value="server"
+        >
+          <v-btn class="server-btn" variant="outlined">
+            <v-icon start icon="mdi-server" class="mr-2" />
+            {{ server }}
+          </v-btn>
+        </v-slide-group-item>
+        <v-slide-group-item value="new">
+          <v-btn color="secondary" class="server-btn" variant="outlined">
+            <v-icon start icon="mdi-server" class="mr-2" />
+            New Server
+          </v-btn>
+        </v-slide-group-item>
+      </v-slide-group>
+    </div>
     <v-row>
       <v-col cols="12" md="3">
         <v-list nav dense>
@@ -276,4 +289,20 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.server-area {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 8px;
+  overflow-x: auto;
+}
+
+.server-group {
+  min-height: 56px;
+}
+
+.server-btn {
+  min-width: 140px;
+  justify-content: flex-start;
+}
+</style>
