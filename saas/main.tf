@@ -116,6 +116,7 @@ module "tenant_api" {
   domain              = var.domain
   cost_table_name     = var.cost_table_name
   server_table_name   = var.server_table_name
+  backup_bucket_name  = var.backup_bucket_name
 }
 
 

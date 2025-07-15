@@ -32,11 +32,6 @@ resource "aws_iam_role_policy" "tenant_permissions" {
       },
       {
         Effect   = "Allow",
-        Action   = ["ce:GetCostAndUsage"],
-        Resource = "*"
-      },
-      {
-        Effect   = "Allow",
         Action   = ["cloudwatch:GetMetricStatistics"],
         Resource = "*"
       },
@@ -57,6 +52,11 @@ resource "aws_iam_role_policy" "tenant_permissions" {
           "codebuild:BatchGetBuilds",
         ],
         Resource = "*"
+      },
+      {
+        Effect   = "Allow",
+        Action   = ["s3:ListBucket"],
+        Resource = "arn:aws:s3:::${var.backup_bucket_name}"
       }
     ]
   })
@@ -135,7 +135,8 @@ resource "aws_lambda_function" "cost_report" {
   timeout          = 10
   environment {
     variables = {
-      COST_TABLE = aws_dynamodb_table.cost_cache.name
+      COST_TABLE    = aws_dynamodb_table.cost_cache.name
+      BACKUP_BUCKET = var.backup_bucket_name
     }
   }
 }
