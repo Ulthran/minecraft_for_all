@@ -66,10 +66,15 @@ resource "aws_dynamodb_table" "cost_cache" {
   name         = var.cost_table_name
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "tenant_id"
-  range_key    = "month"
+  range_key    = "server_id"
 
   attribute {
     name = "tenant_id"
+    type = "S"
+  }
+
+  attribute {
+    name = "server_id"
     type = "S"
   }
 
