@@ -13,7 +13,6 @@ INSTANCE_RATES = {
 
 EBS_RATE = 0.08  # per GB-month
 DATA_TRANSFER_RATE = 0.09
-FREE_TRANSFER_GB = 1
 S3_RATE = 0.023  # per GB-month
 CACHE_TTL_HOURS = 1
 
@@ -166,7 +165,7 @@ def handler(event, context):
         s3_cost = (backup_bytes / (1024 ** 3)) * S3_RATE * elapsed_fraction
 
         network_gb = net_bytes / (1024 ** 3)
-        network_cost = max(0.0, network_gb - FREE_TRANSFER_GB) * DATA_TRANSFER_RATE
+        network_cost = network_gb * DATA_TRANSFER_RATE
 
         total = compute + network_cost + ebs_cost + s3_cost
 
