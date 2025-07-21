@@ -8,7 +8,9 @@ provisioned when a user confirms their account.
 1. Copy `saas/terraform.tfvars.example` to `saas/terraform.tfvars` and set
    `frontend_bucket_name` to the S3 bucket that will host the site and
    `backup_bucket_name` for the shared backup location. Both buckets remain
-   private.
+   private. The backup bucket should be organized using the structure
+   `tenant_id/server_id/backup_timestamp/` so a single directory contains all
+   files for one server.
 2. Run `terraform -chdir=saas init` followed by `terraform -chdir=saas apply` from
    an AWS account with access to AWS Organizations. This creates the user pool,
    a dedicated tenant account and the provisioning Lambda along with a CloudFront
@@ -56,12 +58,12 @@ stores any tenant-specific API configuration.
 ## Cost Reporting Lambda
 
 Each tenant account also includes a `cost_report` Lambda function exposed
-through an API Gateway endpoint. To keep Cost Explorer API calls to a minimum,
-the function stores the latest results in a DynamoDB table with a 48 hour TTL.
-The Lambda checks the cache first and only queries Cost Explorer once per day
-for each tenant. Cached items expire automatically so the table doesn't grow
-indefinitely. The console reads this endpoint after authenticating the user, so
-no manual placeholder replacement is required.
+through an API Gateway endpoint. The function collects instance, network,
+EBS and S3 usage metrics from CloudWatch and calculates the estimated cost for
+each server. Results are cached in DynamoDB for one hour per
+`tenant_id`/`server_id` pair so repeated requests do not hit the AWS APIs
+unnecessarily. The console reads this endpoint after authenticating the user,
+so no manual placeholder replacement is required.
 
 ## Provisioning Pipeline
 
