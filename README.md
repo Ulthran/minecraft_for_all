@@ -1,6 +1,6 @@
-# Minecraft Server Infrastructure
+# XylBlox Infrastructure
 
-Minecraft server SaaS with AWS.
+Minecraft server SaaS with AWS powering **xylblox.com**.
 
 ## Usage
 

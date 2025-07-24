@@ -6,6 +6,60 @@ resource "aws_cloudfront_origin_access_identity" "this" {
   comment = "SaaS frontend access"
 }
 
+resource "aws_acm_certificate" "this" {
+  provider                  = aws.use1
+  domain_name               = var.domain
+  subject_alternative_names = ["*.${var.domain}"]
+  validation_method         = "DNS"
+}
+
+resource "aws_route53_record" "cert_validation" {
+  for_each = {
+    for dvo in aws_acm_certificate.this.domain_validation_options :
+    dvo.domain_name => {
+      name   = dvo.resource_record_name
+      type   = dvo.resource_record_type
+      record = dvo.resource_record_value
+    }
+  }
+
+  zone_id = var.zone_id
+  name    = each.value.name
+  type    = each.value.type
+  ttl     = 60
+  records = [each.value.record]
+}
+
+resource "aws_acm_certificate_validation" "this" {
+  provider                = aws.use1
+  certificate_arn         = aws_acm_certificate.this.arn
+  validation_record_fqdns = [for r in aws_route53_record.cert_validation : r.fqdn]
+}
+
+resource "aws_route53_record" "root_alias" {
+  zone_id = var.zone_id
+  name    = var.domain
+  type    = "A"
+  alias {
+    name                   = aws_cloudfront_distribution.this.domain_name
+    zone_id                = aws_cloudfront_distribution.this.hosted_zone_id
+    evaluate_target_health = false
+  }
+  depends_on = [aws_cloudfront_distribution.this]
+}
+
+resource "aws_route53_record" "wildcard_alias" {
+  zone_id = var.zone_id
+  name    = "*.${var.domain}"
+  type    = "A"
+  alias {
+    name                   = aws_cloudfront_distribution.this.domain_name
+    zone_id                = aws_cloudfront_distribution.this.hosted_zone_id
+    evaluate_target_health = false
+  }
+  depends_on = [aws_cloudfront_distribution.this]
+}
+
 data "aws_iam_policy_document" "allow_cloudfront" {
   statement {
     actions   = ["s3:GetObject"]
@@ -32,6 +86,11 @@ resource "aws_cloudfront_function" "spa_rewrite" {
 resource "aws_cloudfront_distribution" "this" {
   enabled             = true
   default_root_object = "index.html"
+
+  aliases = [
+    var.domain,
+    "*.${var.domain}"
+  ]
 
   origin {
     domain_name = aws_s3_bucket.this.bucket_regional_domain_name
@@ -76,7 +135,8 @@ resource "aws_cloudfront_distribution" "this" {
 
   price_class = "PriceClass_100"
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn = aws_acm_certificate_validation.this.certificate_arn
+    ssl_support_method  = "sni-only"
   }
 
   restrictions {

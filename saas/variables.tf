@@ -57,6 +57,11 @@ variable "domain" {
   type        = string
 }
 
+variable "zone_id" {
+  description = "Route53 hosted zone ID for the domain"
+  type        = string
+}
+
 variable "state_bucket_name" {
   description = "S3 bucket name for tenant Terraform state"
   type        = string

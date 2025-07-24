@@ -17,7 +17,7 @@ locals {
       tenant_id  = var.tenant_id
       server_id  = var.server_id
       CostCenter = var.tenant_id
-      Project    = "Minecraft SaaS"
+      Project    = "XylBlox"
     }
   )
 }

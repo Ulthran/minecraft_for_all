@@ -17,7 +17,7 @@
         </p>
         <p>
           <strong>Need more help?</strong> Email us at
-          <a href="mailto:help@example.com">help@example.com</a>.
+          <a href="mailto:help@xylblox.com">help@xylblox.com</a>.
         </p>
       </v-col>
     </v-row>

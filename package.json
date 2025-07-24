@@ -1,5 +1,5 @@
 {
-  "name": "minecraft_for_all",
+  "name": "xylblox",
   "version": "1.0.0",
   "description": "This repo contains example infrastructure code for running a Minecraft server on AWS. It includes both the original CloudFormation template and a Terraform setup with an EC2 instance, S3 backups and a small Lambda function for starting the server.",
   "main": "index.js",

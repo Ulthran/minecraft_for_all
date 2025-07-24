@@ -12,7 +12,12 @@ provider "aws" {
   region = var.region
   default_tags {
     tags = {
-      Project = "Minecraft SaaS"
+      Project = "XylBlox"
     }
   }
+}
+
+provider "aws" {
+  alias  = "use1"
+  region = "us-east-1"
 }

@@ -17,9 +17,9 @@ resource "aws_cognito_user_pool" "this" {
 
   verification_message_template {
     default_email_option = "CONFIRM_WITH_CODE"
-    email_subject        = "Welcome to Minecraft For All"
+    email_subject        = "Welcome to XylBlox"
     email_message        = <<EOF
-Thank you for joining Minecraft For All!
+Thank you for joining XylBlox!
 Your verification code is {####}.
 Happy crafting!
 EOF
