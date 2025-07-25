@@ -19,10 +19,6 @@ variable "state_bucket_name" {
   type        = string
 }
 
-variable "lock_table_name" {
-  description = "DynamoDB table for state locking"
-  type        = string
-}
 
 variable "server_table_name" {
   description = "DynamoDB table tracking tenant servers"

@@ -35,8 +35,9 @@ phases:
       - |
           terraform init -input=false \
             -backend-config="bucket=$STATE_BUCKET" \
-            -backend-config="key=$TENANT_ID/terraform.tfstate" \
-            -backend-config="dynamodb_table=$LOCK_TABLE"
+            -backend-config="key=$TENANT_ID/$SERVER_ID/terraform.tfstate" \
+            -backend-config="encrypt=true" \
+            -backend-config="use_lockfile=true"
       - |
           if [ "$ACTION" = "destroy" ]; then
           terraform destroy -auto-approve -input=false \

@@ -27,10 +27,17 @@ module "backup_bucket" {
   tenant_ids  = var.tenant_ids
 }
 
-module "terraform_backend" {
-  source      = "./modules/state_backend"
-  bucket_name = var.state_bucket_name
-  table_name  = var.lock_table_name
+
+resource "aws_s3_bucket" "state" {
+  bucket        = var.state_bucket_name
+  force_destroy = false
+}
+
+resource "aws_s3_bucket_versioning" "state" {
+  bucket = aws_s3_bucket.state.id
+  versioning_configuration {
+    status = "Enabled"
+  }
 }
 
 locals {
@@ -106,8 +113,7 @@ module "tenant_codebuild" {
   source            = "./modules/codebuild_provisioner"
   project_name      = "minecraft-tenant-terraform"
   repository_url    = var.repository_url
-  state_bucket_name = module.terraform_backend.bucket_name
-  lock_table_name   = module.terraform_backend.table_name
+  state_bucket_name = aws_s3_bucket.state.bucket
   server_table_name = var.server_table_name
   region            = var.region
 }
@@ -155,12 +161,9 @@ output "backup_bucket" {
 }
 
 output "state_bucket" {
-  value = module.terraform_backend.bucket_name
+  value = aws_s3_bucket.state.bucket
 }
 
-output "lock_table" {
-  value = module.terraform_backend.table_name
-}
 
 output "cost_table" {
   value = module.tenant_api.cost_table

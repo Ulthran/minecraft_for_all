@@ -8,11 +8,12 @@ Minecraft server SaaS with AWS powering **xylblox.com**.
 
 ```
 cd tenant
-# initialize with the remote state bucket and lock table created by the SaaS layer
+# initialize with the remote state bucket and lock file created by the SaaS layer
 terraform init \
   -backend-config="bucket=YOUR_STATE_BUCKET" \
-  -backend-config="key=YOUR_TENANT/terraform.tfstate" \
-  -backend-config="dynamodb_table=YOUR_LOCK_TABLE"
+  -backend-config="key=YOUR_TENANT/YOUR_SERVER/terraform.tfstate" \
+  -backend-config="encrypt=true" \
+  -backend-config="use_lockfile=true"
 terraform apply   # creates resources (requires AWS credentials)
 ```
 

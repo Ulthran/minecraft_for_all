@@ -94,10 +94,6 @@ resource "aws_codebuild_project" "this" {
       value = var.state_bucket_name
     }
     environment_variable {
-      name  = "LOCK_TABLE"
-      value = var.lock_table_name
-    }
-    environment_variable {
       name  = "SERVER_TABLE"
       value = var.server_table_name
     }
