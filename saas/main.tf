@@ -8,6 +8,12 @@ module "auth" {
 module "frontend_site" {
   source      = "./modules/frontend_site"
   bucket_name = var.frontend_bucket_name
+  domain      = var.domain
+  zone_id     = var.zone_id
+  providers = {
+    aws.use1 = aws.use1
+    aws      = aws
+  }
 }
 
 module "tenant_account" {
