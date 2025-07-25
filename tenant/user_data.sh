@@ -131,7 +131,9 @@ mkdir -p "$BACKUP_DIR"
 cp -r /home/ec2-user/minecraft/world "$BACKUP_DIR"
 cd /home/ec2-user/minecraft_backup || exit
 zip -r "world-$TIMESTAMP.zip" "$TIMESTAMP"
-aws s3 cp "world-$TIMESTAMP.zip" "s3://${BACKUP_BUCKET}/${TENANT_ID}/${SERVER_ID}/" --tagging "CostCenter=${TENANT_ID}"
+aws s3 cp "world-$TIMESTAMP.zip" \
+  "s3://${BACKUP_BUCKET}/${TENANT_ID}/${SERVER_ID}/${TIMESTAMP}/" \
+  --tagging "CostCenter=${TENANT_ID}"
 rm -rf "$BACKUP_DIR" "world-$TIMESTAMP.zip"
 EOB
 

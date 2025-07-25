@@ -41,3 +41,8 @@ variable "server_table_name" {
   description = "DynamoDB table tracking tenant servers"
   type        = string
 }
+
+variable "backup_bucket_name" {
+  description = "Name of the shared backup bucket"
+  type        = string
+}
